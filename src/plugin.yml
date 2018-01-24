@@ -1,0 +1,17 @@
+name: RepairPlus
+description: RepairPlus
+main: com.songoda.repairplus.RepairPlus
+depend: [Arconix]
+softdepend: [Vault]
+version: 1.3.4
+author: songoda
+commands:
+  repairplus:
+    description: View information on this plugin.
+    default: true
+    aliases: [rp]
+    usage: /RP
+  rpanvil:
+    description: View information on this plugin.
+    default: true
+    usage: /rpanvil
