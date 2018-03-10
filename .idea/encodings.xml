@@ -16,5 +16,6 @@
     <file url="file://$PROJECT_DIR$/src/com/songoda/repairplus/Utils/Debugger.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/repairplus/Utils/Methods.java" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/com/songoda/repairplus/Utils/SettingsManager.java" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/plugin.yml" charset="UTF-16" />
   </component>
 </project>
