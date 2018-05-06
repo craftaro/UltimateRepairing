@@ -4,3 +4,4 @@ out/
 \.idea/
 
 RepairPlus\.iml
+/src/main/java/META-INF/MANIFEST.MF
