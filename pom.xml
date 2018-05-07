@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.songoda</groupId>
     <artifactId>RepairPlus</artifactId>
-    <version>1.3.5</version>
+    <version>1.4.0</version>
 
     <packaging>jar</packaging>
     <build>
