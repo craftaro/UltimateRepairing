@@ -5,6 +5,7 @@ depend: [Arconix]
 softdepend: [Vault]
 version: 1.4.0
 author: Songoda
+api-version: 1.13
 commands:
   repairplus:
     description: View information on this plugin.

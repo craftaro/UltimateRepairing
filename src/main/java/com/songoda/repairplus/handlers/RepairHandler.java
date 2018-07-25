@@ -105,7 +105,7 @@ public class RepairHandler {
 
     public void preRepair(Player p, RepairType type, Location loc) {
         try {
-            if (loc.add(0, 1, 0).getBlock().getTypeId() != 0) {
+            if (loc.add(0, 1, 0).getBlock().getType() != Material.AIR) {
                 p.sendMessage(Arconix.pl().getApi().format().formatText(RepairPlus.getInstance().references.getPrefix() + Lang.NEED_SPACE.getConfigValue()));
                 return;
             }

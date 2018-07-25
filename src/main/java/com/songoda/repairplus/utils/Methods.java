@@ -95,7 +95,7 @@ public class Methods {
             if (item.getType().name().contains("STONE"))
                 return Material.STONE;
             if (item.getType().name().contains("WOOD"))
-                return Material.WOOD;
+                return Material.OAK_WOOD;
         }
         return Material.valueOf(RepairPlus.getInstance().getConfig().getString("settings.ITEM"));
     }

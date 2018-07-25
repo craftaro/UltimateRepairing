@@ -41,17 +41,8 @@ public class InteractListeners implements Listener {
                 return;
             }
             if (instance.getConfig().getString("data.anvil." + loc + ".inf") != null) {
-                byte data = e.getClickedBlock().getData();
-                if ((data == 4) || (data == 8))
-                    data = 0;
-                if ((data == 5) || (data == 9))
-                    data = 1;
-                if ((data == 6) || (data == 10))
-                    data = 2;
-                if ((data == 7) || (data == 11))
-                    data = 3;
-                e.getClickedBlock().setType(Material.ANVIL);
-                e.getClickedBlock().setData(data);
+                e.getClickedBlock().setType(Material.AIR);
+                e.getClickedBlock().setType(Material.ANVIL); //ToDO: This may not work.
             }
             if (!instance.getConfig().getBoolean("settings.Enable-Default-Anvil-Function") && !p.isSneaking())
                 e.setCancelled(true);

@@ -46,12 +46,20 @@
     </repositories>
 
     <dependencies>
-        <!--Bukkit API-->
         <dependency>
             <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.12.2-R0.1-SNAPSHOT</version>
+            <artifactId>craftbukkit</artifactId>
+            <version>1.13</version>
             <type>jar</type>
+            <optional>true</optional>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
+            <version>1.13</version>
+            <type>jar</type>
+            <optional>true</optional>
             <scope>provided</scope>
         </dependency>
         <!--Vault API-->
