@@ -3,7 +3,7 @@ description: RepairPlus
 main: com.songoda.repairplus.RepairPlus
 depend: [Arconix]
 softdepend: [Vault]
-version: 1.4.0
+version: 1.4.1
 author: Songoda
 api-version: 1.13
 commands:
