@@ -22,6 +22,7 @@ public final class RepairPlus extends JavaPlugin implements Listener {
 
     public boolean v1_7 = Bukkit.getServer().getClass().getPackage().getName().contains("1_7");
     public boolean v1_8 = Bukkit.getServer().getClass().getPackage().getName().contains("1_8");
+    public boolean v1_13 = Bukkit.getServer().getClass().getPackage().getName().contains("1_13");
 
     private static RepairPlus INSTANCE;
 
