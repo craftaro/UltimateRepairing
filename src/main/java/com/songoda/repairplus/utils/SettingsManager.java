@@ -251,8 +251,8 @@ public class SettingsManager implements Listener {
         o4("ITEM-Cost-Equation", "{XPCost} * 3"),
         o5("Enchanted-Item-Multiplier", 2),
 
-        o6("ECO-Icon", "DOUBLE_PLANT"),
-        o7("XP-Icon", "EXP_BOTTLE"),
+        o6("ECO-Icon", (RepairPlus.getInstance().v1_13 ? "SUNFLOWER" : "DOUBLE_PLANT")),
+        o7("XP-Icon", (RepairPlus.getInstance().v1_13 ? "EXPERIENCE_BOTTLE" : "EXP_BOTTLE")),
         o8("ITEM", "DIAMOND"),
 
         o9("Exit-Icon", "WOOD_DOOR"),
