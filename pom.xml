@@ -20,10 +20,6 @@
         </plugins>
     </build>
     <repositories>
-        <repository>
-            <id>songoda-private</id>
-            <url>http://repo.songoda.com/repository/songoda-private/</url>
-        </repository>
         <!--Bukkit Repo-->
         <repository>
             <id>bukkit-repo</id>
@@ -39,6 +35,25 @@
             <id>songoda-public</id>
             <url>http://repo.songoda.com/repository/songoda-public/</url>
         </repository>
+        <!--Private Repo for CB-->
+        <repository>
+            <id>songoda-private</id>
+            <url>http://repo.songoda.com/repository/songoda-private/</url>
+        </repository>
+        <!---Essentials Repo-->
+        <repository>
+            <id>ess-repo</id>
+            <url>http://repo.ess3.net/content/groups/essentials</url>
+        </repository>
+        <!--PlaceHolder API Repo-->
+        <repository>
+            <id>placeholderapi</id>
+            <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
+        <repository>
+            <id>jcenter</id>
+            <url>http://jcenter.bintray.com</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -47,7 +62,6 @@
             <artifactId>spigot</artifactId>
             <version>1.13.1</version>
             <type>jar</type>
-            <optional>true</optional>
             <scope>provided</scope>
         </dependency>
         <dependency>
