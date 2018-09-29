@@ -26,7 +26,6 @@ import java.util.UUID;
 /**
  * Created by songoda on 2/25/2017.
  */
-@SuppressWarnings("deprecation")
 public class RepairHandler {
     
     private final RepairPlus instance;
@@ -112,15 +111,15 @@ public class RepairHandler {
     public void preRepair(Player p, RepairType type, Location loc) {
         try {
             if (loc.add(0, 1, 0).getBlock().getType() != Material.AIR) {
-                p.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + Locale.getLocale("event.repair.needspace")));
+                p.sendMessage(instance.references.getPrefix() + Locale.getLocale("event.repair.needspace"));
                 return;
             }
             if (p.getItemInHand().getDurability() <= 0) {
-                p.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + Locale.getLocale("event.repair.notdamaged")));
+                p.sendMessage(instance.references.getPrefix() + Locale.getLocale("event.repair.notdamaged"));
                 return;
             }
             if (p.getItemInHand().getMaxStackSize() != 1) {
-                p.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + Locale.getLocale("event.repair.cantrepair")));
+                p.sendMessage(instance.references.getPrefix() + Locale.getLocale("event.repair.cantrepair"));
                 return;
             }
 
@@ -200,7 +199,7 @@ public class RepairHandler {
             if (type == RepairType.XP)
                 cost = price + " XP";
             else if (type == RepairType.ECONOMY)
-                cost = instance.getLocale().getMessage("interface.repair.cost");
+                cost = price + " ECO";
             else if (type == RepairType.ITEM)
                 cost = price + " " + name;
 

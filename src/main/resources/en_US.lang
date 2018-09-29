@@ -8,9 +8,8 @@ general.hologram.torepair = "to &6Repair&r!"
 
 #Interface Messages
 
-interface.repair.cost = "$%COST%"
 interface.repair.title = "&9How do you want to repair?"
-interface.yesno.title = "&9Repair for &a%COST%&9?"
+interface.yesno.title = "&9Repair for &a%cost%&9?"
 interface.yesno.yes = "&a&lYes"
 interface.yesno.no = "&c&lNo"
 interface.repair.xp = "&9XP"
@@ -18,11 +17,7 @@ interface.repair.xplore = "&7Click to repair with XP."
 interface.repair.eco = "&9Economy"
 interface.repair.ecolore = "&7Click to repair with Economy."
 interface.repair.item = "&9%ITEM%"
-interface.repair.itemlore = "&7Click to repair with %ITEM%."
-
-#Command Messages
-
-command.give.success = "&7You have been given %amount% &6%type%&7."
+interface.repair.itemlore = "&7Click to repair with %item%."
 
 #Event Messages
 

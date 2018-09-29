@@ -60,7 +60,7 @@ public class HologramHandler {
         }
     }
 
-    public void remove(Location location) {
+    private void remove(Location location) {
         try {
             Location loco = location.clone();
             Hologram hologramManager = Arconix.pl().getApi().packetLibrary.getHologramManager();
