@@ -20,6 +20,10 @@
         </plugins>
     </build>
     <repositories>
+        <repository>
+            <id>songoda-private</id>
+            <url>http://repo.songoda.com/repository/songoda-private/</url>
+        </repository>
         <!--Bukkit Repo-->
         <repository>
             <id>bukkit-repo</id>
@@ -34,10 +38,6 @@
         <repository>
             <id>songoda-public</id>
             <url>http://repo.songoda.com/repository/songoda-public/</url>
-        </repository>
-        <repository>
-            <id>songoda-private</id>
-            <url>http://repo.songoda.com/repository/songoda-private/</url>
         </repository>
     </repositories>
 
