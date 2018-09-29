@@ -1,6 +1,5 @@
 package com.songoda.repairplus.events;
 
-import com.songoda.repairplus.Lang;
 import com.songoda.repairplus.RepairPlus;
 import com.songoda.repairplus.anvil.PlayerAnvilData.RepairType;
 import com.songoda.repairplus.utils.Debugger;
@@ -32,31 +31,31 @@ public class InventoryListeners implements Listener {
     public void onClick(InventoryClickEvent event) {
         try {
             Player p = (Player) event.getWhoClicked();
-            if (instance.repair.getDataFor(p).getInRepair()) {
+            if (instance.getRepairHandler().getDataFor(p).getInRepair()) {
                 event.setCancelled(true);
 
                 if (event.getSlot() == 11) {
-                    instance.repair.finish(true, p);
+                    instance.getRepairHandler().finish(true, p);
                     p.closeInventory();
                 } else if (event.getSlot() == 15) {
-                    instance.repair.finish(false, p);
+                    instance.getRepairHandler().finish(false, p);
                     p.closeInventory();
                 }
-            } else if (event.getInventory().getTitle().equals(Lang.GUI_TITLE.getConfigValue(null))) {
+            } else if (event.getInventory().getTitle().equals(instance.getLocale().getMessage("interface.repair.title"))) {
                 event.setCancelled(true);
-                Location loc = instance.repair.getDataFor(p).getLocation();
+                Location loc = instance.getRepairHandler().getDataFor(p).getLocation();
                 if (event.getSlot() == 11) {
                     p.closeInventory();
                     if (p.hasPermission("repairplus.use.ECO"))
-                        instance.repair.preRepair(p, RepairType.ECONOMY, loc);
+                        instance.getRepairHandler().preRepair(p, RepairType.ECONOMY, loc);
                 } else if (event.getSlot() == 13) {
                     p.closeInventory();
                     if (p.hasPermission("repairplus.use.ITEM"))
-                        instance.repair.preRepair(p, RepairType.ITEM, loc);
+                        instance.getRepairHandler().preRepair(p, RepairType.ITEM, loc);
                 } else if (event.getSlot() == 15) {
                     p.closeInventory();
                     if (p.hasPermission("repairplus.use.XP"))
-                        instance.repair.preRepair(p, RepairType.XP, loc);
+                        instance.getRepairHandler().preRepair(p, RepairType.XP, loc);
                 }
             }
         } catch (Exception ex) {

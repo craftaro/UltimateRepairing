@@ -17,7 +17,7 @@ public class Methods {
 
     public static ItemStack getGlass() {
         try {
-            return Arconix.pl().getApi().getGUI().getGlass(RepairPlus.getInstance().getConfig().getBoolean("settings.Rainbow-Glass"), RepairPlus.getInstance().getConfig().getInt("settings.Glass-Type-1"));
+            return Arconix.pl().getApi().getGUI().getGlass(RepairPlus.getInstance().getConfig().getBoolean("Interfaces.Replace Glass Type 1 With Rainbow Glass"), RepairPlus.getInstance().getConfig().getInt("Interfaces.Glass Type 1"));
         } catch (Exception e) {
             Debugger.runReport(e);
         }
@@ -27,9 +27,9 @@ public class Methods {
     public static ItemStack getBackgroundGlass(boolean type) {
         try {
             if (type)
-                return Arconix.pl().getApi().getGUI().getGlass(false, RepairPlus.getInstance().getConfig().getInt("settings.Glass-Type-2"));
+                return Arconix.pl().getApi().getGUI().getGlass(false, RepairPlus.getInstance().getConfig().getInt("Interfaces.Glass Type 2"));
             else
-                return Arconix.pl().getApi().getGUI().getGlass(false, RepairPlus.getInstance().getConfig().getInt("settings.Glass-Type-3"));
+                return Arconix.pl().getApi().getGUI().getGlass(false, RepairPlus.getInstance().getConfig().getInt("Interfaces.Glass Type 3"));
         } catch (Exception e) {
             Debugger.runReport(e);
         }
@@ -42,9 +42,9 @@ public class Methods {
             ScriptEngineManager mgr = new ScriptEngineManager();
             ScriptEngine engine = mgr.getEngineByName("JavaScript");
 
-            String equationXP = RepairPlus.getInstance().getConfig().getString("settings.XP-Cost-Equation");
-            String equationECO = RepairPlus.getInstance().getConfig().getString("settings.ECO-Cost-Equation");
-            String equationITEM = RepairPlus.getInstance().getConfig().getString("settings.ITEM-Cost-Equation");
+            String equationXP = RepairPlus.getInstance().getConfig().getString("Main.Experience Cost Equation");
+            String equationECO = RepairPlus.getInstance().getConfig().getString("Main.Economy Cost Equation");
+            String equationITEM = RepairPlus.getInstance().getConfig().getString("Main.Item Cost Equation");
 
             equationXP = equationXP.replace("{MaxDurability}", Short.toString(item.getType().getMaxDurability()))
                     .replace("{Durability}", Short.toString(item.getDurability()));
@@ -64,7 +64,7 @@ public class Methods {
 
             if (item.hasItemMeta() &&
                     item.getItemMeta().hasEnchants()) {
-                int multi = RepairPlus.getInstance().getConfig().getInt("settings.Enchanted-Item-Multiplier");
+                int multi = RepairPlus.getInstance().getConfig().getInt("Main.Cost Multiplier For Enchanted Items");
                 XPCost = XPCost * multi;
                 ECOCost = ECOCost * multi;
                 ITEMCost = ITEMCost * multi;
@@ -83,7 +83,7 @@ public class Methods {
     }
 
     public static Material getType(ItemStack item) {
-        if (RepairPlus.getInstance().getConfig().getBoolean("settings.Item-Match-Type")) {
+        if (RepairPlus.getInstance().getConfig().getBoolean("Main.Repair Items Only With Items Of That Items Type")) {
             if (item.getType().name().contains("DIAMOND"))
                 return Material.DIAMOND;
             if (item.getType().name().contains("IRON"))
@@ -97,6 +97,6 @@ public class Methods {
             if (item.getType().name().contains("WOOD"))
                 return Material.OAK_WOOD;
         }
-        return Material.valueOf(RepairPlus.getInstance().getConfig().getString("settings.ITEM"));
+        return Material.valueOf(RepairPlus.getInstance().getConfig().getString("Interfaces.Item Icon"));
     }
 }

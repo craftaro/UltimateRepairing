@@ -46,7 +46,7 @@ public class BlockListeners implements Listener {
             }
 
             instance.getConfig().set("data.anvil." + loc + ".holo", null);
-            instance.holo.updateHolograms();
+            instance.getHologramHandler().updateHolograms();
             instance.getConfig().set("data.anvil." + loc, null);
         } catch (Exception ex) {
             Debugger.runReport(ex);

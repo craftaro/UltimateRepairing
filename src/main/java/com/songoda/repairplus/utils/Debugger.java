@@ -24,7 +24,7 @@ public class Debugger {
     }
 
     public static boolean isDebug() {
-        return RepairPlus.getInstance().getConfig().getBoolean("settings.Debug-Mode");
+        return RepairPlus.getInstance().getConfig().getBoolean("System.Debugger Enabled");
     }
 
 }

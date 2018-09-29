@@ -37,26 +37,26 @@ public class InteractListeners implements Listener {
             String loc = Arconix.pl().getApi().serialize().serializeLocation(e.getClickedBlock());
             if (e.getClickedBlock().getType() != Material.ANVIL
                     || !((instance.getConfig().getBoolean("data.anvil." + loc + ".permPlaced")
-                    || !instance.getConfig().getBoolean("settings.Perms-Only")))) {
+                    || !instance.getConfig().getBoolean("Main.Require Permission On RepairPlus Anvil Place")))) {
                 return;
             }
             if (instance.getConfig().getString("data.anvil." + loc + ".inf") != null) {
                 e.getClickedBlock().setType(Material.AIR);
                 e.getClickedBlock().setType(Material.ANVIL); //ToDO: This may not work.
             }
-            if (!instance.getConfig().getBoolean("settings.Enable-Default-Anvil-Function") && !p.isSneaking())
+            if (!instance.getConfig().getBoolean("Main.Enable Default Anvil Function") && !p.isSneaking())
                 e.setCancelled(true);
             if (e.getAction() == Action.RIGHT_CLICK_BLOCK &&
                     !p.isSneaking()) {
-                if (instance.getConfig().getBoolean("settings.Swap-Functions"))
+                if (instance.getConfig().getBoolean("Main.Swap Right And Left Click Options"))
                     repair = true;
-                else if (!instance.getConfig().getBoolean("settings.Enable-Default-Anvil-Function"))
+                else if (!instance.getConfig().getBoolean("Main.Enable Default Anvil Function"))
                     repair = true;
             }
             if (e.getAction() == Action.LEFT_CLICK_BLOCK &&
                     !p.isSneaking()) {
-                if (instance.getConfig().getBoolean("settings.Swap-Functions")) {
-                    if (instance.getConfig().getBoolean("settings.Enable-Default-Anvil-Function"))
+                if (instance.getConfig().getBoolean("Main.Swap Right And Left Click Options")) {
+                    if (instance.getConfig().getBoolean("Main.Enable Default Anvil Function"))
                         anvil = true;
                     else
                         repair = true;
@@ -64,9 +64,9 @@ public class InteractListeners implements Listener {
                     repair = true;
             }
             if (repair) {
-                instance.repair.initRepair(p, e.getClickedBlock().getLocation());
+                instance.getRepairHandler().initRepair(p, e.getClickedBlock().getLocation());
                 e.setCancelled(true);
-            } else if (anvil && instance.getConfig().getBoolean("settings.Enable-Default-Anvil-Function")) {
+            } else if (anvil && instance.getConfig().getBoolean("Main.Enable Default Anvil Function")) {
                 Inventory inv = Bukkit.createInventory(null, InventoryType.ANVIL, "Repair & Name");
                 p.openInventory(inv);
                 e.setCancelled(true);

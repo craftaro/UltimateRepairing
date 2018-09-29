@@ -2,39 +2,58 @@ package com.songoda.repairplus;
 
 import com.songoda.arconix.api.utils.ConfigWrapper;
 import com.songoda.arconix.plugin.Arconix;
+import com.songoda.repairplus.command.CommandManager;
 import com.songoda.repairplus.events.BlockListeners;
 import com.songoda.repairplus.events.InteractListeners;
 import com.songoda.repairplus.events.InventoryListeners;
 import com.songoda.repairplus.events.PlayerListeners;
-import com.songoda.repairplus.handlers.CommandHandler;
 import com.songoda.repairplus.handlers.HologramHandler;
 import com.songoda.repairplus.handlers.ParticleHandler;
 import com.songoda.repairplus.handlers.RepairHandler;
 import com.songoda.repairplus.utils.Debugger;
 import com.songoda.repairplus.utils.SettingsManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class RepairPlus extends JavaPlugin implements Listener {
-    public static CommandSender console = Bukkit.getConsoleSender();
-
-    public boolean v1_7 = Bukkit.getServer().getClass().getPackage().getName().contains("1_7");
-    public boolean v1_8 = Bukkit.getServer().getClass().getPackage().getName().contains("1_8");
-    public boolean v1_13 = Bukkit.getServer().getClass().getPackage().getName().contains("1_13");
+    private static CommandSender console = Bukkit.getConsoleSender();
 
     private static RepairPlus INSTANCE;
 
     public References references = null;
-    private ConfigWrapper langFile = new ConfigWrapper(this, "", "lang.yml");
 
-    public RepairHandler repair;
-    public HologramHandler holo = null;
-    public SettingsManager settingsManager;
+    private Locale locale;
 
+    private RepairHandler repairHandler;
+    private HologramHandler hologramHandler;
+    private SettingsManager settingsManager;
+    private CommandManager commandManager;
+
+    private boolean checkVersion() {
+        int workingVersion = 13;
+        int currentVersion = Integer.parseInt(Bukkit.getServer().getClass()
+                .getPackage().getName().split("\\.")[3].split("_")[1]);
+
+        if (currentVersion < workingVersion) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+                Bukkit.getConsoleSender().sendMessage("");
+                Bukkit.getConsoleSender().sendMessage(String.format("%sYou installed the 1.%s only version of %s on a 1.%s server. Since you are on the wrong version we disabled the plugin for you. Please install correct version to continue using %s.", ChatColor.RED, workingVersion, this.getDescription().getName(), currentVersion, this.getDescription().getName()));
+                Bukkit.getConsoleSender().sendMessage("");
+            }, 20L);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void onEnable() {
         INSTANCE = this;
+
+        // Check to make sure the Bukkit version is compatible.
+        if (!checkVersion()) return;
 
         Arconix.pl().hook(this);
 
@@ -47,18 +66,19 @@ public final class RepairPlus extends JavaPlugin implements Listener {
         settingsManager.updateSettings();
         setupConfig();
 
-        langFile.createNewFile("Loading language file", "RepairPlus language file");
-        loadLanguageFile();
+        // Locales
+        Locale.init(this);
+        Locale.saveDefaultLocale("en_US");
+        this.locale = Locale.getLocale(this.getConfig().getString("Locale", "en_US"));
+
         references = new References();
 
-        repair = new RepairHandler();
-        holo = new HologramHandler(this);
+        this.repairHandler = new RepairHandler(this);
+        this.hologramHandler = new HologramHandler(this);
+        this.commandManager = new CommandManager(this);
         new ParticleHandler(this);
 
         new com.massivestats.MassiveStats(this, 900);
-
-        this.getCommand("RPAnvil").setExecutor(new CommandHandler(this));
-        this.getCommand("RepairPlus").setExecutor(new CommandHandler(this));
 
         getServer().getPluginManager().registerEvents(new PlayerListeners(this), this);
         getServer().getPluginManager().registerEvents(new BlockListeners(this), this);
@@ -87,30 +107,35 @@ public final class RepairPlus extends JavaPlugin implements Listener {
 
     public void reload() {
         try {
-            langFile.createNewFile("Loading language file", "RepairPlus language file");
-            loadLanguageFile();
+            locale.reloadMessages();
             references = new References();
             reloadConfig();
             saveConfig();
-            holo.updateHolograms();
+            hologramHandler.updateHolograms();
         } catch (Exception ex) {
             Debugger.runReport(ex);
         }
     }
 
-    private void loadLanguageFile() {
-        try {
-            Lang.setFile(langFile.getConfig());
 
-            for (final Lang value : Lang.values()) {
-                langFile.getConfig().addDefault(value.getPath(), value.getDefault());
-            }
+    public Locale getLocale() {
+        return locale;
+    }
 
-            langFile.getConfig().options().copyDefaults(true);
-            langFile.saveConfig();
-        } catch (Exception ex) {
-            Debugger.runReport(ex);
-        }
+    public RepairHandler getRepairHandler() {
+        return repairHandler;
+    }
+
+    public HologramHandler getHologramHandler() {
+        return hologramHandler;
+    }
+
+    public SettingsManager getSettingsManager() {
+        return settingsManager;
+    }
+
+    public CommandManager getCommandManager() {
+        return commandManager;
     }
 
     public static RepairPlus getInstance() {
