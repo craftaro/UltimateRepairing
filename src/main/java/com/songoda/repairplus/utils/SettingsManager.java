@@ -208,7 +208,7 @@ public class SettingsManager implements Listener {
         o7("XP-Icon", "Interfaces.XP Icon", "EXPERIENCE_BOTTLE"),
         o8("ITEM", "Interfaces.Item Icon", "DIAMOND"),
 
-        o9("Exit-Icon", "Interfaces.Exit Icon", "WOODEN_DOOR"),
+        o9("Exit-Icon", "Interfaces.Exit Icon", "OAK_DOOR"),
         o10("Buy-Icon", "Interfaces.Buy Icon", "EMERALD"),
 
         o12("Glass-Type-1", "Interfaces.Glass Type 1", 7),

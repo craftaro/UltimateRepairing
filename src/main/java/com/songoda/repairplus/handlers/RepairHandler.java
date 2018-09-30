@@ -111,15 +111,15 @@ public class RepairHandler {
     public void preRepair(Player p, RepairType type, Location loc) {
         try {
             if (loc.add(0, 1, 0).getBlock().getType() != Material.AIR) {
-                p.sendMessage(instance.references.getPrefix() + Locale.getLocale("event.repair.needspace"));
+                p.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.needspace"));
                 return;
             }
             if (p.getItemInHand().getDurability() <= 0) {
-                p.sendMessage(instance.references.getPrefix() + Locale.getLocale("event.repair.notdamaged"));
+                p.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notdamaged"));
                 return;
             }
             if (p.getItemInHand().getMaxStackSize() != 1) {
-                p.sendMessage(instance.references.getPrefix() + Locale.getLocale("event.repair.cantrepair"));
+                p.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.cantrepair"));
                 return;
             }
 
@@ -199,7 +199,7 @@ public class RepairHandler {
             if (type == RepairType.XP)
                 cost = price + " XP";
             else if (type == RepairType.ECONOMY)
-                cost = price + " ECO";
+                cost = "\\$" + price;
             else if (type == RepairType.ITEM)
                 cost = price + " " + name;
 
