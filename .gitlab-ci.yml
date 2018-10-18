@@ -9,3 +9,4 @@ build:
     name: "RepairPlus"
     paths:
     - "/builds/Songoda/RepairPlus/target/*.jar"
+    - "/builds/Songoda/RepairPlus/Read_this_before_your_first_use.txt"
