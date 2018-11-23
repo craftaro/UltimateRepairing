@@ -1,5 +1,6 @@
 package com.songoda.ultimaterepairing.handlers;
 
+import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.ultimaterepairing.Locale;
 import com.songoda.ultimaterepairing.UltimateRepairing;
@@ -305,7 +306,7 @@ public class RepairHandler {
                     Arconix.pl().getApi().getPlayer(player).playSound(Sound.valueOf("BLOCK_ANVIL_LAND"));
                     player.getWorld().playEffect(location, effect, Material.REDSTONE_BLOCK);
                     player.getWorld().playEffect(location, effect, Material.ANVIL);
-                    player.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.success")));
+                    player.sendMessage(TextComponent.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.success")));
                     ItemStack repairedi = playerData.getToBeRepaired();
                     repairedi.setDurability((short) 0);
                     Item repaired = player.getWorld().dropItemNaturally(player.getLocation(), repairedi);

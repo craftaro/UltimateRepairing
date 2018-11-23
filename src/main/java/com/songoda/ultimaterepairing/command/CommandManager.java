@@ -29,9 +29,6 @@ public class CommandManager implements CommandExecutor {
 
         addCommand(new CommandReload(commandUltimateRepairing));
         addCommand(new CommandSettings(commandUltimateRepairing));
-        addCommand(new CommandHolo(commandUltimateRepairing));
-        addCommand(new CommandParticles(commandUltimateRepairing));
-        addCommand(new CommandInf(commandUltimateRepairing));
     }
 
     private AbstractCommand addCommand(AbstractCommand abstractCommand) {

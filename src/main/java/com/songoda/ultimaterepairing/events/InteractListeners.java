@@ -52,8 +52,7 @@ public class InteractListeners implements Listener {
                     repair = true;
                 else if (!instance.getConfig().getBoolean("Main.Enable Default Anvil Function"))
                     repair = true;
-            }
-            if (e.getAction() == Action.LEFT_CLICK_BLOCK &&
+            } else if (e.getAction() == Action.LEFT_CLICK_BLOCK &&
                     !p.isSneaking()) {
                 if (instance.getConfig().getBoolean("Main.Swap Right And Left Click Options")) {
                     if (instance.getConfig().getBoolean("Main.Enable Default Anvil Function"))
@@ -62,6 +61,9 @@ public class InteractListeners implements Listener {
                         repair = true;
                 } else
                     repair = true;
+            } else if (p.isSneaking() && p.hasPermission("ultimaterepairing.admin")) {
+                instance.getEditor().open(p, e.getClickedBlock());
+                e.setCancelled(true);
             }
             if (repair) {
                 instance.getRepairHandler().initRepair(p, e.getClickedBlock().getLocation());

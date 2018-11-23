@@ -3,6 +3,7 @@ package com.songoda.ultimaterepairing;
 import com.songoda.arconix.api.utils.ConfigWrapper;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.ultimaterepairing.command.CommandManager;
+import com.songoda.ultimaterepairing.editor.Editor;
 import com.songoda.ultimaterepairing.events.BlockListeners;
 import com.songoda.ultimaterepairing.events.InteractListeners;
 import com.songoda.ultimaterepairing.events.InventoryListeners;
@@ -32,6 +33,8 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
     private HologramHandler hologramHandler;
     private SettingsManager settingsManager;
     private CommandManager commandManager;
+
+    private Editor editor;
 
     private boolean checkVersion() {
         int workingVersion = 13;
@@ -71,6 +74,8 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         Locale.init(this);
         Locale.saveDefaultLocale("en_US");
         this.locale = Locale.getLocale(this.getConfig().getString("Locale", "en_US"));
+
+        this.editor = new Editor(this);
 
         references = new References();
 
@@ -118,6 +123,10 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
 
     public Locale getLocale() {
         return locale;
+    }
+
+    public Editor getEditor() {
+        return editor;
     }
 
     public RepairHandler getRepairHandler() {

@@ -31,7 +31,17 @@ public class InventoryListeners implements Listener {
     public void onClick(InventoryClickEvent event) {
         try {
             Player p = (Player) event.getWhoClicked();
-            if (instance.getRepairHandler().getDataFor(p).getInRepair()) {
+            if (instance.getEditor().isEditing(p)) {
+                event.setCancelled(true);
+
+                if (event.getSlot() == 11) {
+                    instance.getEditor().toggleHologram(p);
+                } else if (event.getSlot() == 13) {
+                    instance.getEditor().toggleInfinity(p);
+                } else if (event.getSlot() == 15) {
+                    instance.getEditor().toggleParticles(p);
+                }
+            } else if (instance.getRepairHandler().getDataFor(p).getInRepair()) {
                 event.setCancelled(true);
 
                 if (event.getSlot() == 11) {

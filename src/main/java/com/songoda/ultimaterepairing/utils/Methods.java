@@ -1,14 +1,18 @@
 package com.songoda.ultimaterepairing.utils;
 
+import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData.RepairType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by songoda on 2/25/2017.
@@ -98,5 +102,25 @@ public class Methods {
                 return Material.OAK_WOOD;
         }
         return Material.valueOf(UltimateRepairing.getInstance().getConfig().getString("Interfaces.Item Icon"));
+    }
+
+    public static ItemStack createButton(ItemStack item, String name, String... lore) {
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(TextComponent.formatText(name));
+        if (lore != null && lore.length != 0) {
+            List<String> newLore = new ArrayList<>();
+            for (String line : lore) newLore.add(TextComponent.formatText(line));
+            meta.setLore(newLore);
+        }
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public static ItemStack createButton(Material material, String name, String... lore) {
+        return createButton(new ItemStack(material), name, lore);
+    }
+
+    public static ItemStack createButton(Material material, String name, ArrayList<String> lore) {
+        return createButton(material, name, lore.toArray(new String[0]));
     }
 }
