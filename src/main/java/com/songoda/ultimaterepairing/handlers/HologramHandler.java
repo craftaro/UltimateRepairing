@@ -1,9 +1,9 @@
-package com.songoda.repairplus.handlers;
+package com.songoda.ultimaterepairing.handlers;
 
 import com.songoda.arconix.api.packets.Hologram;
 import com.songoda.arconix.plugin.Arconix;
-import com.songoda.repairplus.RepairPlus;
-import com.songoda.repairplus.utils.Debugger;
+import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.songoda.ultimaterepairing.utils.Debugger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,9 +17,9 @@ import java.util.List;
  */
 public class HologramHandler {
 
-    private final RepairPlus instance;
+    private final UltimateRepairing instance;
 
-    public HologramHandler(RepairPlus plugin) {
+    public HologramHandler(UltimateRepairing plugin) {
         this.instance = plugin;
         Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this::updateHolograms, 0L, 5000L);
     }

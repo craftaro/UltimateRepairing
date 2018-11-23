@@ -1,6 +1,6 @@
-package com.songoda.repairplus.utils;
+package com.songoda.ultimaterepairing.utils;
 
-import com.songoda.repairplus.RepairPlus;
+import com.songoda.ultimaterepairing.UltimateRepairing;
 
 /**
  * Created by songoda on 3/21/2017.
@@ -11,7 +11,7 @@ public class Debugger {
     public static void runReport(Exception e) {
         if (isDebug()) {
             System.out.println("==============================================================");
-            System.out.println("The following is an error encountered in RepairPlus.");
+            System.out.println("The following is an error encountered in UltimateRepairing.");
             System.out.println("--------------------------------------------------------------");
             e.printStackTrace();
             System.out.println("==============================================================");
@@ -24,7 +24,7 @@ public class Debugger {
     }
 
     public static boolean isDebug() {
-        return RepairPlus.getInstance().getConfig().getBoolean("System.Debugger Enabled");
+        return UltimateRepairing.getInstance().getConfig().getBoolean("System.Debugger Enabled");
     }
 
 }

@@ -6,7 +6,7 @@ build:
   image: maven:3.3.9-jdk-8
   script: "mvn clean package"
   artifacts:
-    name: "RepairPlus"
+    name: "UltimateRepairing"
     paths:
-    - "/builds/Songoda/RepairPlus/target/*.jar"
-    - "/builds/Songoda/RepairPlus/Read_this_before_your_first_use.txt"
+    - "/builds/Songoda/UltimateRepairing/target/*.jar"
+    - "/builds/Songoda/UltimateRepairing/Read_this_before_your_first_use.txt"

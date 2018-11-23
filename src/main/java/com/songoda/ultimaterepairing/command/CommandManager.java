@@ -1,8 +1,8 @@
-package com.songoda.repairplus.command;
+package com.songoda.ultimaterepairing.command;
 
 import com.songoda.arconix.api.methods.formatting.TextComponent;
-import com.songoda.repairplus.RepairPlus;
-import com.songoda.repairplus.command.commands.*;
+import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.songoda.ultimaterepairing.command.commands.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,24 +14,24 @@ import java.util.List;
 
 public class CommandManager implements CommandExecutor {
 
-    private RepairPlus instance;
+    private UltimateRepairing instance;
 
     private List<AbstractCommand> commands = new ArrayList<>();
 
-    public CommandManager(RepairPlus instance) {
+    public CommandManager(UltimateRepairing instance) {
         this.instance = instance;
 
-        instance.getCommand("RepairPlus").setExecutor(this);
+        instance.getCommand("UltimateRepairing").setExecutor(this);
         instance.getCommand("rpanvil").setExecutor(this);
 
-        AbstractCommand commandRepairPlus = addCommand(new CommandRepairPlus());
+        AbstractCommand commandUltimateRepairing = addCommand(new CommandUltimateRepairing());
         addCommand(new CommandRPAnvil());
 
-        addCommand(new CommandReload(commandRepairPlus));
-        addCommand(new CommandSettings(commandRepairPlus));
-        addCommand(new CommandHolo(commandRepairPlus));
-        addCommand(new CommandParticles(commandRepairPlus));
-        addCommand(new CommandInf(commandRepairPlus));
+        addCommand(new CommandReload(commandUltimateRepairing));
+        addCommand(new CommandSettings(commandUltimateRepairing));
+        addCommand(new CommandHolo(commandUltimateRepairing));
+        addCommand(new CommandParticles(commandUltimateRepairing));
+        addCommand(new CommandInf(commandUltimateRepairing));
     }
 
     private AbstractCommand addCommand(AbstractCommand abstractCommand) {

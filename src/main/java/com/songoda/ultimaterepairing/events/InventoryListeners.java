@@ -1,8 +1,8 @@
-package com.songoda.repairplus.events;
+package com.songoda.ultimaterepairing.events;
 
-import com.songoda.repairplus.RepairPlus;
-import com.songoda.repairplus.anvil.PlayerAnvilData.RepairType;
-import com.songoda.repairplus.utils.Debugger;
+import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.songoda.ultimaterepairing.anvil.PlayerAnvilData.RepairType;
+import com.songoda.ultimaterepairing.utils.Debugger;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,15 +15,15 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
  */
 public class InventoryListeners implements Listener {
 
-    private final RepairPlus instance;
+    private final UltimateRepairing instance;
 
-    public InventoryListeners(RepairPlus instance) {
+    public InventoryListeners(UltimateRepairing instance) {
         this.instance = instance;
     }
 
     @EventHandler
     public void OnPickup(InventoryPickupItemEvent event) {
-        if (event.getItem().hasMetadata("RepairPlus"))
+        if (event.getItem().hasMetadata("UltimateRepairing"))
             event.setCancelled(true);
     }
 
@@ -46,15 +46,15 @@ public class InventoryListeners implements Listener {
                 Location loc = instance.getRepairHandler().getDataFor(p).getLocation();
                 if (event.getSlot() == 11) {
                     p.closeInventory();
-                    if (p.hasPermission("repairplus.use.ECO"))
+                    if (p.hasPermission("ultimaterepairing.use.ECO"))
                         instance.getRepairHandler().preRepair(p, RepairType.ECONOMY, loc);
                 } else if (event.getSlot() == 13) {
                     p.closeInventory();
-                    if (p.hasPermission("repairplus.use.ITEM"))
+                    if (p.hasPermission("ultimaterepairing.use.ITEM"))
                         instance.getRepairHandler().preRepair(p, RepairType.ITEM, loc);
                 } else if (event.getSlot() == 15) {
                     p.closeInventory();
-                    if (p.hasPermission("repairplus.use.XP"))
+                    if (p.hasPermission("ultimaterepairing.use.XP"))
                         instance.getRepairHandler().preRepair(p, RepairType.XP, loc);
                 }
             }

@@ -1,4 +1,4 @@
-package com.songoda.repairplus;
+package com.songoda.ultimaterepairing;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;

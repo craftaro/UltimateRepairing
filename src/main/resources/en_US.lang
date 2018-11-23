@@ -1,6 +1,6 @@
 #General Messages
 
-general.nametag.prefix = "&8[&6RepairPlus&8]"
+general.nametag.prefix = "&8[&6UltimateRepairing&8]"
 general.hologram.click = "Left-Click with an item"
 general.hologram.swapclick = "Right-Click with an item"
 general.hologram.oneclick = "Click with an item"

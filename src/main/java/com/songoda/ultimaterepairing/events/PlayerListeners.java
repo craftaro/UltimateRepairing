@@ -1,7 +1,7 @@
-package com.songoda.repairplus.events;
+package com.songoda.ultimaterepairing.events;
 
-import com.songoda.repairplus.RepairPlus;
-import com.songoda.repairplus.anvil.PlayerAnvilData;
+import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.songoda.ultimaterepairing.anvil.PlayerAnvilData;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -9,9 +9,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class PlayerListeners implements Listener {
 
 
-    private final RepairPlus instance;
+    private final UltimateRepairing instance;
 
-    public PlayerListeners(RepairPlus instance) {
+    public PlayerListeners(UltimateRepairing instance) {
         this.instance = instance;
     }
 

@@ -1,8 +1,8 @@
-package com.songoda.repairplus.events;
+package com.songoda.ultimaterepairing.events;
 
 import com.songoda.arconix.plugin.Arconix;
-import com.songoda.repairplus.RepairPlus;
-import com.songoda.repairplus.utils.Debugger;
+import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.songoda.ultimaterepairing.utils.Debugger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,9 +19,9 @@ import org.bukkit.inventory.Inventory;
 
 public class InteractListeners implements Listener {
 
-    private final RepairPlus instance;
+    private final UltimateRepairing instance;
 
-    public InteractListeners(RepairPlus instance) {
+    public InteractListeners(UltimateRepairing instance) {
         this.instance = instance;
     }
 
@@ -37,7 +37,7 @@ public class InteractListeners implements Listener {
             String loc = Arconix.pl().getApi().serialize().serializeLocation(e.getClickedBlock());
             if (e.getClickedBlock().getType() != Material.ANVIL
                     || !((instance.getConfig().getBoolean("data.anvil." + loc + ".permPlaced")
-                    || !instance.getConfig().getBoolean("Main.Require Permission On RepairPlus Anvil Place")))) {
+                    || !instance.getConfig().getBoolean("Main.Require Permission On UltimateRepairing Anvil Place")))) {
                 return;
             }
             if (instance.getConfig().getString("data.anvil." + loc + ".inf") != null) {

@@ -1,17 +1,17 @@
-name: RepairPlus
-description: RepairPlus
-main: com.songoda.repairplus.RepairPlus
+name: UltimateRepairing
+description: UltimateRepairing
+main: com.songoda.ultimaterepairing.UltimateRepairing
 depend: [Arconix]
 softdepend: [Vault]
-version: 1.4.1
+version: 1
 author: Songoda
 api-version: 1.13
 commands:
-  repairplus:
+  ultimaterepairing:
     description: View information on this plugin.
     default: true
-    aliases: [rp]
-    usage: /RP
+    aliases: [ur]
+    usage: /ur
   rpanvil:
     description: View information on this plugin.
     default: true

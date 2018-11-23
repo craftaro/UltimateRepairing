@@ -1,8 +1,8 @@
-package com.songoda.repairplus.handlers;
+package com.songoda.ultimaterepairing.handlers;
 
 import com.songoda.arconix.plugin.Arconix;
-import com.songoda.repairplus.RepairPlus;
-import com.songoda.repairplus.utils.Debugger;
+import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.songoda.ultimaterepairing.utils.Debugger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -14,9 +14,9 @@ import org.bukkit.event.Listener;
  */
 public class ParticleHandler implements Listener {
 
-    private RepairPlus instance;
+    private UltimateRepairing instance;
 
-    public ParticleHandler(RepairPlus instance) {
+    public ParticleHandler(UltimateRepairing instance) {
         this.instance = instance;
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(instance, this::applyParticles, 0L, 10L);
     }

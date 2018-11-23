@@ -1,6 +1,6 @@
-package com.songoda.repairplus.command;
+package com.songoda.ultimaterepairing.command;
 
-import com.songoda.repairplus.RepairPlus;
+import com.songoda.ultimaterepairing.UltimateRepairing;
 import org.bukkit.command.CommandSender;
 
 public abstract class AbstractCommand {
@@ -31,7 +31,7 @@ public abstract class AbstractCommand {
         return noConsole;
     }
 
-    protected abstract ReturnType runCommand(RepairPlus instance, CommandSender sender, String... args);
+    protected abstract ReturnType runCommand(UltimateRepairing instance, CommandSender sender, String... args);
 
     public abstract String getPermissionNode();
 

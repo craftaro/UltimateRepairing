@@ -3,7 +3,7 @@ out/
 target
 \.idea/
 
-RepairPlus\.iml
+UltimateRepairing\.iml
 /src/main/java/META-INF/MANIFEST.MF
 
 target/classes/com/massivestats/MassiveStats\.class

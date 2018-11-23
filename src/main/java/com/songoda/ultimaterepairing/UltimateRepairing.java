@@ -1,31 +1,35 @@
-package com.songoda.repairplus;
+package com.songoda.ultimaterepairing;
 
 import com.songoda.arconix.api.utils.ConfigWrapper;
 import com.songoda.arconix.plugin.Arconix;
-import com.songoda.repairplus.command.CommandManager;
-import com.songoda.repairplus.events.BlockListeners;
-import com.songoda.repairplus.events.InteractListeners;
-import com.songoda.repairplus.events.InventoryListeners;
-import com.songoda.repairplus.events.PlayerListeners;
-import com.songoda.repairplus.handlers.HologramHandler;
-import com.songoda.repairplus.handlers.ParticleHandler;
-import com.songoda.repairplus.handlers.RepairHandler;
-import com.songoda.repairplus.utils.Debugger;
-import com.songoda.repairplus.utils.SettingsManager;
+import com.songoda.ultimaterepairing.command.CommandManager;
+import com.songoda.ultimaterepairing.events.BlockListeners;
+import com.songoda.ultimaterepairing.events.InteractListeners;
+import com.songoda.ultimaterepairing.events.InventoryListeners;
+import com.songoda.ultimaterepairing.events.PlayerListeners;
+import com.songoda.ultimaterepairing.handlers.HologramHandler;
+import com.songoda.ultimaterepairing.handlers.ParticleHandler;
+import com.songoda.ultimaterepairing.handlers.RepairHandler;
+import com.songoda.ultimaterepairing.utils.Debugger;
+import com.songoda.ultimaterepairing.utils.ServerVersion;
+import com.songoda.ultimaterepairing.utils.SettingsManager;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class RepairPlus extends JavaPlugin implements Listener {
+public final class UltimateRepairing extends JavaPlugin implements Listener {
     private static CommandSender console = Bukkit.getConsoleSender();
 
-    private static RepairPlus INSTANCE;
+    private static UltimateRepairing INSTANCE;
 
     public References references = null;
 
     private Locale locale;
+
+    private ServerVersion serverVersion = ServerVersion.fromPackageName(Bukkit.getServer().getClass().getPackage().getName());
 
     private RepairHandler repairHandler;
     private HologramHandler hologramHandler;
@@ -33,14 +37,12 @@ public final class RepairPlus extends JavaPlugin implements Listener {
     private CommandManager commandManager;
 
     private boolean checkVersion() {
-        int workingVersion = 13;
-        int currentVersion = Integer.parseInt(Bukkit.getServer().getClass()
-                .getPackage().getName().split("\\.")[3].split("_")[1]);
-
-        if (currentVersion < workingVersion) {
+        int maxVersion = 12; // also supports 1.8 and higher
+        int currentVersion = Integer.parseInt(Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].split("_")[1]);
+        if (currentVersion > maxVersion) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
                 Bukkit.getConsoleSender().sendMessage("");
-                Bukkit.getConsoleSender().sendMessage(String.format("%sYou installed the 1.%s only version of %s on a 1.%s server. Since you are on the wrong version we disabled the plugin for you. Please install correct version to continue using %s.", ChatColor.RED, workingVersion, this.getDescription().getName(), currentVersion, this.getDescription().getName()));
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "You installed the legacy (1.8 - 1.12) only version of " + this.getDescription().getName() + " on a 1." + currentVersion + " server. Since you are on the wrong version we disabled the plugin for you. Please install correct version to continue using " + this.getDescription().getName() + ".");
                 Bukkit.getConsoleSender().sendMessage("");
             }, 20L);
             return false;
@@ -58,7 +60,7 @@ public final class RepairPlus extends JavaPlugin implements Listener {
         Arconix.pl().hook(this);
 
         console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&7RepairPlus " + this.getDescription().getVersion()  + " by &5Brianna <3!"));
+        console.sendMessage(Arconix.pl().getApi().format().formatText("&7UltimateRepairing " + this.getDescription().getVersion()  + " by &5Brianna <3!"));
         console.sendMessage(Arconix.pl().getApi().format().formatText("&7Action: &aEnabling&7..."));
         Bukkit.getPluginManager().registerEvents(this, this);
 
@@ -78,8 +80,6 @@ public final class RepairPlus extends JavaPlugin implements Listener {
         this.commandManager = new CommandManager(this);
         new ParticleHandler(this);
 
-        new com.massivestats.MassiveStats(this, 900);
-
         getServer().getPluginManager().registerEvents(new PlayerListeners(this), this);
         getServer().getPluginManager().registerEvents(new BlockListeners(this), this);
         getServer().getPluginManager().registerEvents(new InteractListeners(this), this);
@@ -89,7 +89,7 @@ public final class RepairPlus extends JavaPlugin implements Listener {
 
     public void onDisable() {
         console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&7RepairPlus " + this.getDescription().getVersion()  + " by &5Brianna <3!"));
+        console.sendMessage(Arconix.pl().getApi().format().formatText("&7UltimateRepairing " + this.getDescription().getVersion()  + " by &5Brianna <3!"));
         console.sendMessage(Arconix.pl().getApi().format().formatText("&7Action: &cDisabling&7..."));
         console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
         saveConfig();
@@ -117,6 +117,21 @@ public final class RepairPlus extends JavaPlugin implements Listener {
         }
     }
 
+    public ServerVersion getServerVersion() {
+        return serverVersion;
+    }
+
+    public boolean isServerVersion(ServerVersion version) {
+        return serverVersion == version;
+    }
+    public boolean isServerVersion(ServerVersion... versions) {
+        return ArrayUtils.contains(versions, serverVersion);
+    }
+
+    public boolean isServerVersionAtLeast(ServerVersion version) {
+        return serverVersion.ordinal() >= version.ordinal();
+    }
+
 
     public Locale getLocale() {
         return locale;
@@ -138,7 +153,7 @@ public final class RepairPlus extends JavaPlugin implements Listener {
         return commandManager;
     }
 
-    public static RepairPlus getInstance() {
+    public static UltimateRepairing getInstance() {
         return INSTANCE;
     }
 }

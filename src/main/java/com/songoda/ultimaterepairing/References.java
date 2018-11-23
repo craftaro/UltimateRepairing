@@ -1,11 +1,11 @@
-package com.songoda.repairplus;
+package com.songoda.ultimaterepairing;
 
 public class References {
 
     private String prefix;
 
     public References() {
-        prefix = RepairPlus.getInstance().getLocale().getMessage("general.nametag.prefix") + " ";
+        prefix = UltimateRepairing.getInstance().getLocale().getMessage("general.nametag.prefix") + " ";
     }
 
     public String getPrefix() {

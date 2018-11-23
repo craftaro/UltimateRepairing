@@ -1,8 +1,8 @@
-package com.songoda.repairplus.command.commands;
+package com.songoda.ultimaterepairing.command.commands;
 
 import com.songoda.arconix.plugin.Arconix;
-import com.songoda.repairplus.RepairPlus;
-import com.songoda.repairplus.command.AbstractCommand;
+import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.songoda.ultimaterepairing.command.AbstractCommand;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
@@ -15,7 +15,7 @@ public class CommandParticles extends AbstractCommand {
     }
 
     @Override
-    protected ReturnType runCommand(RepairPlus instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(UltimateRepairing instance, CommandSender sender, String... args) {
         Player player = (Player) sender;
 
         Block block = player.getTargetBlock(null, 200);
@@ -37,7 +37,7 @@ public class CommandParticles extends AbstractCommand {
 
     @Override
     public String getPermissionNode() {
-        return "repairplus.admin";
+        return "ultimaterepairing.admin";
     }
 
     @Override

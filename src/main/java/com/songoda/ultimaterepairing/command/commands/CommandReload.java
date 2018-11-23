@@ -1,8 +1,8 @@
-package com.songoda.repairplus.command.commands;
+package com.songoda.ultimaterepairing.command.commands;
 
 import com.songoda.arconix.api.methods.formatting.TextComponent;
-import com.songoda.repairplus.RepairPlus;
-import com.songoda.repairplus.command.AbstractCommand;
+import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.songoda.ultimaterepairing.command.AbstractCommand;
 import org.bukkit.command.CommandSender;
 
 public class CommandReload extends AbstractCommand {
@@ -12,7 +12,7 @@ public class CommandReload extends AbstractCommand {
     }
 
     @Override
-    protected ReturnType runCommand(RepairPlus instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(UltimateRepairing instance, CommandSender sender, String... args) {
         instance.reload();
         sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&7Configuration and Language files reloaded."));
         return ReturnType.SUCCESS;
@@ -20,7 +20,7 @@ public class CommandReload extends AbstractCommand {
 
     @Override
     public String getPermissionNode() {
-        return "repairplus.admin";
+        return "ultimaterepairing.admin";
     }
 
     @Override

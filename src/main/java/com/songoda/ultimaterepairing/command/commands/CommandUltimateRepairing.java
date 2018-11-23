@@ -1,18 +1,18 @@
-package com.songoda.repairplus.command.commands;
+package com.songoda.ultimaterepairing.command.commands;
 
 import com.songoda.arconix.api.methods.formatting.TextComponent;
-import com.songoda.repairplus.RepairPlus;
-import com.songoda.repairplus.command.AbstractCommand;
+import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.songoda.ultimaterepairing.command.AbstractCommand;
 import org.bukkit.command.CommandSender;
 
-public class CommandRepairPlus extends AbstractCommand {
+public class CommandUltimateRepairing extends AbstractCommand {
 
-    public CommandRepairPlus() {
-        super("RepairPlus", null, false);
+    public CommandUltimateRepairing() {
+        super("UltimateRepairing", null, false);
     }
 
     @Override
-    protected ReturnType runCommand(RepairPlus instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(UltimateRepairing instance, CommandSender sender, String... args) {
         sender.sendMessage("");
         sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&7Version " + instance.getDescription().getVersion() + " Created with <3 by &5&l&oBrianna"));
 
@@ -33,7 +33,7 @@ public class CommandRepairPlus extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/RepairPlus";
+        return "/UltimateRepairing";
     }
 
     @Override

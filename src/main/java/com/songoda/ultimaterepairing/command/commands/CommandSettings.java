@@ -1,7 +1,7 @@
-package com.songoda.repairplus.command.commands;
+package com.songoda.ultimaterepairing.command.commands;
 
-import com.songoda.repairplus.RepairPlus;
-import com.songoda.repairplus.command.AbstractCommand;
+import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.songoda.ultimaterepairing.command.AbstractCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -12,7 +12,7 @@ public class CommandSettings extends AbstractCommand {
     }
 
     @Override
-    protected ReturnType runCommand(RepairPlus instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(UltimateRepairing instance, CommandSender sender, String... args) {
         Player p = (Player) sender;
         instance.getSettingsManager().openSettingsManager(p);
         return ReturnType.SUCCESS;
@@ -20,7 +20,7 @@ public class CommandSettings extends AbstractCommand {
 
     @Override
     public String getPermissionNode() {
-        return "repairplus.admin";
+        return "ultimaterepairing.admin";
     }
 
     @Override
@@ -30,6 +30,6 @@ public class CommandSettings extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Edit the RepairPlus Settings.";
+        return "Edit the UltimateRepairing Settings.";
     }
 }

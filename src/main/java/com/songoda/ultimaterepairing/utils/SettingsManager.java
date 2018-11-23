@@ -1,8 +1,8 @@
-package com.songoda.repairplus.utils;
+package com.songoda.ultimaterepairing.utils;
 
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.api.utils.ConfigWrapper;
-import com.songoda.repairplus.RepairPlus;
+import com.songoda.ultimaterepairing.UltimateRepairing;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
  */
 public class SettingsManager implements Listener {
 
-    private String pluginName = "RepairPlus";
+    private String pluginName = "UltimateRepairing";
 
     private static final Pattern SETTINGS_PATTERN = Pattern.compile("(.{1,28}(?:\\s|$))|(.{0,28})", Pattern.DOTALL);
 
@@ -33,9 +33,9 @@ public class SettingsManager implements Listener {
 
     private Map<Player, String> cat = new HashMap<>();
 
-    private final RepairPlus instance;
+    private final UltimateRepairing instance;
 
-    public SettingsManager(RepairPlus plugin) {
+    public SettingsManager(UltimateRepairing plugin) {
         this.instance = plugin;
 
         plugin.saveResource("SettingDefinitions.yml", true);
@@ -223,7 +223,7 @@ public class SettingsManager implements Listener {
 
         o18("Swap-Functions", "Main.Swap Right And Left Click Options", false),
 
-        o19("Perms-Only", "Main.Require Permission On RepairPlus Anvil Place", false),
+        o19("Perms-Only", "Main.Require Permission On UltimateRepairing Anvil Place", false),
 
         o20("-", "Main.Particle Amount", 25),
 

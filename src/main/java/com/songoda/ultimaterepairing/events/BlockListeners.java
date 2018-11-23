@@ -1,8 +1,8 @@
-package com.songoda.repairplus.events;
+package com.songoda.ultimaterepairing.events;
 
 import com.songoda.arconix.plugin.Arconix;
-import com.songoda.repairplus.RepairPlus;
-import com.songoda.repairplus.utils.Debugger;
+import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.songoda.ultimaterepairing.utils.Debugger;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,16 +15,16 @@ import org.bukkit.event.block.BlockPlaceEvent;
  */
 public class BlockListeners implements Listener {
 
-    private final RepairPlus instance;
+    private final UltimateRepairing instance;
 
-    public BlockListeners(RepairPlus instance) {
+    public BlockListeners(UltimateRepairing instance) {
         this.instance = instance;
     }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
         try {
-            if (!e.getPlayer().hasPermission("repairplus.permPlace") || !e.getBlockPlaced().getType().equals(Material.ANVIL)) {
+            if (!e.getPlayer().hasPermission("ultimaterepairing.permPlace") || !e.getBlockPlaced().getType().equals(Material.ANVIL)) {
                 return;
             }
 
