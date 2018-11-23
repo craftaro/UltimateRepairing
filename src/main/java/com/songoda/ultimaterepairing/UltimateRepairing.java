@@ -34,12 +34,14 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
     private CommandManager commandManager;
 
     private boolean checkVersion() {
-        int maxVersion = 12; // also supports 1.8 and higher
-        int currentVersion = Integer.parseInt(Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].split("_")[1]);
-        if (currentVersion > maxVersion) {
+        int workingVersion = 13;
+        int currentVersion = Integer.parseInt(Bukkit.getServer().getClass()
+                .getPackage().getName().split("\\.")[3].split("_")[1]);
+
+        if (currentVersion < workingVersion) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
                 Bukkit.getConsoleSender().sendMessage("");
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "You installed the legacy (1.8 - 1.12) only version of " + this.getDescription().getName() + " on a 1." + currentVersion + " server. Since you are on the wrong version we disabled the plugin for you. Please install correct version to continue using " + this.getDescription().getName() + ".");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "You installed the 1." + workingVersion + "+ only version of " + this.getDescription().getName() + " on a 1." + currentVersion + " server. Since you are on the wrong version we disabled the plugin for you. Please install correct version to continue using " + this.getDescription().getName() + ".");
                 Bukkit.getConsoleSender().sendMessage("");
             }, 20L);
             return false;
