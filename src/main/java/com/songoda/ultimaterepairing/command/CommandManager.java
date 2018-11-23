@@ -2,7 +2,7 @@ package com.songoda.ultimaterepairing.command;
 
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.ultimaterepairing.UltimateRepairing;
-import com.songoda.ultimaterepairing.command.commands.CommandRPAnvil;
+import com.songoda.ultimaterepairing.command.commands.CommandURAnvil;
 import com.songoda.ultimaterepairing.command.commands.CommandReload;
 import com.songoda.ultimaterepairing.command.commands.CommandSettings;
 import com.songoda.ultimaterepairing.command.commands.CommandUltimateRepairing;
@@ -28,7 +28,7 @@ public class CommandManager implements CommandExecutor {
         instance.getCommand("rpanvil").setExecutor(this);
 
         AbstractCommand commandUltimateRepairing = addCommand(new CommandUltimateRepairing());
-        addCommand(new CommandRPAnvil());
+        addCommand(new CommandURAnvil());
 
         addCommand(new CommandReload(commandUltimateRepairing));
         addCommand(new CommandSettings(commandUltimateRepairing));

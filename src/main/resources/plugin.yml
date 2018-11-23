@@ -12,7 +12,7 @@ commands:
     default: true
     aliases: [ur]
     usage: /ur
-  rpanvil:
+  uranvil:
     description: View information on this plugin.
     default: true
-    usage: /rpanvil
+    usage: /uranvil

@@ -5,10 +5,10 @@ import com.songoda.ultimaterepairing.command.AbstractCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CommandRPAnvil extends AbstractCommand {
+public class CommandURAnvil extends AbstractCommand {
 
-    public CommandRPAnvil() {
-        super("RPAnvil", null, true);
+    public CommandURAnvil() {
+        super("URAnvil", null, true);
     }
 
     @Override
