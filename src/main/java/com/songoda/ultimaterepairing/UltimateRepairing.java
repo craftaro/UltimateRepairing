@@ -1,6 +1,5 @@
 package com.songoda.ultimaterepairing;
 
-import com.songoda.arconix.api.utils.ConfigWrapper;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.ultimaterepairing.command.CommandManager;
 import com.songoda.ultimaterepairing.editor.Editor;
@@ -13,7 +12,6 @@ import com.songoda.ultimaterepairing.handlers.ParticleHandler;
 import com.songoda.ultimaterepairing.handlers.RepairHandler;
 import com.songoda.ultimaterepairing.utils.Debugger;
 import com.songoda.ultimaterepairing.utils.SettingsManager;
-import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -35,6 +33,10 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
     private CommandManager commandManager;
 
     private Editor editor;
+
+    public static UltimateRepairing getInstance() {
+        return INSTANCE;
+    }
 
     private boolean checkVersion() {
         int workingVersion = 13;
@@ -62,7 +64,7 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         Arconix.pl().hook(this);
 
         console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&7UltimateRepairing " + this.getDescription().getVersion()  + " by &5Brianna <3!"));
+        console.sendMessage(Arconix.pl().getApi().format().formatText("&7UltimateRepairing " + this.getDescription().getVersion() + " by &5Brianna <3!"));
         console.sendMessage(Arconix.pl().getApi().format().formatText("&7Action: &aEnabling&7..."));
         Bukkit.getPluginManager().registerEvents(this, this);
 
@@ -93,7 +95,7 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
 
     public void onDisable() {
         console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&7UltimateRepairing " + this.getDescription().getVersion()  + " by &5Brianna <3!"));
+        console.sendMessage(Arconix.pl().getApi().format().formatText("&7UltimateRepairing " + this.getDescription().getVersion() + " by &5Brianna <3!"));
         console.sendMessage(Arconix.pl().getApi().format().formatText("&7Action: &cDisabling&7..."));
         console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
         saveConfig();
@@ -143,9 +145,5 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
 
     public CommandManager getCommandManager() {
         return commandManager;
-    }
-
-    public static UltimateRepairing getInstance() {
-        return INSTANCE;
     }
 }

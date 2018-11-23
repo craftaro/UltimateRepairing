@@ -2,7 +2,10 @@ package com.songoda.ultimaterepairing.command;
 
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.ultimaterepairing.UltimateRepairing;
-import com.songoda.ultimaterepairing.command.commands.*;
+import com.songoda.ultimaterepairing.command.commands.CommandRPAnvil;
+import com.songoda.ultimaterepairing.command.commands.CommandReload;
+import com.songoda.ultimaterepairing.command.commands.CommandSettings;
+import com.songoda.ultimaterepairing.command.commands.CommandUltimateRepairing;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -62,11 +65,11 @@ public class CommandManager implements CommandExecutor {
             return;
         }
         if (command.getPermissionNode() == null || sender.hasPermission(command.getPermissionNode())) {
-             AbstractCommand.ReturnType returnType = command.runCommand(instance, sender, strings);
-             if (returnType == AbstractCommand.ReturnType.SYNTAX_ERROR) {
-                 sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText("&cInvalid Syntax!"));
-                 sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText("&7The valid syntax is: &6" + command.getSyntax() + "&7."));
-             }
+            AbstractCommand.ReturnType returnType = command.runCommand(instance, sender, strings);
+            if (returnType == AbstractCommand.ReturnType.SYNTAX_ERROR) {
+                sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText("&cInvalid Syntax!"));
+                sender.sendMessage(instance.references.getPrefix() + TextComponent.formatText("&7The valid syntax is: &6" + command.getSyntax() + "&7."));
+            }
             return;
         }
         sender.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.general.nopermission"));

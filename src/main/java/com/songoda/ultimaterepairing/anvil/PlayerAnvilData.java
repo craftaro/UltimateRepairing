@@ -6,8 +6,6 @@ import org.bukkit.inventory.ItemStack;
 
 public class PlayerAnvilData {
 
-    public enum RepairType { ECONOMY, ITEM, XP }
-
     private Location location;
     private int price;
     private RepairType type;
@@ -17,52 +15,52 @@ public class PlayerAnvilData {
     private boolean inRepair;
     private boolean beingRepaired;
 
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
     public Location getLocation() {
         return location;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public int getPrice() {
         return price;
     }
 
-    public void setType(RepairType type) {
-        this.type = type;
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public RepairType getType() {
         return type;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
+    public void setType(RepairType type) {
+        this.type = type;
     }
 
     public Item getItem() {
         return item;
     }
 
-    public void setToBeRepaired(ItemStack toBeRepaired) {
-        this.toBeRepaired = toBeRepaired;
+    public void setItem(Item item) {
+        this.item = item;
     }
 
     public ItemStack getToBeRepaired() {
         return toBeRepaired;
     }
 
-    public void setLocations(Location locations) {
-        this.locations = locations;
+    public void setToBeRepaired(ItemStack toBeRepaired) {
+        this.toBeRepaired = toBeRepaired;
     }
 
     public Location getLocations() {
         return locations;
+    }
+
+    public void setLocations(Location locations) {
+        this.locations = locations;
     }
 
     public boolean getInRepair() {
@@ -80,4 +78,6 @@ public class PlayerAnvilData {
     public void setBeingRepaired(boolean beingRepaired) {
         this.beingRepaired = beingRepaired;
     }
+
+    public enum RepairType {ECONOMY, ITEM, XP}
 }

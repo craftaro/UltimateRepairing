@@ -40,7 +40,7 @@ public class ParticleHandler implements Listener {
                 World w = Bukkit.getServer().getWorld(str[1].substring(0, str[1].length() - 1));
                 Location location = Arconix.pl().getApi().serialize().unserializeLocation(loc);
                 location.add(.5, 0, .5);
-                    w.spawnParticle(org.bukkit.Particle.valueOf(type), location, amt, 0.25, 0.25, 0.25);
+                w.spawnParticle(org.bukkit.Particle.valueOf(type), location, amt, 0.25, 0.25, 0.25);
             }
         } catch (Exception ex) {
             Debugger.runReport(ex);

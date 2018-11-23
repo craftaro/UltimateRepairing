@@ -25,15 +25,12 @@ import java.util.regex.Pattern;
  */
 public class SettingsManager implements Listener {
 
-    private String pluginName = "UltimateRepairing";
-
     private static final Pattern SETTINGS_PATTERN = Pattern.compile("(.{1,28}(?:\\s|$))|(.{0,28})", Pattern.DOTALL);
-
     private static ConfigWrapper defs;
-
-    private Map<Player, String> cat = new HashMap<>();
-
     private final UltimateRepairing instance;
+    private String pluginName = "UltimateRepairing";
+    private Map<Player, String> cat = new HashMap<>();
+    private Map<Player, String> current = new HashMap<>();
 
     public SettingsManager(UltimateRepairing plugin) {
         this.instance = plugin;
@@ -43,8 +40,6 @@ public class SettingsManager implements Listener {
         defs.createNewFile("Loading data file", pluginName + " SettingDefinitions file");
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
-
-    private Map<Player, String> current = new HashMap<>();
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {

@@ -18,7 +18,8 @@ public class PlayerListeners implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
 
-        if (!instance.getRepairHandler().hasInstance(event.getPlayer()) || !instance.getRepairHandler().getDataFor(event.getPlayer()).getInRepair()) return;
+        if (!instance.getRepairHandler().hasInstance(event.getPlayer()) || !instance.getRepairHandler().getDataFor(event.getPlayer()).getInRepair())
+            return;
 
         PlayerAnvilData playerData = instance.getRepairHandler().getDataFor(event.getPlayer());
         instance.getRepairHandler().removeItem(playerData, event.getPlayer());

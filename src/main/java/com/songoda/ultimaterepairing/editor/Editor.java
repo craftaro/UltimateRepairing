@@ -2,9 +2,7 @@ package com.songoda.ultimaterepairing.editor;
 
 import com.songoda.arconix.api.ArconixAPI;
 import com.songoda.arconix.api.methods.formatting.TextComponent;
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.ultimaterepairing.UltimateRepairing;
-import com.songoda.ultimaterepairing.anvil.PlayerAnvilData;
 import com.songoda.ultimaterepairing.utils.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -25,7 +23,6 @@ public class Editor {
     public Editor(UltimateRepairing instance) {
         this.instance = instance;
     }
-
 
 
     public void open(Player player, Block block) {

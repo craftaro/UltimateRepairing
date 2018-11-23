@@ -1,6 +1,5 @@
 package com.songoda.ultimaterepairing.command.commands;
 
-import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.command.AbstractCommand;
 import org.bukkit.command.CommandSender;

@@ -2,7 +2,6 @@ package com.songoda.ultimaterepairing.handlers;
 
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.arconix.plugin.Arconix;
-import com.songoda.ultimaterepairing.Locale;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData.RepairType;
@@ -40,7 +39,7 @@ public class RepairHandler {
     private void repairType(Player p) {
         try {
             if (getDataFor(p).getInRepair()) {
-                yesNo(p,getDataFor(p).getType(), getDataFor(p).getToBeRepaired());
+                yesNo(p, getDataFor(p).getType(), getDataFor(p).getToBeRepaired());
                 return;
             }
             Inventory i = Bukkit.createInventory(null, 27, instance.getLocale().getMessage("interface.repair.title"));
@@ -291,7 +290,7 @@ public class RepairHandler {
                 playerData.setBeingRepaired(true);
 
                 Effect effect = Effect.STEP_SOUND;
-                
+
                 Location location = playerData.getLocations();
                 player.getWorld().playEffect(location, effect, Material.REDSTONE_BLOCK);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, Material.REDSTONE_BLOCK), 5L);
