@@ -25,7 +25,7 @@ public class CommandRPAnvil extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/RPAnvil";
+        return "/URAnvil";
     }
 
     @Override
