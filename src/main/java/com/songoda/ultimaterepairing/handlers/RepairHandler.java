@@ -253,12 +253,12 @@ public class RepairHandler {
     }
 
 
-    public void finish(boolean answer, Player p) {
+    public void finish(boolean answer, Player player) {
         try {
-            PlayerAnvilData playerData = playerAnvilData.computeIfAbsent(p.getUniqueId(), uuid -> new PlayerAnvilData());
+            PlayerAnvilData playerData = playerAnvilData.computeIfAbsent(player.getUniqueId(), uuid -> new PlayerAnvilData());
             if (!answer) {
-                removeItem(playerData, p);
-                p.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.cancelled")));
+                removeItem(playerData, player);
+                player.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.cancelled")));
                 return;
             }
             RepairType type = playerData.getType();
@@ -271,8 +271,8 @@ public class RepairHandler {
                 net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
                 int price = playerData.getPrice();
 
-                if (econ.has(p, price)) {
-                    econ.withdrawPlayer(p, price);
+                if (econ.has(player, price)) {
+                    econ.withdrawPlayer(player, price);
                     sold = true;
                 }
                 economy = true;
@@ -281,54 +281,56 @@ public class RepairHandler {
             int cost = Methods.getCost(type, players);
             ItemStack item2 = new ItemStack(Methods.getType(players), cost);
             String name = (item2.getType().name().substring(0, 1).toUpperCase() + item2.getType().name().toLowerCase().substring(1)).replace("_", " ");
-            if (type == RepairType.ITEM && Arconix.pl().getApi().getGUI().inventoryContains(p.getInventory(), item2)) {
-                Arconix.pl().getApi().getGUI().removeFromInventory(p.getInventory(), item2);
+            if (type == RepairType.ITEM && Arconix.pl().getApi().getGUI().inventoryContains(player.getInventory(), item2)) {
+                Arconix.pl().getApi().getGUI().removeFromInventory(player.getInventory(), item2);
                 sold = true;
             }
 
-            if (type == RepairType.XP && p.getLevel() >= playerData.getPrice() || sold || p.getGameMode() == GameMode.CREATIVE) {
+            if (type == RepairType.XP && player.getLevel() >= playerData.getPrice() || sold || player.getGameMode() == GameMode.CREATIVE) {
                 playerData.setBeingRepaired(true);
 
+                Effect effect = Effect.STEP_SOUND;
+                
                 Location location = playerData.getLocations();
-                p.getWorld().playEffect(location, Effect.STEP_SOUND, 152);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> p.getWorld().playEffect(location, Effect.STEP_SOUND, 152), 5L);
+                player.getWorld().playEffect(location, effect, Material.REDSTONE_BLOCK);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, Material.REDSTONE_BLOCK), 5L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
-                    p.getWorld().playEffect(location, Effect.STEP_SOUND, 152);
-                    p.getWorld().playEffect(location, Effect.STEP_SOUND, 1);
-                        Arconix.pl().getApi().getPlayer(p).playSound(Sound.valueOf("BLOCK_ANVIL_LAND"));
+                    player.getWorld().playEffect(location, effect, Material.REDSTONE_BLOCK);
+                    player.getWorld().playEffect(location, effect, Material.STONE);
+                    Arconix.pl().getApi().getPlayer(player).playSound(Sound.valueOf("BLOCK_ANVIL_LAND"));
                 }, 10L);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> p.getWorld().playEffect(location, Effect.STEP_SOUND, 152), 15L);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> p.getWorld().playEffect(location, Effect.STEP_SOUND, 152), 20L);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, Material.REDSTONE_BLOCK), 15L);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, Material.REDSTONE_BLOCK), 20L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
-                        Arconix.pl().getApi().getPlayer(p).playSound(Sound.valueOf("BLOCK_ANVIL_LAND"));
-                    p.getWorld().playEffect(location, Effect.STEP_SOUND, 152);
-                    p.getWorld().playEffect(location, Effect.STEP_SOUND, 145);
-                    p.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.success")));
+                    Arconix.pl().getApi().getPlayer(player).playSound(Sound.valueOf("BLOCK_ANVIL_LAND"));
+                    player.getWorld().playEffect(location, effect, Material.REDSTONE_BLOCK);
+                    player.getWorld().playEffect(location, effect, Material.ANVIL);
+                    player.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.success")));
                     ItemStack repairedi = playerData.getToBeRepaired();
                     repairedi.setDurability((short) 0);
-                    Item repaired = p.getWorld().dropItemNaturally(p.getLocation(), repairedi);
+                    Item repaired = player.getWorld().dropItemNaturally(player.getLocation(), repairedi);
                     repaired.remove();
-                    p.getInventory().addItem(playerData.getToBeRepaired());
+                    player.getInventory().addItem(playerData.getToBeRepaired());
                     playerData.getItem().remove();
-                    if (p.getGameMode() != GameMode.CREATIVE &&
+                    if (player.getGameMode() != GameMode.CREATIVE &&
                             type == RepairType.XP) {
-                        p.setLevel(p.getLevel() - playerData.getPrice());
+                        player.setLevel(player.getLevel() - playerData.getPrice());
                     }
-                    this.playerAnvilData.remove(p.getUniqueId());
-                    p.closeInventory();
+                    this.playerAnvilData.remove(player.getUniqueId());
+                    player.closeInventory();
                 }, 25L);
                 return;
             }
 
             if (type == RepairType.ECONOMY) {
                 if (!economy)
-                    p.sendMessage("Vault is not installed.");
+                    player.sendMessage("Vault is not installed.");
                 else
-                    p.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notenough", instance.getLocale().getMessage("interface.repair.eco"))));
+                    player.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notenough", instance.getLocale().getMessage("interface.repair.eco"))));
             } else if (type == RepairType.XP)
-                p.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notenough", instance.getLocale().getMessage("interface.repair.xp"))));
+                player.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notenough", instance.getLocale().getMessage("interface.repair.xp"))));
             else
-                p.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notenough", name)));
+                player.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notenough", name)));
 
 
         } catch (Exception ex) {
