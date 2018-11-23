@@ -25,7 +25,7 @@ public class CommandManager implements CommandExecutor {
         this.instance = instance;
 
         instance.getCommand("UltimateRepairing").setExecutor(this);
-        instance.getCommand("rpanvil").setExecutor(this);
+        instance.getCommand("uranvil").setExecutor(this);
 
         AbstractCommand commandUltimateRepairing = addCommand(new CommandUltimateRepairing());
         addCommand(new CommandURAnvil());

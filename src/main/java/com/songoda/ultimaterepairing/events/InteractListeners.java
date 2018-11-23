@@ -61,7 +61,9 @@ public class InteractListeners implements Listener {
                         repair = true;
                 } else
                     repair = true;
-            } else if (p.isSneaking() && p.hasPermission("ultimaterepairing.admin")) {
+            } else if (p.isSneaking()
+                    && p.hasPermission("ultimaterepairing.admin")
+                    && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 instance.getEditor().open(p, e.getClickedBlock());
                 e.setCancelled(true);
             }

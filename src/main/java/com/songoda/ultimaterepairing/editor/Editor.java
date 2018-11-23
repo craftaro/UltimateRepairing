@@ -63,7 +63,7 @@ public class Editor {
     }
 
     public void toggleHologram(Player player) {
-        String loc = ArconixAPI.getApi().serialize().serializeLocation(editing.get(player));
+        String loc = ArconixAPI.getApi().serialize().serializeLocation(editing.get(player.getUniqueId()));
         if (instance.getConfig().getString("data.anvil." + loc + ".active") == null)
             instance.getConfig().set("data.anvil." + loc + ".active", true);
 
@@ -74,11 +74,11 @@ public class Editor {
         }
         instance.getHologramHandler().updateHolograms();
         instance.saveConfig();
-        open(player, editing.get(player));
+        open(player, editing.get(player.getUniqueId()));
     }
 
     public void toggleInfinity(Player player) {
-        String loc = ArconixAPI.getApi().serialize().serializeLocation(editing.get(player));
+        String loc = ArconixAPI.getApi().serialize().serializeLocation(editing.get(player.getUniqueId()));
         if (instance.getConfig().getString("data.anvil." + loc + ".active") == null)
             instance.getConfig().set("data.anvil." + loc + ".active", true);
         if (instance.getConfig().getString("data.anvil." + loc + ".inf") == null) {
@@ -87,11 +87,11 @@ public class Editor {
             instance.getConfig().set("data.anvil." + loc + ".inf", null);
         }
         instance.saveConfig();
-        open(player, editing.get(player));
+        open(player, editing.get(player.getUniqueId()));
     }
 
     public void toggleParticles(Player player) {
-        String loc = ArconixAPI.getApi().serialize().serializeLocation(editing.get(player));
+        String loc = ArconixAPI.getApi().serialize().serializeLocation(editing.get(player.getUniqueId()));
         if (instance.getConfig().getString("data.anvil." + loc + ".active") == null)
             instance.getConfig().set("data.anvil." + loc + ".active", true);
         if (instance.getConfig().getString("data.anvil." + loc + ".particles") == null) {
@@ -100,7 +100,7 @@ public class Editor {
             instance.getConfig().set("data.anvil." + loc + ".particles", null);
         }
         instance.saveConfig();
-        open(player, editing.get(player));
+        open(player, editing.get(player.getUniqueId()));
     }
 
     public boolean isEditing(Player player) {
