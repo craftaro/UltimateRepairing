@@ -11,7 +11,6 @@ import com.songoda.ultimaterepairing.handlers.HologramHandler;
 import com.songoda.ultimaterepairing.handlers.ParticleHandler;
 import com.songoda.ultimaterepairing.handlers.RepairHandler;
 import com.songoda.ultimaterepairing.utils.Debugger;
-import com.songoda.ultimaterepairing.utils.ServerVersion;
 import com.songoda.ultimaterepairing.utils.SettingsManager;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
@@ -28,8 +27,6 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
     public References references = null;
 
     private Locale locale;
-
-    private ServerVersion serverVersion = ServerVersion.fromPackageName(Bukkit.getServer().getClass().getPackage().getName());
 
     private RepairHandler repairHandler;
     private HologramHandler hologramHandler;
@@ -116,22 +113,6 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
             Debugger.runReport(ex);
         }
     }
-
-    public ServerVersion getServerVersion() {
-        return serverVersion;
-    }
-
-    public boolean isServerVersion(ServerVersion version) {
-        return serverVersion == version;
-    }
-    public boolean isServerVersion(ServerVersion... versions) {
-        return ArrayUtils.contains(versions, serverVersion);
-    }
-
-    public boolean isServerVersionAtLeast(ServerVersion version) {
-        return serverVersion.ordinal() >= version.ordinal();
-    }
-
 
     public Locale getLocale() {
         return locale;
