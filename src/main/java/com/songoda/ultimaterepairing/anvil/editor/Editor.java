@@ -1,8 +1,9 @@
-package com.songoda.ultimaterepairing.editor;
+package com.songoda.ultimaterepairing.anvil.editor;
 
 import com.songoda.arconix.api.ArconixAPI;
 import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.songoda.ultimaterepairing.anvil.UAnvil;
 import com.songoda.ultimaterepairing.utils.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -18,16 +19,18 @@ public class Editor {
 
     private final UltimateRepairing instance;
 
-    private final Map<UUID, Block> editing = new HashMap<>();
+    private final Map<UUID, UAnvil> editing = new HashMap<>();
 
     public Editor(UltimateRepairing instance) {
         this.instance = instance;
     }
 
-
     public void open(Player player, Block block) {
-        editing.put(player.getUniqueId(), block);
+        UAnvil anvil = editing.put(player.getUniqueId(), instance.getAnvilManager().getAnvil(block));
+        open(player, anvil);
+    }
 
+    private void open(Player player, UAnvil anvil) {
         Inventory inventory = Bukkit.createInventory(null, 27, TextComponent.formatTitle("Anvil Settings"));
 
         int nu = 0;
@@ -53,54 +56,31 @@ public class Editor {
         inventory.setItem(25, Methods.getBackgroundGlass(true));
         inventory.setItem(26, Methods.getBackgroundGlass(true));
 
-        inventory.setItem(11, Methods.createButton(Material.NAME_TAG, "&9&lToggle Holograms", instance.getConfig().getBoolean("data.anvil." + ArconixAPI.getApi().serialize().serializeLocation(block) + ".holo") ? "&7Currently: &aEnabled&7." : "&7Currently &cDisabled&7."));
+        inventory.setItem(11, Methods.createButton(Material.NAME_TAG, "&9&lToggle Holograms", anvil.isHologram() ? "&7Currently: &aEnabled&7." : "&7Currently &cDisabled&7."));
 
-        inventory.setItem(13, Methods.createButton(Material.BEACON, "&5&lToggle Infinity", instance.getConfig().getBoolean("data.anvil." + ArconixAPI.getApi().serialize().serializeLocation(block) + ".inf") ? "&7Currently: &aEnabled&7." : "&7Currently &cDisabled&7."));
+        inventory.setItem(13, Methods.createButton(Material.BEACON, "&5&lToggle Infinity", anvil.isInfinity() ? "&7Currently: &aEnabled&7." : "&7Currently &cDisabled&7."));
 
-        inventory.setItem(15, Methods.createButton(Material.FIREWORK_ROCKET, "&9&lToggle Particles", instance.getConfig().getBoolean("data.anvil." + ArconixAPI.getApi().serialize().serializeLocation(block) + ".particles") ? "&7Currently: &aEnabled&7." : "&7Currently &cDisabled&7."));
+        inventory.setItem(15, Methods.createButton(Material.FIREWORK_ROCKET, "&9&lToggle Particles", anvil.isParticles() ? "&7Currently: &aEnabled&7." : "&7Currently &cDisabled&7."));
         player.openInventory(inventory);
 
     }
 
     public void toggleHologram(Player player) {
-        String loc = ArconixAPI.getApi().serialize().serializeLocation(editing.get(player.getUniqueId()));
-        if (instance.getConfig().getString("data.anvil." + loc + ".active") == null)
-            instance.getConfig().set("data.anvil." + loc + ".active", true);
-
-        if (instance.getConfig().getString("data.anvil." + loc + ".holo") == null) {
-            instance.getConfig().set("data.anvil." + loc + ".holo", true);
-        } else {
-            instance.getConfig().set("data.anvil." + loc + ".holo", null);
-        }
-        instance.getHologramHandler().updateHolograms();
-        instance.saveConfig();
-        open(player, editing.get(player.getUniqueId()));
+        UAnvil anvil = editing.get(player.getUniqueId());
+        anvil.setHologram(!anvil.isHologram());
+        open(player, anvil);
     }
 
     public void toggleInfinity(Player player) {
-        String loc = ArconixAPI.getApi().serialize().serializeLocation(editing.get(player.getUniqueId()));
-        if (instance.getConfig().getString("data.anvil." + loc + ".active") == null)
-            instance.getConfig().set("data.anvil." + loc + ".active", true);
-        if (instance.getConfig().getString("data.anvil." + loc + ".inf") == null) {
-            instance.getConfig().set("data.anvil." + loc + ".inf", true);
-        } else {
-            instance.getConfig().set("data.anvil." + loc + ".inf", null);
-        }
-        instance.saveConfig();
-        open(player, editing.get(player.getUniqueId()));
+        UAnvil anvil = editing.get(player.getUniqueId());
+        anvil.setInfinity(!anvil.isInfinity());
+        open(player, anvil);
     }
 
     public void toggleParticles(Player player) {
-        String loc = ArconixAPI.getApi().serialize().serializeLocation(editing.get(player.getUniqueId()));
-        if (instance.getConfig().getString("data.anvil." + loc + ".active") == null)
-            instance.getConfig().set("data.anvil." + loc + ".active", true);
-        if (instance.getConfig().getString("data.anvil." + loc + ".particles") == null) {
-            instance.getConfig().set("data.anvil." + loc + ".particles", true);
-        } else {
-            instance.getConfig().set("data.anvil." + loc + ".particles", null);
-        }
-        instance.saveConfig();
-        open(player, editing.get(player.getUniqueId()));
+        UAnvil anvil = editing.get(player.getUniqueId());
+        anvil.setParticles(!anvil.isParticles());
+        open(player, anvil);
     }
 
     public boolean isEditing(Player player) {
