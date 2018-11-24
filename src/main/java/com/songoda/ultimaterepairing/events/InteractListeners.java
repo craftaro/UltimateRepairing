@@ -2,6 +2,7 @@ package com.songoda.ultimaterepairing.events;
 
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.songoda.ultimaterepairing.anvil.UAnvil;
 import com.songoda.ultimaterepairing.utils.Debugger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -26,34 +27,34 @@ public class InteractListeners implements Listener {
     }
 
     @EventHandler
-    public void onAnvilClick(PlayerInteractEvent e) {
+    public void onAnvilClick(PlayerInteractEvent event) {
         try {
             boolean repair = false;
             boolean anvil = false;
-            Player p = e.getPlayer();
-            if (e.getClickedBlock() == null) {
+            Player player = event.getPlayer();
+            if (event.getClickedBlock() == null) return;
+
+            UAnvil anvil1 = instance.getAnvilManager().getAnvil(event.getClickedBlock());
+
+            if (event.getClickedBlock().getType() != Material.ANVIL
+                    || !(anvil1.isPermPlaced()
+                    || !instance.getConfig().getBoolean("Main.Require Permission On UltimateRepairing Anvil Place"))) {
                 return;
             }
-            String loc = Arconix.pl().getApi().serialize().serializeLocation(e.getClickedBlock());
-            if (e.getClickedBlock().getType() != Material.ANVIL
-                    || !((instance.getConfig().getBoolean("data.anvil." + loc + ".permPlaced")
-                    || !instance.getConfig().getBoolean("Main.Require Permission On UltimateRepairing Anvil Place")))) {
-                return;
+            if (anvil1.isInfinity()) {
+                event.getClickedBlock().setType(Material.AIR);
+                event.getClickedBlock().setType(Material.ANVIL); //ToDO: This may not work.
             }
-            if (instance.getConfig().getString("data.anvil." + loc + ".inf") != null) {
-                e.getClickedBlock().setType(Material.AIR);
-                e.getClickedBlock().setType(Material.ANVIL); //ToDO: This may not work.
-            }
-            if (!instance.getConfig().getBoolean("Main.Enable Default Anvil Function") && !p.isSneaking())
-                e.setCancelled(true);
-            if (e.getAction() == Action.RIGHT_CLICK_BLOCK &&
-                    !p.isSneaking()) {
+            if (!instance.getConfig().getBoolean("Main.Enable Default Anvil Function") && !player.isSneaking())
+                event.setCancelled(true);
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK &&
+                    !player.isSneaking()) {
                 if (instance.getConfig().getBoolean("Main.Swap Right And Left Click Options"))
                     repair = true;
                 else if (!instance.getConfig().getBoolean("Main.Enable Default Anvil Function"))
                     repair = true;
-            } else if (e.getAction() == Action.LEFT_CLICK_BLOCK &&
-                    !p.isSneaking()) {
+            } else if (event.getAction() == Action.LEFT_CLICK_BLOCK &&
+                    !player.isSneaking()) {
                 if (instance.getConfig().getBoolean("Main.Swap Right And Left Click Options")) {
                     if (instance.getConfig().getBoolean("Main.Enable Default Anvil Function"))
                         anvil = true;
@@ -61,19 +62,19 @@ public class InteractListeners implements Listener {
                         repair = true;
                 } else
                     repair = true;
-            } else if (p.isSneaking()
-                    && p.hasPermission("ultimaterepairing.admin")
-                    && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                instance.getEditor().open(p, e.getClickedBlock());
-                e.setCancelled(true);
+            } else if (player.isSneaking()
+                    && player.hasPermission("ultimaterepairing.admin")
+                    && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                instance.getEditor().open(player, event.getClickedBlock());
+                event.setCancelled(true);
             }
             if (repair) {
-                instance.getRepairHandler().initRepair(p, e.getClickedBlock().getLocation());
-                e.setCancelled(true);
+                instance.getRepairHandler().initRepair(player, event.getClickedBlock().getLocation());
+                event.setCancelled(true);
             } else if (anvil && instance.getConfig().getBoolean("Main.Enable Default Anvil Function")) {
                 Inventory inv = Bukkit.createInventory(null, InventoryType.ANVIL, "Repair & Name");
-                p.openInventory(inv);
-                e.setCancelled(true);
+                player.openInventory(inv);
+                event.setCancelled(true);
             }
         } catch (Exception ex) {
             Debugger.runReport(ex);

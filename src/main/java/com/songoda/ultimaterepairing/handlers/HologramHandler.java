@@ -3,6 +3,7 @@ package com.songoda.ultimaterepairing.handlers;
 import com.songoda.arconix.api.packets.Hologram;
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.songoda.ultimaterepairing.anvil.UAnvil;
 import com.songoda.ultimaterepairing.utils.Debugger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -28,20 +29,17 @@ public class HologramHandler {
         try {
             FileConfiguration config = instance.getConfig();
 
-            if (config.getString("data.anvil") == null) return;
+            if (instance.getAnvilManager().getAnvils().isEmpty()) return;
 
-            ConfigurationSection section = config.getConfigurationSection("data.anvil");
-            for (String loc : section.getKeys(false)) {
-                String str[] = loc.split(":");
-                String worldName = str[1].substring(0, str[1].length() - 1);
+            for (UAnvil anvil : instance.getAnvilManager().getAnvils()) {
+                if (anvil.getWorld() == null) continue;
 
-                if (Bukkit.getWorld(worldName) == null) continue;
-
-                Location location = Arconix.pl().getApi().serialize().unserializeLocation(loc);
+                Location location = anvil.getLocation();
                 location.add(.5, 1.10, .5);
 
                 this.remove(location);
-                if (!config.getBoolean("data.anvil." + loc + ".holo")) continue;
+
+                if (!anvil.isHologram()) continue;
 
                 List<String> lines = new ArrayList<>();
 

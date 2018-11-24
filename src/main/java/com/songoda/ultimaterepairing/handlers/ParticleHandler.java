@@ -2,6 +2,7 @@ package com.songoda.ultimaterepairing.handlers;
 
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.songoda.ultimaterepairing.anvil.UAnvil;
 import com.songoda.ultimaterepairing.utils.Debugger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -24,23 +25,19 @@ public class ParticleHandler implements Listener {
     @SuppressWarnings("all")
     public void applyParticles() {
         try {
-            if (instance.getConfig().getString("data.anvil") == null) return;
+            if (instance.getAnvilManager().getAnvils().isEmpty()) return;
 
             int amt = instance.getConfig().getInt("Main.Particle Amount");
             String type = instance.getConfig().getString("Main.Particle Type");
 
             ConfigurationSection section = instance.getConfig().getConfigurationSection("data.anvil");
-            for (String loc : section.getKeys(false)) {
-                String str[] = loc.split(":");
-                String worldName = str[1].substring(0, str[1].length() - 1);
-                if (Bukkit.getServer().getWorld(worldName) == null ||
-                        instance.getConfig().getString("data.anvil." + loc + ".particles") == null) {
+            for (UAnvil anvil : instance.getAnvilManager().getAnvils()) {
+                if (anvil.getWorld() == null || !anvil.isParticles()) {
                     continue;
                 }
-                World w = Bukkit.getServer().getWorld(str[1].substring(0, str[1].length() - 1));
-                Location location = Arconix.pl().getApi().serialize().unserializeLocation(loc);
+                Location location = anvil.getLocation();
                 location.add(.5, 0, .5);
-                w.spawnParticle(org.bukkit.Particle.valueOf(type), location, amt, 0.25, 0.25, 0.25);
+                anvil.getWorld().spawnParticle(org.bukkit.Particle.valueOf(type), location, amt, 0.25, 0.25, 0.25);
             }
         } catch (Exception ex) {
             Debugger.runReport(ex);

@@ -2,6 +2,7 @@ package com.songoda.ultimaterepairing.events;
 
 import com.songoda.arconix.plugin.Arconix;
 import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.songoda.ultimaterepairing.anvil.UAnvil;
 import com.songoda.ultimaterepairing.utils.Debugger;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -22,14 +23,13 @@ public class BlockListeners implements Listener {
     }
 
     @EventHandler
-    public void onBlockPlace(BlockPlaceEvent e) {
+    public void onBlockPlace(BlockPlaceEvent event) {
         try {
-            if (!e.getPlayer().hasPermission("ultimaterepairing.permPlace") || !e.getBlockPlaced().getType().equals(Material.ANVIL)) {
+            if (!event.getPlayer().hasPermission("ultimaterepairing.permPlace") || !event.getBlockPlaced().getType().equals(Material.ANVIL)) {
                 return;
             }
 
-            String loc = Arconix.pl().getApi().serialize().serializeLocation(e.getBlock());
-            instance.getConfig().set("data.anvil." + loc + ".permPlaced", true);
+            instance.getAnvilManager().getAnvil(event.getBlock()).setPermPlaced(true);
 
         } catch (Exception ex) {
             Debugger.runReport(ex);
@@ -37,17 +37,17 @@ public class BlockListeners implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onBlockBreak(BlockBreakEvent e) {
+    public void onBlockBreak(BlockBreakEvent event) {
         try {
-            String loc = Arconix.pl().getApi().serialize().serializeLocation(e.getBlock());
+            String loc = Arconix.pl().getApi().serialize().serializeLocation(event.getBlock());
 
-            if (!e.getBlock().getType().equals(Material.ANVIL) && !instance.getConfig().contains("data.anvil." + loc)) {
+            if (!event.getBlock().getType().equals(Material.ANVIL) && !instance.getConfig().contains("data.anvil." + loc)) {
                 return;
             }
 
-            instance.getConfig().set("data.anvil." + loc + ".holo", null);
-            instance.getHologramHandler().updateHolograms();
-            instance.getConfig().set("data.anvil." + loc, null);
+            UAnvil anvil = instance.getAnvilManager().getAnvil(event.getBlock());
+            anvil.setHologram(false);
+            instance.getAnvilManager().removeAnvil(event.getBlock().getLocation());
         } catch (Exception ex) {
             Debugger.runReport(ex);
         }

@@ -1,8 +1,11 @@
 package com.songoda.ultimaterepairing;
 
+import com.songoda.arconix.api.utils.ConfigWrapper;
 import com.songoda.arconix.plugin.Arconix;
+import com.songoda.ultimaterepairing.anvil.AnvilManager;
+import com.songoda.ultimaterepairing.anvil.UAnvil;
 import com.songoda.ultimaterepairing.command.CommandManager;
-import com.songoda.ultimaterepairing.editor.Editor;
+import com.songoda.ultimaterepairing.anvil.editor.Editor;
 import com.songoda.ultimaterepairing.events.BlockListeners;
 import com.songoda.ultimaterepairing.events.InteractListeners;
 import com.songoda.ultimaterepairing.events.InventoryListeners;
@@ -14,14 +17,20 @@ import com.songoda.ultimaterepairing.utils.Debugger;
 import com.songoda.ultimaterepairing.utils.SettingsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class UltimateRepairing extends JavaPlugin implements Listener {
     private static CommandSender console = Bukkit.getConsoleSender();
 
     private static UltimateRepairing INSTANCE;
+
+    private ConfigWrapper dataFile = new ConfigWrapper(this, "", "data.yml");
 
     public References references = null;
 
@@ -31,6 +40,7 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
     private HologramHandler hologramHandler;
     private SettingsManager settingsManager;
     private CommandManager commandManager;
+    private AnvilManager anvilManager;
 
     private Editor editor;
 
@@ -78,6 +88,7 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         this.locale = Locale.getLocale(this.getConfig().getString("Locale", "en_US"));
 
         this.editor = new Editor(this);
+        this.anvilManager = new AnvilManager();
 
         references = new References();
 
@@ -86,10 +97,26 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         this.commandManager = new CommandManager(this);
         new ParticleHandler(this);
 
+        /*
+         * Register anvils into AnvilManager from Configuration.
+         */
+        if (dataFile.getConfig().contains("data")) {
+            for (String key : dataFile.getConfig().getConfigurationSection("data").getKeys(false)) {
+                Location location = Arconix.pl().getApi().serialize().unserializeLocation(key);
+                UAnvil anvil = anvilManager.getAnvil(location);
+                anvil.setHologram(dataFile.getConfig().getBoolean("data." + key + ".hologram"));
+                anvil.setInfinity(dataFile.getConfig().getBoolean("data." + key + ".infinity"));
+                anvil.setParticles(dataFile.getConfig().getBoolean("data." + key + ".particles"));
+                anvil.setPermPlaced(dataFile.getConfig().getBoolean("data." + key + ".permPlaced"));
+            }
+        }
+
         getServer().getPluginManager().registerEvents(new PlayerListeners(this), this);
         getServer().getPluginManager().registerEvents(new BlockListeners(this), this);
         getServer().getPluginManager().registerEvents(new InteractListeners(this), this);
         getServer().getPluginManager().registerEvents(new InventoryListeners(this), this);
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, 6000, 6000);
         console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
     }
 
@@ -99,6 +126,29 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         console.sendMessage(Arconix.pl().getApi().format().formatText("&7Action: &cDisabling&7..."));
         console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
         saveConfig();
+        saveToFile();
+    }
+
+    /*
+     * Saves registered kits to file.
+     */
+    private void saveToFile() {
+        // Wipe old kit information
+        dataFile.getConfig().set("data", null);
+
+        /*
+         * Save anvils from AnvilManager to Configuration.
+         */
+        for (UAnvil anvil : anvilManager.getAnvils()) {
+            String locationStr = Arconix.pl().getApi().serialize().serializeLocation(anvil.getLocation());
+            dataFile.getConfig().set("data." + locationStr + ".hologram", anvil.isHologram());
+            dataFile.getConfig().set("data." + locationStr + ".particles", anvil.isParticles());
+            dataFile.getConfig().set("data." + locationStr + ".infinity", anvil.isInfinity());
+            dataFile.getConfig().set("data." + locationStr + ".permPlaced", anvil.isPermPlaced());
+        }
+
+        // Save to file
+        dataFile.saveConfig();
     }
 
     private void setupConfig() {
@@ -145,5 +195,9 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
 
     public CommandManager getCommandManager() {
         return commandManager;
+    }
+
+    public AnvilManager getAnvilManager() {
+        return anvilManager;
     }
 }
