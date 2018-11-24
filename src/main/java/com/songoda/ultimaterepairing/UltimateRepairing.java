@@ -22,9 +22,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public final class UltimateRepairing extends JavaPlugin implements Listener {
     private static CommandSender console = Bukkit.getConsoleSender();
 

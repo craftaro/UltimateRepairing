@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by songo on 6/4/2017.
+ * Created by songoda on 6/4/2017.
  */
 public class SettingsManager implements Listener {
 

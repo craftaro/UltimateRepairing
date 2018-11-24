@@ -26,7 +26,7 @@ public class Editor {
     }
 
     public void open(Player player, Block block) {
-        UAnvil anvil = editing.put(player.getUniqueId(), instance.getAnvilManager().getAnvil(block));
+        UAnvil anvil = instance.getAnvilManager().getAnvil(block);
         open(player, anvil);
     }
 
@@ -62,7 +62,7 @@ public class Editor {
 
         inventory.setItem(15, Methods.createButton(Material.FIREWORK_ROCKET, "&9&lToggle Particles", anvil.isParticles() ? "&7Currently: &aEnabled&7." : "&7Currently &cDisabled&7."));
         player.openInventory(inventory);
-
+        editing.put(player.getUniqueId(), anvil);
     }
 
     public void toggleHologram(Player player) {
@@ -85,6 +85,10 @@ public class Editor {
 
     public boolean isEditing(Player player) {
         return editing.containsKey(player.getUniqueId());
+    }
+
+    public void removeEditing(Player player) {
+        editing.remove(player.getUniqueId());
     }
 
 }
