@@ -110,19 +110,6 @@ public class RepairHandler {
 
     public void preRepair(Player p, RepairType type, Location loc) {
         try {
-            if (loc.add(0, 1, 0).getBlock().getType() != Material.AIR) {
-                p.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.needspace"));
-                return;
-            }
-            if (p.getItemInHand().getDurability() <= 0) {
-                p.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notdamaged"));
-                return;
-            }
-            if (p.getItemInHand().getMaxStackSize() != 1) {
-                p.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.cantrepair"));
-                return;
-            }
-
             Item i = p.getWorld().dropItem(loc.add(0.5, 2, 0.5), p.getItemInHand());
 
             // Support for EpicHoppers suction.
@@ -168,6 +155,20 @@ public class RepairHandler {
             num++;
         if (p.hasPermission("ultimaterepairing.use.ITEM"))
             num++;
+
+
+        if (location.add(0, 1, 0).getBlock().getType() != Material.AIR) {
+            p.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.needspace"));
+            return;
+        }
+        if (p.getItemInHand().getDurability() <= 0) {
+            p.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notdamaged"));
+            return;
+        }
+        if (p.getItemInHand().getMaxStackSize() != 1) {
+            p.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.cantrepair"));
+            return;
+        }
 
         if (num >= 2 || p.hasPermission("ultimaterepairing.use.*")) {
             repairType(p);
