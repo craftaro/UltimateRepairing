@@ -292,19 +292,37 @@ public class RepairHandler {
 
                 Effect effect = Effect.STEP_SOUND;
 
+                Material blockType = Material.REDSTONE_BLOCK;
+
+                String typeStr = playerData.getToBeRepaired().getType().name().toUpperCase();
+
+                if (typeStr.contains("DIAMOND")) {
+                    blockType = Material.DIAMOND_BLOCK;
+                } else if (typeStr.contains("IRON")) {
+                    blockType = Material.IRON_BLOCK;
+                } else if (typeStr.contains("GOLD")) {
+                    blockType = Material.GOLD_BLOCK;
+                } else if (typeStr.contains("STONE")) {
+                    blockType = Material.STONE;
+                } else if (typeStr.contains("WOOD")) {
+                    blockType = Material.OAK_PLANKS;
+                }
+
+                final Material blockTypeFinal = blockType;
+
                 Location location = playerData.getLocations();
-                player.getWorld().playEffect(location, effect, Material.REDSTONE_BLOCK);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, Material.REDSTONE_BLOCK), 5L);
+                player.getWorld().playEffect(location, effect, blockType);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, blockTypeFinal), 5L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
-                    player.getWorld().playEffect(location, effect, Material.REDSTONE_BLOCK);
+                    player.getWorld().playEffect(location, effect, blockTypeFinal);
                     player.getWorld().playEffect(location, effect, Material.STONE);
                     Arconix.pl().getApi().getPlayer(player).playSound(Sound.valueOf("BLOCK_ANVIL_LAND"));
                 }, 10L);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, Material.REDSTONE_BLOCK), 15L);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, Material.REDSTONE_BLOCK), 20L);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, blockTypeFinal), 15L);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, blockTypeFinal), 20L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
                     Arconix.pl().getApi().getPlayer(player).playSound(Sound.valueOf("BLOCK_ANVIL_LAND"));
-                    player.getWorld().playEffect(location, effect, Material.REDSTONE_BLOCK);
+                    player.getWorld().playEffect(location, effect, blockTypeFinal);
                     player.getWorld().playEffect(location, effect, Material.ANVIL);
                     player.sendMessage(TextComponent.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.success")));
                     ItemStack repairedi = playerData.getToBeRepaired();
