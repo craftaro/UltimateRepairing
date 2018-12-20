@@ -1,7 +1,9 @@
 package com.songoda.ultimaterepairing.anvil;
 
 import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.songoda.ultimaterepairing.utils.Methods;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 
 import java.util.Objects;
@@ -84,6 +86,9 @@ public class UAnvil {
 
         UAnvil other = (UAnvil) obj;
         return Objects.equals(location, other.location);
+    }
+    public boolean shouldSave(){
+        return hologram || particles || infinity || permPlaced && Methods.isAnvil(getLocation().getBlock().getType());
     }
 
     @Override

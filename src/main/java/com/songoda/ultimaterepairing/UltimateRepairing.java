@@ -137,6 +137,7 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
          * Save anvils from AnvilManager to Configuration.
          */
         for (UAnvil anvil : anvilManager.getAnvils()) {
+            if (!anvil.shouldSave())continue;
             String locationStr = Arconix.pl().getApi().serialize().serializeLocation(anvil.getLocation());
             dataFile.getConfig().set("data." + locationStr + ".hologram", anvil.isHologram());
             dataFile.getConfig().set("data." + locationStr + ".particles", anvil.isParticles());

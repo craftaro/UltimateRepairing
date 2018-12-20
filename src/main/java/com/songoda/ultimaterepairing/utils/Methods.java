@@ -123,4 +123,7 @@ public class Methods {
     public static ItemStack createButton(Material material, String name, ArrayList<String> lore) {
         return createButton(material, name, lore.toArray(new String[0]));
     }
+    public static boolean isAnvil(Material material){
+        return material.equals(Material.ANVIL) || material.equals(Material.CHIPPED_ANVIL) || material.equals(Material.DAMAGED_ANVIL);
+    }
 }
