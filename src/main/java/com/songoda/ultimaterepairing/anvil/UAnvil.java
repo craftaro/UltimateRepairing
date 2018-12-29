@@ -88,7 +88,7 @@ public class UAnvil {
         return Objects.equals(location, other.location);
     }
     public boolean shouldSave(){
-        return hologram || particles || infinity || permPlaced && Methods.isAnvil(getLocation().getBlock().getType());
+        return hologram || particles || infinity || permPlaced;
     }
 
     @Override
