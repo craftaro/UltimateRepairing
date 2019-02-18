@@ -46,14 +46,14 @@
     <repositories>
         <repository>
             <id>private</id>
-            <url>http://repo.songoda.com/artifactory/private</url>
+            <url>http://repo.songoda.com/artifactory/private/</url>
         </repository>
     </repositories>
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.13.1</version>
+            <version>1.13.2</version>
         </dependency>
         <dependency>
             <groupId>com.songoda</groupId>
@@ -116,9 +116,10 @@
             <version>7.3.0</version>
         </dependency>
         <dependency>
-            <groupId>com.songoda</groupId>
-            <artifactId>epicspawners</artifactId>
+            <groupId>com.gmail.filoghost.holographicdisplays</groupId>
+            <artifactId>holographicdisplays-api</artifactId>
             <version>LATEST</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.gmail.nossr50</groupId>
