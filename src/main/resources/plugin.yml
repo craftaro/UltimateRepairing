@@ -3,7 +3,7 @@ description: UltimateRepairing
 main: com.songoda.ultimaterepairing.UltimateRepairing
 depend: [Arconix]
 softdepend: [Vault]
-version: 1
+version: 1.0.1
 author: Songoda
 api-version: 1.13
 commands:
