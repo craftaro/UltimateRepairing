@@ -224,6 +224,8 @@ public class SettingsManager implements Listener {
 
         o21("-", "Main.Particle Type", "SPELL_WITCH"),
 
+        DOWNLOAD_FILES("-", "System.Download Needed Data Files", true),
+        LANGUGE_MODE("-", "System.Language Mode", "en_US"),
         o22("Debug-Mode", "System.Debugger Enabled", false);
 
         private final String setting, oldSetting;

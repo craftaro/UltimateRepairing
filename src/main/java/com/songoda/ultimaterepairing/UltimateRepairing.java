@@ -21,6 +21,14 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 
 public final class UltimateRepairing extends JavaPlugin implements Listener {
     private static CommandSender console = Bukkit.getConsoleSender();
@@ -79,10 +87,14 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         settingsManager.updateSettings();
         setupConfig();
 
-        // Locales
+        String langMode = getConfig().getString("System.Language Mode");
         Locale.init(this);
         Locale.saveDefaultLocale("en_US");
-        this.locale = Locale.getLocale(this.getConfig().getString("Locale", "en_US"));
+        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode", langMode));
+
+        if (getConfig().getBoolean("System.Download Needed Data Files")) {
+            this.update();
+        }
 
         this.editor = new Editor(this);
         this.anvilManager = new AnvilManager();
@@ -124,6 +136,39 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
         saveConfig();
         saveToFile();
+    }
+
+    private void update() {
+        try {
+            URL url = new URL("http://update.songoda.com/index.php?plugin=" + getDescription().getName() + "&version=" + getDescription().getVersion());
+            URLConnection urlConnection = url.openConnection();
+            InputStream is = urlConnection.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+
+            int numCharsRead;
+            char[] charArray = new char[1024];
+            StringBuffer sb = new StringBuffer();
+            while ((numCharsRead = isr.read(charArray)) > 0) {
+                sb.append(charArray, 0, numCharsRead);
+            }
+            String jsonString = sb.toString();
+            JSONObject json = (JSONObject) new JSONParser().parse(jsonString);
+
+            JSONArray files = (JSONArray) json.get("neededFiles");
+            for (Object o : files) {
+                JSONObject file = (JSONObject) o;
+
+                switch ((String) file.get("type")) {
+                    case "locale":
+                        InputStream in = new URL((String) file.get("link")).openStream();
+                        Locale.saveDefaultLocale(in, (String) file.get("name"));
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Failed to update.");
+            //e.printStackTrace();
+        }
     }
 
     /*
