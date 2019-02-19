@@ -1,8 +1,7 @@
 name: UltimateRepairing
 description: UltimateRepairing
 main: com.songoda.ultimaterepairing.UltimateRepairing
-depend: [Arconix]
-softdepend: [Vault]
+softdepend: [Arconix, Vault]
 version: 1.0.1
 author: Songoda
 api-version: 1.13
