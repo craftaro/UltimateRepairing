@@ -1,8 +1,8 @@
 package com.songoda.ultimaterepairing.command.commands;
 
-import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.command.AbstractCommand;
+import com.songoda.ultimaterepairing.utils.Methods;
 import org.bukkit.command.CommandSender;
 
 public class CommandUltimateRepairing extends AbstractCommand {
@@ -14,11 +14,11 @@ public class CommandUltimateRepairing extends AbstractCommand {
     @Override
     protected ReturnType runCommand(UltimateRepairing instance, CommandSender sender, String... args) {
         sender.sendMessage("");
-        sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&7Version " + instance.getDescription().getVersion() + " Created with <3 by &5&l&oBrianna"));
+        sender.sendMessage(Methods.formatText(instance.references.getPrefix() + "&7Version " + instance.getDescription().getVersion() + " Created with <3 by &5&l&oBrianna"));
 
         for (AbstractCommand command : instance.getCommandManager().getCommands()) {
             if (command.getPermissionNode() == null || sender.hasPermission(command.getPermissionNode())) {
-                sender.sendMessage(TextComponent.formatText("&8 - &a" + command.getSyntax() + "&7 - " + command.getDescription()));
+                sender.sendMessage(Methods.formatText("&8 - &a" + command.getSyntax() + "&7 - " + command.getDescription()));
             }
         }
         sender.sendMessage("");

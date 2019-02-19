@@ -1,7 +1,5 @@
 package com.songoda.ultimaterepairing.anvil.editor;
 
-import com.songoda.arconix.api.ArconixAPI;
-import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.UAnvil;
 import com.songoda.ultimaterepairing.utils.Methods;
@@ -31,7 +29,7 @@ public class Editor {
     }
 
     private void open(Player player, UAnvil anvil) {
-        Inventory inventory = Bukkit.createInventory(null, 27, TextComponent.formatTitle("Anvil Settings"));
+        Inventory inventory = Bukkit.createInventory(null, 27, Methods.formatText("Anvil Settings"));
 
         int nu = 0;
         while (nu != 27) {

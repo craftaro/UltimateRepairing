@@ -1,8 +1,8 @@
 package com.songoda.ultimaterepairing.command.commands;
 
-import com.songoda.arconix.api.methods.formatting.TextComponent;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.command.AbstractCommand;
+import com.songoda.ultimaterepairing.utils.Methods;
 import org.bukkit.command.CommandSender;
 
 public class CommandReload extends AbstractCommand {
@@ -14,7 +14,7 @@ public class CommandReload extends AbstractCommand {
     @Override
     protected ReturnType runCommand(UltimateRepairing instance, CommandSender sender, String... args) {
         instance.reload();
-        sender.sendMessage(TextComponent.formatText(instance.references.getPrefix() + "&7Configuration and Language files reloaded."));
+        sender.sendMessage(Methods.formatText(instance.references.getPrefix() + "&7Configuration and Language files reloaded."));
         return ReturnType.SUCCESS;
     }
 

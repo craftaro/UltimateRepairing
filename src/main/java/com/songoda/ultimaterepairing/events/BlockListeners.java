@@ -1,9 +1,9 @@
 package com.songoda.ultimaterepairing.events;
 
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.UAnvil;
 import com.songoda.ultimaterepairing.utils.Debugger;
+import com.songoda.ultimaterepairing.utils.Methods;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -39,7 +39,7 @@ public class BlockListeners implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent event) {
         try {
-            String loc = Arconix.pl().getApi().serialize().serializeLocation(event.getBlock());
+            String loc = Methods.serializeLocation(event.getBlock());
 
             if (!event.getBlock().getType().equals(Material.ANVIL) && !instance.getConfig().contains("data.anvil." + loc)) {
                 return;

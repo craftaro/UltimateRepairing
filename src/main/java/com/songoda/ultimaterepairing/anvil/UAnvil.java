@@ -27,7 +27,7 @@ public class UAnvil {
 
     public void setHologram(boolean hologram) {
         this.hologram = hologram;
-        UltimateRepairing.getInstance().getHologramHandler().updateHolograms();
+        UltimateRepairing.getInstance().getHologram().update(this);
     }
 
     public boolean isParticles() {

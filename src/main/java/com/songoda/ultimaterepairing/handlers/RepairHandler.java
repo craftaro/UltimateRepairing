@@ -1,7 +1,5 @@
 package com.songoda.ultimaterepairing.handlers;
 
-import com.songoda.arconix.api.methods.formatting.TextComponent;
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData.RepairType;
@@ -136,7 +134,7 @@ public class RepairHandler {
             p.setItemInHand(null);
             Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
                 if (i.isValid() && !playerData.isBeingRepaired()) {
-                    p.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.timeout")));
+                    p.sendMessage(Methods.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.timeout")));
                     removeItem(playerData, p);
                     p.closeInventory();
 
@@ -195,7 +193,7 @@ public class RepairHandler {
             String cost = "0";
 
             Material mat = new Methods().getType(item);
-            String name = Arconix.pl().getApi().format().formatText(mat.name(), true);
+            String name = Methods.formatText(mat.name(), true);
 
             if (type == RepairType.XP)
                 cost = price + " XP";
@@ -259,7 +257,7 @@ public class RepairHandler {
             PlayerAnvilData playerData = playerAnvilData.computeIfAbsent(player.getUniqueId(), uuid -> new PlayerAnvilData());
             if (!answer) {
                 removeItem(playerData, player);
-                player.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.cancelled")));
+                player.sendMessage(Methods.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.cancelled")));
                 return;
             }
             RepairType type = playerData.getType();
@@ -282,8 +280,8 @@ public class RepairHandler {
             int cost = Methods.getCost(type, players);
             ItemStack item2 = new ItemStack(Methods.getType(players), cost);
             String name = (item2.getType().name().substring(0, 1).toUpperCase() + item2.getType().name().toLowerCase().substring(1)).replace("_", " ");
-            if (type == RepairType.ITEM && Arconix.pl().getApi().getGUI().inventoryContains(player.getInventory(), item2)) {
-                Arconix.pl().getApi().getGUI().removeFromInventory(player.getInventory(), item2);
+            if (type == RepairType.ITEM && Methods.inventoryContains(player.getInventory(), item2)) {
+                Methods.removeFromInventory(player.getInventory(), item2);
                 sold = true;
             }
 
@@ -316,15 +314,15 @@ public class RepairHandler {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
                     player.getWorld().playEffect(location, effect, blockTypeFinal);
                     player.getWorld().playEffect(location, effect, Material.STONE);
-                    Arconix.pl().getApi().getPlayer(player).playSound(Sound.valueOf("BLOCK_ANVIL_LAND"));
+                    player.playSound(location, Sound.valueOf("BLOCK_ANVIL_LAND"), 1L, 1L);
                 }, 10L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, blockTypeFinal), 15L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, blockTypeFinal), 20L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
-                    Arconix.pl().getApi().getPlayer(player).playSound(Sound.valueOf("BLOCK_ANVIL_LAND"));
+                    player.playSound(location, Sound.valueOf("BLOCK_ANVIL_LAND"), 1L, 1L);
                     player.getWorld().playEffect(location, effect, blockTypeFinal);
                     player.getWorld().playEffect(location, effect, Material.ANVIL);
-                    player.sendMessage(TextComponent.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.success")));
+                    player.sendMessage(Methods.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.success")));
                     ItemStack repairedi = playerData.getToBeRepaired();
                     repairedi.setDurability((short) 0);
                     Item repaired = player.getWorld().dropItemNaturally(player.getLocation(), repairedi);
@@ -345,11 +343,11 @@ public class RepairHandler {
                 if (!economy)
                     player.sendMessage("Vault is not installed.");
                 else
-                    player.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notenough", instance.getLocale().getMessage("interface.repair.eco"))));
+                    player.sendMessage(Methods.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notenough", instance.getLocale().getMessage("interface.repair.eco"))));
             } else if (type == RepairType.XP)
-                player.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notenough", instance.getLocale().getMessage("interface.repair.xp"))));
+                player.sendMessage(Methods.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notenough", instance.getLocale().getMessage("interface.repair.xp"))));
             else
-                player.sendMessage(Arconix.pl().getApi().format().formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notenough", name)));
+                player.sendMessage(Methods.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notenough", name)));
 
 
         } catch (Exception ex) {

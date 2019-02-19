@@ -1,12 +1,10 @@
 package com.songoda.ultimaterepairing.handlers;
 
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.UAnvil;
 import com.songoda.ultimaterepairing.utils.Debugger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Listener;
 

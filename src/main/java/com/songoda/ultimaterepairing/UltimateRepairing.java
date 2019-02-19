@@ -1,7 +1,5 @@
 package com.songoda.ultimaterepairing;
 
-import com.songoda.arconix.api.utils.ConfigWrapper;
-import com.songoda.arconix.plugin.Arconix;
 import com.songoda.ultimaterepairing.anvil.AnvilManager;
 import com.songoda.ultimaterepairing.anvil.UAnvil;
 import com.songoda.ultimaterepairing.command.CommandManager;
@@ -10,16 +8,20 @@ import com.songoda.ultimaterepairing.events.BlockListeners;
 import com.songoda.ultimaterepairing.events.InteractListeners;
 import com.songoda.ultimaterepairing.events.InventoryListeners;
 import com.songoda.ultimaterepairing.events.PlayerListeners;
-import com.songoda.ultimaterepairing.handlers.HologramHandler;
 import com.songoda.ultimaterepairing.handlers.ParticleHandler;
 import com.songoda.ultimaterepairing.handlers.RepairHandler;
+import com.songoda.ultimaterepairing.hologram.Hologram;
+import com.songoda.ultimaterepairing.hologram.HologramArconix;
+import com.songoda.ultimaterepairing.utils.ConfigWrapper;
 import com.songoda.ultimaterepairing.utils.Debugger;
+import com.songoda.ultimaterepairing.utils.Methods;
 import com.songoda.ultimaterepairing.utils.SettingsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -42,10 +44,11 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
     private Locale locale;
 
     private RepairHandler repairHandler;
-    private HologramHandler hologramHandler;
     private SettingsManager settingsManager;
     private CommandManager commandManager;
     private AnvilManager anvilManager;
+
+    private Hologram hologram;
 
     private Editor editor;
 
@@ -76,11 +79,9 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         // Check to make sure the Bukkit version is compatible.
         if (!checkVersion()) return;
 
-        Arconix.pl().hook(this);
-
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&7UltimateRepairing " + this.getDescription().getVersion() + " by &5Brianna <3!"));
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&7Action: &aEnabling&7..."));
+        console.sendMessage(Methods.formatText("&a============================="));
+        console.sendMessage(Methods.formatText("&7UltimateRepairing " + this.getDescription().getVersion() + " by &5Brianna <3!"));
+        console.sendMessage(Methods.formatText("&7Action: &aEnabling&7..."));
         Bukkit.getPluginManager().registerEvents(this, this);
 
         settingsManager = new SettingsManager(this);
@@ -102,16 +103,21 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         references = new References();
 
         this.repairHandler = new RepairHandler(this);
-        this.hologramHandler = new HologramHandler(this);
         this.commandManager = new CommandManager(this);
         new ParticleHandler(this);
+
+        PluginManager pluginManager = getServer().getPluginManager();
+
+        // Register Hologram Plugin
+        if (pluginManager.isPluginEnabled("Arconix"))
+            hologram = new HologramArconix(this);
 
         /*
          * Register anvils into AnvilManager from Configuration.
          */
         if (dataFile.getConfig().contains("data")) {
             for (String key : dataFile.getConfig().getConfigurationSection("data").getKeys(false)) {
-                Location location = Arconix.pl().getApi().serialize().unserializeLocation(key);
+                Location location = Methods.unserializeLocation(key);
                 UAnvil anvil = anvilManager.getAnvil(location);
                 anvil.setHologram(dataFile.getConfig().getBoolean("data." + key + ".hologram"));
                 anvil.setInfinity(dataFile.getConfig().getBoolean("data." + key + ".infinity"));
@@ -126,14 +132,14 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new InventoryListeners(this), this);
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, 6000, 6000);
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
+        console.sendMessage(Methods.formatText("&a============================="));
     }
 
     public void onDisable() {
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&7UltimateRepairing " + this.getDescription().getVersion() + " by &5Brianna <3!"));
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&7Action: &cDisabling&7..."));
-        console.sendMessage(Arconix.pl().getApi().format().formatText("&a============================="));
+        console.sendMessage(Methods.formatText("&a============================="));
+        console.sendMessage(Methods.formatText("&7UltimateRepairing " + this.getDescription().getVersion() + " by &5Brianna <3!"));
+        console.sendMessage(Methods.formatText("&7Action: &cDisabling&7..."));
+        console.sendMessage(Methods.formatText("&a============================="));
         saveConfig();
         saveToFile();
     }
@@ -183,7 +189,7 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
          */
         for (UAnvil anvil : anvilManager.getAnvils()) {
             if (!anvil.shouldSave())continue;
-            String locationStr = Arconix.pl().getApi().serialize().serializeLocation(anvil.getLocation());
+            String locationStr = Methods.serializeLocation(anvil.getLocation());
             dataFile.getConfig().set("data." + locationStr + ".hologram", anvil.isHologram());
             dataFile.getConfig().set("data." + locationStr + ".particles", anvil.isParticles());
             dataFile.getConfig().set("data." + locationStr + ".infinity", anvil.isInfinity());
@@ -210,7 +216,6 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
             references = new References();
             reloadConfig();
             saveConfig();
-            hologramHandler.updateHolograms();
         } catch (Exception ex) {
             Debugger.runReport(ex);
         }
@@ -228,8 +233,8 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         return repairHandler;
     }
 
-    public HologramHandler getHologramHandler() {
-        return hologramHandler;
+    public Hologram getHologram() {
+        return hologram;
     }
 
     public SettingsManager getSettingsManager() {
