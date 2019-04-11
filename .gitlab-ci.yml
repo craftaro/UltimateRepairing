@@ -8,5 +8,5 @@ build:
   artifacts:
     name: "UltimateRepairing"
     paths:
-    - "/builds/Songoda/UltimateRepairing/target/*.jar"
+    - "/builds/$CI_PROJECT_PATH/*.jar"
     - "/builds/Songoda/UltimateRepairing/Read_this_before_your_first_use.txt"
