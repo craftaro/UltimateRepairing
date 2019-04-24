@@ -2,8 +2,8 @@ package com.songoda.ultimaterepairing;
 
 import com.songoda.ultimaterepairing.anvil.AnvilManager;
 import com.songoda.ultimaterepairing.anvil.UAnvil;
-import com.songoda.ultimaterepairing.command.CommandManager;
 import com.songoda.ultimaterepairing.anvil.editor.Editor;
+import com.songoda.ultimaterepairing.command.CommandManager;
 import com.songoda.ultimaterepairing.events.BlockListeners;
 import com.songoda.ultimaterepairing.events.InteractListeners;
 import com.songoda.ultimaterepairing.events.InventoryListeners;

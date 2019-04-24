@@ -2,46 +2,43 @@
     <groupId>com.songoda</groupId>
     <artifactId>UltimateRepairing</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>1.1</version>
+    <version>maven-version-number</version>
     <build>
-        <defaultGoal>clean package</defaultGoal>
+        <defaultGoal>clean install</defaultGoal>
+        <finalName>UltimateKits-${project.version}</finalName>
         <plugins>
-            <!--<plugin>-->
-            <!--<groupId>org.codehaus.mojo</groupId>-->
-            <!--<artifactId>build-helper-maven-plugin</artifactId>-->
-            <!--<version>1.7</version>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<id>add-source</id>-->
-            <!--<phase>generate-sources</phase>-->
-            <!--<goals>-->
-            <!--<goal>add-source</goal>-->
-            <!--</goals>-->
-            <!--<configuration>-->
-            <!--<sources>-->
-            <!--<source>EpicSpawners-API/src/main/java</source>-->
-            <!--</sources>-->
-            <!--</configuration>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--</plugin>-->
             <plugin>
-                <version>3.6.1</version>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <version>1.5.3</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <file>${project.build.directory}/classes/plugin.yml</file>
+                    <replacements>
+                        <replacement>
+                            <token>maven-version-number</token>
+                            <value>${project.version}</value>
+                        </replacement>
+                    </replacements>
+                </configuration>
+            </plugin>
         </plugins>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-        <sourceDirectory>src/main/java</sourceDirectory>
     </build>
     <repositories>
         <repository>
@@ -53,32 +50,32 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.13.2</version>
+            <version>1.14-pre5</version>
         </dependency>
         <dependency>
             <groupId>com.songoda</groupId>
             <artifactId>arconix</artifactId>
-            <version>LATEST</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>org</groupId>
             <artifactId>kingdoms</artifactId>
-            <version>LATEST</version>
+            <version>13.0.9</version>
         </dependency>
         <dependency>
             <groupId>net.milkbowl</groupId>
             <artifactId>vault</artifactId>
-            <version>LATEST</version>
+            <version>1.7.1</version>
         </dependency>
         <dependency>
             <groupId>me.ryanhamshire</groupId>
             <artifactId>GriefPrevention</artifactId>
-            <version>LATEST</version>
+            <version>16.6</version>
         </dependency>
         <dependency>
             <groupId>com.sk89q</groupId>
             <artifactId>worldedit</artifactId>
-            <version>LATEST</version>
+            <version>7.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.sk89q</groupId>
@@ -88,12 +85,12 @@
         <dependency>
             <groupId>com</groupId>
             <artifactId>plotsquared</artifactId>
-            <version>RELEASE</version>
+            <version>3.5.0</version>
         </dependency>
         <dependency>
             <groupId>com.palmergames.bukkit</groupId>
             <artifactId>towny</artifactId>
-            <version>LATEST</version>
+            <version>0.93.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.wasteofplastic</groupId>
@@ -103,7 +100,7 @@
         <dependency>
             <groupId>us.talabrek</groupId>
             <artifactId>ultimateskyblock</artifactId>
-            <version>LATEST</version>
+            <version>2.7.2</version>
         </dependency>
         <dependency>
             <groupId>me.markeh</groupId>
@@ -118,43 +115,43 @@
         <dependency>
             <groupId>com.gmail.filoghost.holographicdisplays</groupId>
             <artifactId>holographicdisplays-api</artifactId>
-            <version>LATEST</version>
+            <version>2.3.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.gmail.nossr50</groupId>
             <artifactId>mcmmo</artifactId>
-            <version>LATEST</version>
+            <version>1.5.09</version>
         </dependency>
         <dependency>
             <groupId>com.gamingmesh</groupId>
             <artifactId>jobs</artifactId>
-            <version>LATEST</version>
+            <version>4.6.0</version>
         </dependency>
         <dependency>
             <groupId>me.botsko</groupId>
             <artifactId>prism</artifactId>
-            <version>LATEST</version>
+            <version>2.0.6</version>
         </dependency>
         <dependency>
             <groupId>de.diddiz</groupId>
             <artifactId>logblock</artifactId>
-            <version>LATEST</version>
+            <version>1.10.0</version>
         </dependency>
         <dependency>
             <groupId>net</groupId>
             <artifactId>coreprotect</artifactId>
-            <version>LATEST</version>
+            <version>2.14.2</version>
         </dependency>
         <dependency>
             <groupId>uk.antiperson</groupId>
             <artifactId>stackmob</artifactId>
-            <version>LATEST</version>
+            <version>2.2.6</version>
         </dependency>
         <dependency>
             <groupId>net.sothatsit</groupId>
             <artifactId>blockstore</artifactId>
-            <version>LATEST</version>
+            <version>1.5.0</version>
         </dependency>
         <dependency>
             <groupId>org.black_ixx</groupId>
@@ -174,12 +171,12 @@
         <dependency>
             <groupId>com.earth2me</groupId>
             <artifactId>essentials</artifactId>
-            <version>LATEST</version>
+            <version>2.0.1</version>
         </dependency>
         <dependency>
             <groupId>bammerbom</groupId>
             <artifactId>ultimatecore</artifactId>
-            <version>LATEST</version>
+            <version>2.1.25</version>
         </dependency>
     </dependencies>
 </project>
