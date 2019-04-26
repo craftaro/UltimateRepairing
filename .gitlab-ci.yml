@@ -4,7 +4,7 @@ stages:
 variables:
   name: "UltimateRepairing"
   path: "/builds/$CI_PROJECT_PATH"
-  version: "1.1"
+  version: "1.2"
 
 build:
   stage: build
@@ -19,4 +19,3 @@ build:
     name: $name-$version
     paths:
       - "$path/*.jar"
-      - "$path/Read_this_before_your_first_use.txt"

@@ -330,7 +330,7 @@ public class RepairHandler {
                     HashMap<Integer, ItemStack> items = player.getInventory().addItem(playerData.getToBeRepaired());
 
                     for (ItemStack item : items.values()) {
-                        player.getWorld().dropItemNaturally(p.getLocation(), item);
+                        player.getWorld().dropItemNaturally(player.getLocation(), item);
                     }
                     
                     playerData.getItem().remove();
