@@ -184,6 +184,8 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         // Wipe old kit information
         dataFile.getConfig().set("data", null);
 
+        if (anvilManager.getAnvils() == null) return;
+        
         /*
          * Save anvils from AnvilManager to Configuration.
          */
