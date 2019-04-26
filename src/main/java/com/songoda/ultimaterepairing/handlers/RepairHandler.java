@@ -327,7 +327,12 @@ public class RepairHandler {
                     repairedi.setDurability((short) 0);
                     Item repaired = player.getWorld().dropItemNaturally(player.getLocation(), repairedi);
                     repaired.remove();
-                    player.getInventory().addItem(playerData.getToBeRepaired());
+                    HashMap<Integer, ItemStack> items = player.getInventory().addItem(playerData.getToBeRepaired());
+
+                    for (ItemStack item : items.values()) {
+                        player.getWorld().dropItemNaturally(p.getLocation(), item);
+                    }
+                    
                     playerData.getItem().remove();
                     if (player.getGameMode() != GameMode.CREATIVE &&
                             type == RepairType.XP) {
