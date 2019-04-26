@@ -5,7 +5,7 @@
     <version>maven-version-number</version>
     <build>
         <defaultGoal>clean install</defaultGoal>
-        <finalName>UltimateKits-${project.version}</finalName>
+        <finalName>UltimateRepairing-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
