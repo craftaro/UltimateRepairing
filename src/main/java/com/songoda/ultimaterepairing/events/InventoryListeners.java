@@ -52,7 +52,7 @@ public class InventoryListeners implements Listener {
                     instance.getRepairHandler().finish(false, p);
                     p.closeInventory();
                 }
-            } else if (event.getInventory().getTitle().equals(instance.getLocale().getMessage("interface.repair.title"))) {
+            } else if (event.getView().getTitle().equals(instance.getLocale().getMessage("interface.repair.title"))) {
                 event.setCancelled(true);
                 Location loc = instance.getRepairHandler().getDataFor(p).getLocation();
                 if (event.getSlot() == 11) {

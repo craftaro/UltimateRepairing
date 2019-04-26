@@ -2,8 +2,8 @@ package com.songoda.ultimaterepairing;
 
 import com.songoda.ultimaterepairing.anvil.AnvilManager;
 import com.songoda.ultimaterepairing.anvil.UAnvil;
-import com.songoda.ultimaterepairing.command.CommandManager;
 import com.songoda.ultimaterepairing.anvil.editor.Editor;
+import com.songoda.ultimaterepairing.command.CommandManager;
 import com.songoda.ultimaterepairing.events.BlockListeners;
 import com.songoda.ultimaterepairing.events.InteractListeners;
 import com.songoda.ultimaterepairing.events.InventoryListeners;
@@ -11,11 +11,14 @@ import com.songoda.ultimaterepairing.events.PlayerListeners;
 import com.songoda.ultimaterepairing.handlers.ParticleHandler;
 import com.songoda.ultimaterepairing.handlers.RepairHandler;
 import com.songoda.ultimaterepairing.hologram.Hologram;
-import com.songoda.ultimaterepairing.hologram.HologramArconix;
+import com.songoda.ultimaterepairing.hologram.HologramHolographicDisplays;
 import com.songoda.ultimaterepairing.utils.ConfigWrapper;
 import com.songoda.ultimaterepairing.utils.Debugger;
 import com.songoda.ultimaterepairing.utils.Methods;
 import com.songoda.ultimaterepairing.utils.SettingsManager;
+import com.songoda.ultimaterepairing.utils.updateModules.LocaleModule;
+import com.songoda.update.Plugin;
+import com.songoda.update.SongodaUpdate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -23,14 +26,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 
 public final class UltimateRepairing extends JavaPlugin implements Listener {
     private static CommandSender console = Bukkit.getConsoleSender();
@@ -93,9 +88,10 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         Locale.saveDefaultLocale("en_US");
         this.locale = Locale.getLocale(getConfig().getString("System.Language Mode", langMode));
 
-        if (getConfig().getBoolean("System.Download Needed Data Files")) {
-            this.update();
-        }
+        //Running Songoda Updater
+        Plugin plugin = new Plugin(this, 20);
+        plugin.addModule(new LocaleModule());
+        SongodaUpdate.load(plugin);
 
         this.editor = new Editor(this);
         this.anvilManager = new AnvilManager();
@@ -109,8 +105,8 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         PluginManager pluginManager = getServer().getPluginManager();
 
         // Register Hologram Plugin
-        if (pluginManager.isPluginEnabled("Arconix"))
-            hologram = new HologramArconix(this);
+        if (pluginManager.isPluginEnabled("HolographicDisplays"))
+            hologram = new HologramHolographicDisplays(this);
 
         /*
          * Register anvils into AnvilManager from Configuration.
@@ -144,39 +140,6 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         saveToFile();
     }
 
-    private void update() {
-        try {
-            URL url = new URL("http://update.songoda.com/index.php?plugin=" + getDescription().getName() + "&version=" + getDescription().getVersion());
-            URLConnection urlConnection = url.openConnection();
-            InputStream is = urlConnection.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-
-            int numCharsRead;
-            char[] charArray = new char[1024];
-            StringBuffer sb = new StringBuffer();
-            while ((numCharsRead = isr.read(charArray)) > 0) {
-                sb.append(charArray, 0, numCharsRead);
-            }
-            String jsonString = sb.toString();
-            JSONObject json = (JSONObject) new JSONParser().parse(jsonString);
-
-            JSONArray files = (JSONArray) json.get("neededFiles");
-            for (Object o : files) {
-                JSONObject file = (JSONObject) o;
-
-                switch ((String) file.get("type")) {
-                    case "locale":
-                        InputStream in = new URL((String) file.get("link")).openStream();
-                        Locale.saveDefaultLocale(in, (String) file.get("name"));
-                        break;
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Failed to update.");
-            //e.printStackTrace();
-        }
-    }
-
     /*
      * Saves registered kits to file.
      */
@@ -184,6 +147,8 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         // Wipe old kit information
         dataFile.getConfig().set("data", null);
 
+        if (anvilManager.getAnvils() == null) return;
+        
         /*
          * Save anvils from AnvilManager to Configuration.
          */
