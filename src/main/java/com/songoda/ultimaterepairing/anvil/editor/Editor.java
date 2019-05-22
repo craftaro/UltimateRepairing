@@ -3,6 +3,7 @@ package com.songoda.ultimaterepairing.anvil.editor;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.UAnvil;
 import com.songoda.ultimaterepairing.utils.Methods;
+import com.songoda.ultimaterepairing.utils.ServerVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -58,7 +59,7 @@ public class Editor {
 
         inventory.setItem(13, Methods.createButton(Material.BEACON, "&5&lToggle Infinity", anvil.isInfinity() ? "&7Currently: &aEnabled&7." : "&7Currently &cDisabled&7."));
 
-        inventory.setItem(15, Methods.createButton(Material.FIREWORK_ROCKET, "&9&lToggle Particles", anvil.isParticles() ? "&7Currently: &aEnabled&7." : "&7Currently &cDisabled&7."));
+        inventory.setItem(15, Methods.createButton(instance.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.FIREWORK_ROCKET : Material.valueOf("FIREWORK"), "&9&lToggle Particles", anvil.isParticles() ? "&7Currently: &aEnabled&7." : "&7Currently &cDisabled&7."));
         player.openInventory(inventory);
         editing.put(player.getUniqueId(), anvil);
     }

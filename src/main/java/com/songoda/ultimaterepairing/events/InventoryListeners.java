@@ -3,6 +3,7 @@ package com.songoda.ultimaterepairing.events;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData.RepairType;
 import com.songoda.ultimaterepairing.utils.Debugger;
+import com.songoda.ultimaterepairing.utils.Methods;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -52,7 +53,7 @@ public class InventoryListeners implements Listener {
                     instance.getRepairHandler().finish(false, p);
                     p.closeInventory();
                 }
-            } else if (event.getView().getTitle().equals(instance.getLocale().getMessage("interface.repair.title"))) {
+            } else if (event.getView().getTitle().equals(Methods.formatTitle(instance.getLocale().getMessage("interface.repair.title")))) {
                 event.setCancelled(true);
                 Location loc = instance.getRepairHandler().getDataFor(p).getLocation();
                 if (event.getSlot() == 11) {
