@@ -12,13 +12,11 @@ import com.songoda.ultimaterepairing.handlers.ParticleHandler;
 import com.songoda.ultimaterepairing.handlers.RepairHandler;
 import com.songoda.ultimaterepairing.hologram.Hologram;
 import com.songoda.ultimaterepairing.hologram.HologramHolographicDisplays;
-import com.songoda.ultimaterepairing.utils.ConfigWrapper;
-import com.songoda.ultimaterepairing.utils.Debugger;
-import com.songoda.ultimaterepairing.utils.Methods;
-import com.songoda.ultimaterepairing.utils.SettingsManager;
+import com.songoda.ultimaterepairing.utils.*;
 import com.songoda.ultimaterepairing.utils.updateModules.LocaleModule;
 import com.songoda.update.Plugin;
 import com.songoda.update.SongodaUpdate;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -36,6 +34,8 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
 
     public References references = null;
 
+    private ServerVersion serverVersion = ServerVersion.fromPackageName(Bukkit.getServer().getClass().getPackage().getName());
+
     private Locale locale;
 
     private RepairHandler repairHandler;
@@ -51,28 +51,9 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         return INSTANCE;
     }
 
-    private boolean checkVersion() {
-        int workingVersion = 13;
-        int currentVersion = Integer.parseInt(Bukkit.getServer().getClass()
-                .getPackage().getName().split("\\.")[3].split("_")[1]);
-
-        if (currentVersion < workingVersion) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
-                Bukkit.getConsoleSender().sendMessage("");
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "You installed the 1." + workingVersion + "+ only version of " + this.getDescription().getName() + " on a 1." + currentVersion + " server. Since you are on the wrong version we disabled the plugin for you. Please install correct version to continue using " + this.getDescription().getName() + ".");
-                Bukkit.getConsoleSender().sendMessage("");
-            }, 20L);
-            return false;
-        }
-        return true;
-    }
-
     @Override
     public void onEnable() {
         INSTANCE = this;
-
-        // Check to make sure the Bukkit version is compatible.
-        if (!checkVersion()) return;
 
         console.sendMessage(Methods.formatText("&a============================="));
         console.sendMessage(Methods.formatText("&7UltimateRepairing " + this.getDescription().getVersion() + " by &5Brianna <3!"));
@@ -138,6 +119,22 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         console.sendMessage(Methods.formatText("&a============================="));
         saveConfig();
         saveToFile();
+    }
+
+
+    public ServerVersion getServerVersion() {
+        return serverVersion;
+    }
+
+    public boolean isServerVersion(ServerVersion version) {
+        return serverVersion == version;
+    }
+    public boolean isServerVersion(ServerVersion... versions) {
+        return ArrayUtils.contains(versions, serverVersion);
+    }
+
+    public boolean isServerVersionAtLeast(ServerVersion version) {
+        return serverVersion.ordinal() >= version.ordinal();
     }
 
     /*

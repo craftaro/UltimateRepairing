@@ -23,8 +23,8 @@ import java.util.regex.Pattern;
  */
 public class SettingsManager implements Listener {
 
+
     private static final Pattern SETTINGS_PATTERN = Pattern.compile("(.{1,28}(?:\\s|$))|(.{0,28})", Pattern.DOTALL);
-    private static ConfigWrapper defs;
     private final UltimateRepairing instance;
     private String pluginName = "UltimateRepairing";
     private Map<Player, String> cat = new HashMap<>();
@@ -32,10 +32,6 @@ public class SettingsManager implements Listener {
 
     public SettingsManager(UltimateRepairing plugin) {
         this.instance = plugin;
-
-        plugin.saveResource("SettingDefinitions.yml", true);
-        defs = new ConfigWrapper(plugin, "", "SettingDefinitions.yml");
-        defs.createNewFile("Loading data file", pluginName + " SettingDefinitions file");
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
@@ -49,14 +45,14 @@ public class SettingsManager implements Listener {
             return;
         }
 
-        if (event.getView().getTitle().equals(pluginName + " Settings Manager")) {
+        if (event.getView().getTitle().equals(Methods.formatTitle(pluginName + " Settings Manager"))) {
             event.setCancelled(true);
             if (clickedItem.getType().name().contains("STAINED_GLASS")) return;
 
             String type = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName());
             this.cat.put((Player) event.getWhoClicked(), type);
             this.openEditor((Player) event.getWhoClicked());
-        } else if (event.getView().getTitle().equals(pluginName + " Settings Editor")) {
+        } else if (event.getView().getTitle().equals(Methods.formatTitle(pluginName + " Settings Editor"))) {
             event.setCancelled(true);
             if (clickedItem.getType().name().contains("STAINED_GLASS")) return;
 
@@ -88,20 +84,19 @@ public class SettingsManager implements Listener {
             config.set(value, event.getMessage());
         }
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(UltimateRepairing.getInstance(), () ->
+        Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () ->
                 this.finishEditing(player), 0L);
 
         event.setCancelled(true);
     }
 
-    public void finishEditing(Player player) {
+    private void finishEditing(Player player) {
         this.current.remove(player);
         this.instance.saveConfig();
         this.openEditor(player);
     }
 
-
-    public void editObject(Player player, String current) {
+    private void editObject(Player player, String current) {
         this.current.put(player, ChatColor.stripColor(current));
 
         player.closeInventory();
@@ -114,7 +109,7 @@ public class SettingsManager implements Listener {
     }
 
     public void openSettingsManager(Player player) {
-        Inventory inventory = Bukkit.createInventory(null, 27, pluginName + " Settings Manager");
+        Inventory inventory = Bukkit.createInventory(null, 27, Methods.formatTitle(pluginName + " Settings Manager"));
         ItemStack glass = Methods.getGlass();
         for (int i = 0; i < inventory.getSize(); i++) {
             inventory.setItem(i, glass);
@@ -122,7 +117,7 @@ public class SettingsManager implements Listener {
 
         int slot = 10;
         for (String key : instance.getConfig().getDefaultSection().getKeys(false)) {
-            ItemStack item = new ItemStack(Material.WHITE_WOOL, 1, (byte) (slot - 9)); //ToDo: Make this function as it was meant to.
+            ItemStack item = new ItemStack(instance.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.WHITE_WOOL : Material.valueOf("WOOL"), 1, (byte) (slot - 9)); //ToDo: Make this function as it was meant to.
             ItemMeta meta = item.getItemMeta();
             meta.setLore(Collections.singletonList(Methods.formatText("&6Click To Edit This Category.")));
             meta.setDisplayName(Methods.formatText("&f&l" + key));
@@ -134,8 +129,8 @@ public class SettingsManager implements Listener {
         player.openInventory(inventory);
     }
 
-    public void openEditor(Player player) {
-        Inventory inventory = Bukkit.createInventory(null, 54, pluginName + " Settings Editor");
+    private void openEditor(Player player) {
+        Inventory inventory = Bukkit.createInventory(null, 54, Methods.formatTitle(pluginName + " Settings Editor"));
         FileConfiguration config = instance.getConfig();
 
         int slot = 0;
@@ -153,18 +148,8 @@ public class SettingsManager implements Listener {
                 item.setType(Material.PAPER);
                 lore.add(Methods.formatText("&9" + config.getString(fKey)));
             } else if (config.isInt(fKey)) {
-                item.setType(Material.CLOCK);
+                item.setType(instance.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.CLOCK : Material.valueOf("WATCH"));
                 lore.add(Methods.formatText("&5" + config.getInt(fKey)));
-            }
-
-            if (defs.getConfig().contains(fKey)) {
-                String text = defs.getConfig().getString(key);
-
-                Matcher m = SETTINGS_PATTERN.matcher(text);
-                while (m.find()) {
-                    if (m.end() != text.length() || m.group().length() != 0)
-                        lore.add(Methods.formatText("&7" + m.group()));
-                }
             }
 
             meta.setLore(lore);
@@ -181,12 +166,7 @@ public class SettingsManager implements Listener {
         FileConfiguration config = instance.getConfig();
 
         for (Setting setting : Setting.values()) {
-            if (config.contains("settings." + setting.oldSetting)) {
-                config.addDefault(setting.setting, instance.getConfig().get("settings." + setting.oldSetting));
-                config.set("settings." + setting.oldSetting, null);
-            } else {
-                config.addDefault(setting.setting, setting.option);
-            }
+            config.addDefault(setting.setting, setting.option);
         }
     }
 
@@ -199,11 +179,11 @@ public class SettingsManager implements Listener {
         o4("ITEM-Cost-Equation", "Main.Item Cost Equation", "{XPCost} * 3"),
         o5("Enchanted-Item-Multiplier", "Main.Cost Multiplier For Enchanted Items", 2),
 
-        o6("ECO-Icon", "Interfaces.Economy Icon", "SUNFLOWER"),
-        o7("XP-Icon", "Interfaces.XP Icon", "EXPERIENCE_BOTTLE"),
+        o6("ECO-Icon", "Interfaces.Economy Icon", UltimateRepairing.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ? "SUNFLOWER" : "DOUBLE_PLANT"),
+        o7("XP-Icon", "Interfaces.XP Icon", UltimateRepairing.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ? "EXPERIENCE_BOTTLE" : "EXP_BOTTLE"),
         o8("ITEM", "Interfaces.Item Icon", "DIAMOND"),
 
-        o9("Exit-Icon", "Interfaces.Exit Icon", "OAK_DOOR"),
+        o9("Exit-Icon", "Interfaces.Exit Icon", UltimateRepairing.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ? "OAK_DOOR" : "WOOD_DOOR"),
         o10("Buy-Icon", "Interfaces.Buy Icon", "EMERALD"),
 
         o12("Glass-Type-1", "Interfaces.Glass Type 1", 7),

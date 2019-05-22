@@ -5,6 +5,7 @@ import com.songoda.ultimaterepairing.anvil.PlayerAnvilData;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData.RepairType;
 import com.songoda.ultimaterepairing.utils.Debugger;
 import com.songoda.ultimaterepairing.utils.Methods;
+import com.songoda.ultimaterepairing.utils.ServerVersion;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
 import org.bukkit.entity.Item;
@@ -40,7 +41,7 @@ public class RepairHandler {
                 yesNo(p, getDataFor(p).getType(), getDataFor(p).getToBeRepaired());
                 return;
             }
-            Inventory i = Bukkit.createInventory(null, 27, instance.getLocale().getMessage("interface.repair.title"));
+            Inventory i = Bukkit.createInventory(null, 27, Methods.formatText(instance.getLocale().getMessage("interface.repair.title")));
 
             int nu = 0;
             while (nu != 27) {
@@ -202,7 +203,7 @@ public class RepairHandler {
             else if (type == RepairType.ITEM)
                 cost = price + " " + name;
 
-            Inventory i = Bukkit.createInventory(null, 27, instance.getLocale().getMessage("interface.yesno.title", cost));
+            Inventory i = Bukkit.createInventory(null, 27, Methods.formatTitle(instance.getLocale().getMessage("interface.yesno.title", cost)));
 
             int nu = 0;
             while (nu != 27) {
@@ -303,7 +304,7 @@ public class RepairHandler {
                 } else if (typeStr.contains("STONE")) {
                     blockType = Material.STONE;
                 } else if (typeStr.contains("WOOD")) {
-                    blockType = Material.OAK_PLANKS;
+                    blockType = instance.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_PLANKS : Material.valueOf("WOOD");
                 }
 
                 final Material blockTypeFinal = blockType;
@@ -314,12 +315,18 @@ public class RepairHandler {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
                     player.getWorld().playEffect(location, effect, blockTypeFinal);
                     player.getWorld().playEffect(location, effect, Material.STONE);
-                    player.playSound(location, Sound.valueOf("BLOCK_ANVIL_LAND"), 1L, 1L);
+                    if (instance.isServerVersion(ServerVersion.V1_8))
+                        player.playSound(location, Sound.valueOf("ANVIL_LAND"), 1L, 1L);
+                    else
+                        player.playSound(location, Sound.valueOf("BLOCK_ANVIL_LAND"), 1L, 1L);
                 }, 10L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, blockTypeFinal), 15L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, blockTypeFinal), 20L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
-                    player.playSound(location, Sound.valueOf("BLOCK_ANVIL_LAND"), 1L, 1L);
+                    if (instance.isServerVersion(ServerVersion.V1_8))
+                        player.playSound(location, Sound.valueOf("ANVIL_LAND"), 1L, 1L);
+                    else
+                        player.playSound(location, Sound.valueOf("BLOCK_ANVIL_LAND"), 1L, 1L);
                     player.getWorld().playEffect(location, effect, blockTypeFinal);
                     player.getWorld().playEffect(location, effect, Material.ANVIL);
                     player.sendMessage(Methods.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.success")));

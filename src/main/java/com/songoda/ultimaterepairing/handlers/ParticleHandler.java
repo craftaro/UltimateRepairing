@@ -3,7 +3,9 @@ package com.songoda.ultimaterepairing.handlers;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.UAnvil;
 import com.songoda.ultimaterepairing.utils.Debugger;
+import com.songoda.ultimaterepairing.utils.ServerVersion;
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Listener;
@@ -35,7 +37,11 @@ public class ParticleHandler implements Listener {
                 }
                 Location location = anvil.getLocation();
                 location.add(.5, 0, .5);
-                anvil.getWorld().spawnParticle(org.bukkit.Particle.valueOf(type), location, amt, 0.25, 0.25, 0.25);
+                if (instance.isServerVersionAtLeast(ServerVersion.V1_9))
+                    anvil.getWorld().spawnParticle(org.bukkit.Particle.valueOf(type), location, amt, 0.25, 0.25, 0.25);
+                else
+                    anvil.getWorld().playEffect(location, Effect.valueOf(type == "SPELL_WITCH" ? "WITCH_MAGIC" : type), 1, 0);
+
             }
         } catch (Exception ex) {
             Debugger.runReport(ex);
