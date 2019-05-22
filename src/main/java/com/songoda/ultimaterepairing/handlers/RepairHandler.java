@@ -315,12 +315,18 @@ public class RepairHandler {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
                     player.getWorld().playEffect(location, effect, blockTypeFinal);
                     player.getWorld().playEffect(location, effect, Material.STONE);
-                    player.playSound(location, Sound.valueOf("BLOCK_ANVIL_LAND"), 1L, 1L);
+                    if (instance.isServerVersion(ServerVersion.V1_8))
+                        player.playSound(location, Sound.valueOf("ANVIL_LAND"), 1L, 1L);
+                    else
+                        player.playSound(location, Sound.valueOf("BLOCK_ANVIL_LAND"), 1L, 1L);
                 }, 10L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, blockTypeFinal), 15L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, blockTypeFinal), 20L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
-                    player.playSound(location, Sound.valueOf("BLOCK_ANVIL_LAND"), 1L, 1L);
+                    if (instance.isServerVersion(ServerVersion.V1_8))
+                        player.playSound(location, Sound.valueOf("ANVIL_LAND"), 1L, 1L);
+                    else
+                        player.playSound(location, Sound.valueOf("BLOCK_ANVIL_LAND"), 1L, 1L);
                     player.getWorld().playEffect(location, effect, blockTypeFinal);
                     player.getWorld().playEffect(location, effect, Material.ANVIL);
                     player.sendMessage(Methods.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.success")));
