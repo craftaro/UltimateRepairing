@@ -179,11 +179,11 @@ public class SettingsManager implements Listener {
         o4("ITEM-Cost-Equation", "Main.Item Cost Equation", "{XPCost} * 3"),
         o5("Enchanted-Item-Multiplier", "Main.Cost Multiplier For Enchanted Items", 2),
 
-        o6("ECO-Icon", "Interfaces.Economy Icon", "SUNFLOWER"),
-        o7("XP-Icon", "Interfaces.XP Icon", "EXPERIENCE_BOTTLE"),
+        o6("ECO-Icon", "Interfaces.Economy Icon", UltimateRepairing.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ? "SUNFLOWER" : "DOUBLE_PLANT"),
+        o7("XP-Icon", "Interfaces.XP Icon", UltimateRepairing.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ? "EXPERIENCE_BOTTLE" : "EXP_BOTTLE"),
         o8("ITEM", "Interfaces.Item Icon", "DIAMOND"),
 
-        o9("Exit-Icon", "Interfaces.Exit Icon", "OAK_DOOR"),
+        o9("Exit-Icon", "Interfaces.Exit Icon", UltimateRepairing.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ? "OAK_DOOR" : "WOOD_DOOR"),
         o10("Buy-Icon", "Interfaces.Buy Icon", "EMERALD"),
 
         o12("Glass-Type-1", "Interfaces.Glass Type 1", 7),
