@@ -18,7 +18,6 @@ import com.songoda.update.Plugin;
 import com.songoda.update.SongodaUpdate;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
@@ -89,24 +88,31 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         if (pluginManager.isPluginEnabled("HolographicDisplays"))
             hologram = new HologramHolographicDisplays(this);
 
-        /*
-         * Register anvils into AnvilManager from Configuration.
-         */
-        if (dataFile.getConfig().contains("data")) {
-            for (String key : dataFile.getConfig().getConfigurationSection("data").getKeys(false)) {
-                Location location = Methods.unserializeLocation(key);
-                UAnvil anvil = anvilManager.getAnvil(location);
-                anvil.setHologram(dataFile.getConfig().getBoolean("data." + key + ".hologram"));
-                anvil.setInfinity(dataFile.getConfig().getBoolean("data." + key + ".infinity"));
-                anvil.setParticles(dataFile.getConfig().getBoolean("data." + key + ".particles"));
-                anvil.setPermPlaced(dataFile.getConfig().getBoolean("data." + key + ".permPlaced"));
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+            /*
+             * Register anvils into AnvilManager from Configuration.
+             */
+            if (dataFile.getConfig().contains("data")) {
+                for (String key : dataFile.getConfig().getConfigurationSection("data").getKeys(false)) {
+                    Location location = Methods.unserializeLocation(key);
+                    UAnvil anvil = anvilManager.getAnvil(location);
+                    anvil.setHologram(dataFile.getConfig().getBoolean("data." + key + ".hologram"));
+                    anvil.setInfinity(dataFile.getConfig().getBoolean("data." + key + ".infinity"));
+                    anvil.setParticles(dataFile.getConfig().getBoolean("data." + key + ".particles"));
+                    anvil.setPermPlaced(dataFile.getConfig().getBoolean("data." + key + ".permPlaced"));
+                }
             }
-        }
 
-        getServer().getPluginManager().registerEvents(new PlayerListeners(this), this);
-        getServer().getPluginManager().registerEvents(new BlockListeners(this), this);
-        getServer().getPluginManager().registerEvents(new InteractListeners(this), this);
-        getServer().getPluginManager().registerEvents(new InventoryListeners(this), this);
+        }, 6L);
+
+        // Start Metrics
+        new Metrics(this);
+
+        // Event registration
+        pluginManager.registerEvents(new PlayerListeners(this), this);
+        pluginManager.registerEvents(new BlockListeners(this), this);
+        pluginManager.registerEvents(new InteractListeners(this), this);
+        pluginManager.registerEvents(new InventoryListeners(this), this);
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, 6000, 6000);
         console.sendMessage(Methods.formatText("&a============================="));
