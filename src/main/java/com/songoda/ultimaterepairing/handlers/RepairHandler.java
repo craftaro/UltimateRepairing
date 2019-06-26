@@ -330,12 +330,9 @@ public class RepairHandler {
                     player.getWorld().playEffect(location, effect, blockTypeFinal);
                     player.getWorld().playEffect(location, effect, Material.ANVIL);
                     player.sendMessage(Methods.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.success")));
-                    ItemStack repairedi = playerData.getToBeRepaired();
-                    repairedi.setDurability((short) 0);
-                    Item repaired = player.getWorld().dropItemNaturally(player.getLocation(), repairedi);
-                    repaired.remove();
-                    HashMap<Integer, ItemStack> items = player.getInventory().addItem(playerData.getToBeRepaired());
 
+                    playerData.getToBeRepaired().setDurability((short) 0);
+                    HashMap<Integer, ItemStack> items = player.getInventory().addItem(playerData.getToBeRepaired());
                     for (ItemStack item : items.values()) {
                         player.getWorld().dropItemNaturally(player.getLocation(), item);
                     }
