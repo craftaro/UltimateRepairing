@@ -203,11 +203,11 @@ public class RepairHandler {
             else if (type == RepairType.ITEM)
                 cost = price + " " + name;
 
-            Inventory i = Bukkit.createInventory(null, 27, Methods.formatTitle(instance.getLocale().getMessage("interface.yesno.title", cost)));
+            Inventory inventory = Bukkit.createInventory(null, 27, Methods.formatTitle(instance.getLocale().getMessage("interface.yesno.title", cost)));
 
             int nu = 0;
             while (nu != 27) {
-                i.setItem(nu, Methods.getGlass());
+                inventory.setItem(nu, Methods.getGlass());
                 nu++;
             }
 
@@ -221,31 +221,31 @@ public class RepairHandler {
             itemmeta3.setDisplayName(instance.getLocale().getMessage("interface.yesno.no"));
             item3.setItemMeta(itemmeta3);
 
-            i.setItem(4, item);
-            i.setItem(11, item2);
-            i.setItem(15, item3);
+            inventory.setItem(4, item);
+            inventory.setItem(11, item2);
+            inventory.setItem(15, item3);
 
-            Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> p.openInventory(i), 1);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> p.openInventory(inventory), 1);
 
             playerData.setType(type);
             playerData.setPrice(price);
 
-            i.setItem(0, Methods.getBackgroundGlass(true));
-            i.setItem(1, Methods.getBackgroundGlass(true));
-            i.setItem(2, Methods.getBackgroundGlass(false));
-            i.setItem(6, Methods.getBackgroundGlass(false));
-            i.setItem(7, Methods.getBackgroundGlass(true));
-            i.setItem(8, Methods.getBackgroundGlass(true));
-            i.setItem(9, Methods.getBackgroundGlass(true));
-            i.setItem(10, Methods.getBackgroundGlass(false));
-            i.setItem(16, Methods.getBackgroundGlass(false));
-            i.setItem(17, Methods.getBackgroundGlass(true));
-            i.setItem(18, Methods.getBackgroundGlass(true));
-            i.setItem(19, Methods.getBackgroundGlass(true));
-            i.setItem(20, Methods.getBackgroundGlass(false));
-            i.setItem(24, Methods.getBackgroundGlass(false));
-            i.setItem(25, Methods.getBackgroundGlass(true));
-            i.setItem(26, Methods.getBackgroundGlass(true));
+            inventory.setItem(0, Methods.getBackgroundGlass(true));
+            inventory.setItem(1, Methods.getBackgroundGlass(true));
+            inventory.setItem(2, Methods.getBackgroundGlass(false));
+            inventory.setItem(6, Methods.getBackgroundGlass(false));
+            inventory.setItem(7, Methods.getBackgroundGlass(true));
+            inventory.setItem(8, Methods.getBackgroundGlass(true));
+            inventory.setItem(9, Methods.getBackgroundGlass(true));
+            inventory.setItem(10, Methods.getBackgroundGlass(false));
+            inventory.setItem(16, Methods.getBackgroundGlass(false));
+            inventory.setItem(17, Methods.getBackgroundGlass(true));
+            inventory.setItem(18, Methods.getBackgroundGlass(true));
+            inventory.setItem(19, Methods.getBackgroundGlass(true));
+            inventory.setItem(20, Methods.getBackgroundGlass(false));
+            inventory.setItem(24, Methods.getBackgroundGlass(false));
+            inventory.setItem(25, Methods.getBackgroundGlass(true));
+            inventory.setItem(26, Methods.getBackgroundGlass(true));
 
         } catch (Exception ex) {
             Debugger.runReport(ex);
@@ -311,7 +311,8 @@ public class RepairHandler {
 
                 Location location = playerData.getLocations();
                 player.getWorld().playEffect(location, effect, blockType);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, blockTypeFinal), 5L);
+                Runnable runnable = () -> player.getWorld().playEffect(location, effect, blockTypeFinal);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, runnable, 5L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
                     player.getWorld().playEffect(location, effect, blockTypeFinal);
                     player.getWorld().playEffect(location, effect, Material.STONE);
@@ -320,8 +321,8 @@ public class RepairHandler {
                     else
                         player.playSound(location, Sound.valueOf("BLOCK_ANVIL_LAND"), 1L, 1L);
                 }, 10L);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, blockTypeFinal), 15L);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, blockTypeFinal), 20L);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, runnable, 15L);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, runnable, 20L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
                     if (instance.isServerVersion(ServerVersion.V1_8))
                         player.playSound(location, Sound.valueOf("ANVIL_LAND"), 1L, 1L);
@@ -364,19 +365,19 @@ public class RepairHandler {
         }
     }
 
-    public void removeItem(PlayerAnvilData playerData, Player p) {
+    public void removeItem(PlayerAnvilData playerData, Player player) {
         try {
-            p.getInventory().addItem(playerData.getToBeRepaired());
+            player.getInventory().addItem(playerData.getToBeRepaired());
             playerData.getItem().remove();
 
-            this.playerAnvilData.remove(p.getUniqueId());
+            this.playerAnvilData.remove(player.getUniqueId());
         } catch (Exception ex) {
             Debugger.runReport(ex);
         }
     }
 
     public boolean hasInstance(Player player) {
-        return playerAnvilData.containsKey(player);
+        return playerAnvilData.containsKey(player.getUniqueId());
     }
 
     public PlayerAnvilData getDataFor(Player player) {

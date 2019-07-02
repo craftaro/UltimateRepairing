@@ -1,4 +1,4 @@
-package com.songoda.ultimaterepairing.events;
+package com.songoda.ultimaterepairing.listeners;
 
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.UAnvil;

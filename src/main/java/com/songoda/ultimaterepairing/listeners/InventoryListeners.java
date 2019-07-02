@@ -1,7 +1,8 @@
-package com.songoda.ultimaterepairing.events;
+package com.songoda.ultimaterepairing.listeners;
 
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData.RepairType;
+import com.songoda.ultimaterepairing.handlers.RepairHandler;
 import com.songoda.ultimaterepairing.utils.Debugger;
 import com.songoda.ultimaterepairing.utils.Methods;
 import org.bukkit.Location;
@@ -10,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 
 /**
@@ -24,7 +26,7 @@ public class InventoryListeners implements Listener {
     }
 
     @EventHandler
-    public void OnPickup(InventoryPickupItemEvent event) {
+    public void onPickup(InventoryPickupItemEvent event) {
         if (event.getItem().hasMetadata("UltimateRepairing"))
             event.setCancelled(true);
     }
