@@ -13,6 +13,7 @@ import com.songoda.ultimaterepairing.handlers.RepairHandler;
 import com.songoda.ultimaterepairing.hologram.Hologram;
 import com.songoda.ultimaterepairing.hologram.HologramHolographicDisplays;
 import com.songoda.ultimaterepairing.utils.*;
+import com.songoda.ultimaterepairing.utils.locale.Locale;
 import com.songoda.ultimaterepairing.utils.updateModules.LocaleModule;
 import com.songoda.update.Plugin;
 import com.songoda.update.SongodaUpdate;
@@ -30,8 +31,6 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
     private static UltimateRepairing INSTANCE;
 
     private ConfigWrapper dataFile = new ConfigWrapper(this, "", "data.yml");
-
-    public References references = null;
 
     private ServerVersion serverVersion = ServerVersion.fromPackageName(Bukkit.getServer().getClass().getPackage().getName());
 
@@ -63,10 +62,8 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
         settingsManager.updateSettings();
         setupConfig();
 
-        String langMode = getConfig().getString("System.Language Mode");
-        Locale.init(this);
-        Locale.saveDefaultLocale("en_US");
-        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode", langMode));
+        new Locale(this, "en_US");
+        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
 
         //Running Songoda Updater
         Plugin plugin = new Plugin(this, 20);
@@ -75,8 +72,6 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
 
         this.editor = new Editor(this);
         this.anvilManager = new AnvilManager();
-
-        references = new References();
 
         this.repairHandler = new RepairHandler(this);
         this.commandManager = new CommandManager(this);
@@ -180,8 +175,8 @@ public final class UltimateRepairing extends JavaPlugin implements Listener {
 
     public void reload() {
         try {
-            locale.reloadMessages();
-            references = new References();
+            this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
+            this.locale.reloadMessages();
             reloadConfig();
             saveConfig();
         } catch (Exception ex) {

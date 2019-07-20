@@ -55,13 +55,13 @@ public abstract class Hologram {
         ArrayList<String> lines = new ArrayList<>();
 
         if (!instance.getConfig().getBoolean("Main.Enable Default Anvil Function"))
-            lines.add(Methods.formatText(instance.getLocale().getMessage("general.hologram.oneclick")));
+            lines.add(Methods.formatText(instance.getLocale().getMessage("general.hologram.oneclick").getMessage()));
         else if (instance.getConfig().getBoolean("Main.Swap Right And Left Click Options"))
-            lines.add(Methods.formatText(instance.getLocale().getMessage("general.hologram.swapclick")));
+            lines.add(Methods.formatText(instance.getLocale().getMessage("general.hologram.swapclick").getMessage()));
         else
-            lines.add(Methods.formatText(instance.getLocale().getMessage("general.hologram.click")));
+            lines.add(Methods.formatText(instance.getLocale().getMessage("general.hologram.click").getMessage()));
 
-        lines.add(Methods.formatText(instance.getLocale().getMessage("general.hologram.torepair")));
+        lines.add(Methods.formatText(instance.getLocale().getMessage("general.hologram.torepair").getMessage()));
 
         Location location = anvil.getLocation();
 

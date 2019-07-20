@@ -55,7 +55,7 @@ public class CommandManager implements CommandExecutor {
                 }
             }
         }
-        commandSender.sendMessage(instance.references.getPrefix() + Methods.formatText("&7The command you entered does not exist or is spelt incorrectly."));
+        instance.getLocale().newMessage("&7The command you entered does not exist or is spelt incorrectly.").sendPrefixedMessage(commandSender);
         return true;
     }
 
@@ -67,12 +67,12 @@ public class CommandManager implements CommandExecutor {
         if (command.getPermissionNode() == null || sender.hasPermission(command.getPermissionNode())) {
             AbstractCommand.ReturnType returnType = command.runCommand(instance, sender, strings);
             if (returnType == AbstractCommand.ReturnType.SYNTAX_ERROR) {
-                sender.sendMessage(instance.references.getPrefix() + Methods.formatText("&cInvalid Syntax!"));
-                sender.sendMessage(instance.references.getPrefix() + Methods.formatText("&7The valid syntax is: &6" + command.getSyntax() + "&7."));
+                instance.getLocale().newMessage("&cInvalid Syntax!").sendPrefixedMessage(sender);
+                instance.getLocale().newMessage("&7The valid syntax is: &6" + command.getSyntax() + "&7.").sendPrefixedMessage(sender);
             }
             return;
         }
-        sender.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.general.nopermission"));
+        instance.getLocale().newMessage("event.general.nopermission").sendPrefixedMessage(sender);
     }
 
     public List<AbstractCommand> getCommands() {
