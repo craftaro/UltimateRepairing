@@ -6,7 +6,6 @@ import com.songoda.ultimaterepairing.anvil.PlayerAnvilData.RepairType;
 import com.songoda.ultimaterepairing.utils.Debugger;
 import com.songoda.ultimaterepairing.utils.Methods;
 import com.songoda.ultimaterepairing.utils.ServerVersion;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -14,7 +13,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -269,18 +267,14 @@ public class RepairHandler {
             RepairType type = playerData.getType();
             ItemStack players = playerData.getToBeRepaired();
 
-            boolean economy = false;
             boolean sold = false;
-            if (instance.getServer().getPluginManager().getPlugin("Vault") != null && type == RepairType.ECONOMY) {
-                RegisteredServiceProvider<Economy> rsp = instance.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-                net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
+            if (type == RepairType.ECONOMY && instance.getEconomy() != null) {
                 int price = playerData.getPrice();
 
-                if (econ.has(player, price)) {
-                    econ.withdrawPlayer(player, price);
+                if (instance.getEconomy().hasBalance(player, price)) {
+                    instance.getEconomy().withdrawBalance(player, price);
                     sold = true;
                 }
-                economy = true;
             }
 
             int cost = Methods.getCost(type, players);
@@ -355,12 +349,9 @@ public class RepairHandler {
             }
 
             if (type == RepairType.ECONOMY) {
-                if (!economy)
-                    player.sendMessage("Vault is not installed.");
-                else
-                    instance.getLocale().getMessage("event.repair.notenough")
-                            .processPlaceholder("type", instance.getLocale().getMessage("interface.repair.eco").getMessage())
-                            .sendPrefixedMessage(player);
+                instance.getLocale().getMessage("event.repair.notenough")
+                        .processPlaceholder("type", instance.getLocale().getMessage("interface.repair.eco").getMessage())
+                        .sendPrefixedMessage(player);
             } else if (type == RepairType.XP)
                 instance.getLocale().getMessage("event.repair.notenough")
                         .processPlaceholder("type", instance.getLocale().getMessage("interface.repair.xp").getMessage())
