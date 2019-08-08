@@ -106,7 +106,7 @@ public class Methods {
             if (item.getType().name().contains("STONE"))
                 return Material.STONE;
             if (item.getType().name().contains("WOOD"))
-                return Material.OAK_WOOD;
+                return UltimateRepairing.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_WOOD : Material.valueOf("WOOD");
         }
         return Material.valueOf(UltimateRepairing.getInstance().getConfig().getString("Interfaces.Item Icon"));
     }
