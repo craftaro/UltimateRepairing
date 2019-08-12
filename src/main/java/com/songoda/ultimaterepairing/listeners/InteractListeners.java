@@ -35,7 +35,7 @@ public class InteractListeners implements Listener {
 
             UAnvil anvil1 = instance.getAnvilManager().getAnvil(event.getClickedBlock());
 
-            if (event.getClickedBlock().getType() != Material.ANVIL
+            if (!event.getClickedBlock().getType().name().contains("ANVIL")
                     || !(anvil1.isPermPlaced()
                     || !instance.getConfig().getBoolean("Main.Require Permission On UltimateRepairing Anvil Place"))) {
                 return;

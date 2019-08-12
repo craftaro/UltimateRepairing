@@ -41,7 +41,7 @@ public class BlockListeners implements Listener {
         try {
             String loc = Methods.serializeLocation(event.getBlock());
 
-            if (!event.getBlock().getType().equals(Material.ANVIL) && !instance.getConfig().contains("data.anvil." + loc)) {
+            if (!event.getBlock().getType().name().contains("ANVIL") && !instance.getConfig().contains("data.anvil." + loc)) {
                 return;
             }
 
