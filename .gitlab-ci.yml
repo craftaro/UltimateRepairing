@@ -4,7 +4,7 @@ stages:
 variables:
   name: "UltimateRepairing"
   path: "/builds/$CI_PROJECT_PATH"
-  version: "1.2.9"
+  version: "1.2.10"
 
 build:
   stage: build
