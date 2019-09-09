@@ -1,12 +1,13 @@
 package com.songoda.ultimaterepairing.utils;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData.RepairType;
+import com.songoda.ultimaterepairing.settings.Settings;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -18,33 +19,9 @@ import java.util.*;
  */
 public class Methods {
 
-    public static ItemStack getGlass() {
-        UltimateRepairing instance = UltimateRepairing.getInstance();
-        return Methods.getGlass(instance.getConfig().getBoolean("Interfaces.Replace Glass Type 1 With Rainbow Glass"), instance.getConfig().getInt("Interfaces.Glass Type 1"));
-    }
-
-    public static ItemStack getBackgroundGlass(boolean type) {
-        UltimateRepairing instance = UltimateRepairing.getInstance();
-        if (type)
-            return getGlass(false, instance.getConfig().getInt("Interfaces.Glass Type 2"));
-        else
-            return getGlass(false, instance.getConfig().getInt("Interfaces.Glass Type 3"));
-    }
-
-    private static ItemStack getGlass(Boolean rainbow, int type) {
-        int randomNum = 1 + (int) (Math.random() * 6);
-        ItemStack glass;
-        if (rainbow) {
-            glass = new ItemStack(UltimateRepairing.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ?
-                    Material.LEGACY_STAINED_GLASS_PANE :  Material.valueOf("STAINED_GLASS_PANE"), 1, (short) randomNum);
-        } else {
-            glass = new ItemStack(UltimateRepairing.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ?
-                    Material.LEGACY_STAINED_GLASS_PANE :  Material.valueOf("STAINED_GLASS_PANE"), 1, (short) type);
-        }
-        ItemMeta glassmeta = glass.getItemMeta();
-        glassmeta.setDisplayName("§l");
-        glass.setItemMeta(glassmeta);
-        return glass;
+    static Random rand = new Random();
+    public static CompatibleMaterial getRainbowGlass() {
+        return CompatibleMaterial.getGlassPaneColor(rand.nextInt(16));
     }
 
     public static int getCost(RepairType type, ItemStack item) {
@@ -53,9 +30,9 @@ public class Methods {
             ScriptEngineManager mgr = new ScriptEngineManager();
             ScriptEngine engine = mgr.getEngineByName("JavaScript");
 
-            String equationXP = UltimateRepairing.getInstance().getConfig().getString("Main.Experience Cost Equation");
-            String equationECO = UltimateRepairing.getInstance().getConfig().getString("Main.Economy Cost Equation");
-            String equationITEM = UltimateRepairing.getInstance().getConfig().getString("Main.Item Cost Equation");
+            String equationXP = Settings.EXPERIENCE_EQUATION.getString();
+            String equationECO = Settings.ECONOMY_EQUATION.getString();
+            String equationITEM = Settings.ITEM_EQUATION.getString();
 
             equationXP = equationXP.replace("{MaxDurability}", Short.toString(item.getType().getMaxDurability()))
                     .replace("{Durability}", Short.toString(item.getDurability()));
@@ -94,42 +71,23 @@ public class Methods {
     }
 
     public static Material getType(ItemStack item) {
-        if (UltimateRepairing.getInstance().getConfig().getBoolean("Main.Repair Items Only With Items Of That Items Type")) {
+        if (Settings.REPAIR_ONLY_SAME_TYPE.getBoolean()) {
             if (item.getType().name().contains("DIAMOND"))
-                return Material.DIAMOND;
+                return CompatibleMaterial.DIAMOND.getMaterial();
             if (item.getType().name().contains("IRON"))
-                return Material.IRON_INGOT;
+                return CompatibleMaterial.IRON_INGOT.getMaterial();
             if (item.getType().name().contains("GOLD"))
-                return Material.GOLD_INGOT;
+                return CompatibleMaterial.GOLD_INGOT.getMaterial();
             if (item.getType().name().contains("LEATHER"))
-                return Material.LEATHER;
+                return CompatibleMaterial.LEATHER.getMaterial();
             if (item.getType().name().contains("STONE"))
-                return Material.STONE;
+                return CompatibleMaterial.STONE.getMaterial();
             if (item.getType().name().contains("WOOD"))
-                return Material.OAK_WOOD;
+                return CompatibleMaterial.OAK_WOOD.getMaterial();
         }
-        return Material.valueOf(UltimateRepairing.getInstance().getConfig().getString("Interfaces.Item Icon"));
+        return Settings.ITEM_ICON.getMaterial(CompatibleMaterial.DIAMOND).getMaterial();
     }
 
-    public static ItemStack createButton(ItemStack item, String name, String... lore) {
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(formatText(name));
-        if (lore != null && lore.length != 0) {
-            List<String> newLore = new ArrayList<>();
-            for (String line : lore) newLore.add(formatText(line));
-            meta.setLore(newLore);
-        }
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    public static ItemStack createButton(Material material, String name, String... lore) {
-        return createButton(new ItemStack(material), name, lore);
-    }
-
-    public static ItemStack createButton(Material material, String name, ArrayList<String> lore) {
-        return createButton(material, name, lore.toArray(new String[0]));
-    }
     public static boolean isAnvil(Material material){
         return material.equals(Material.ANVIL) || material.equals(Material.CHIPPED_ANVIL) || material.equals(Material.DAMAGED_ANVIL);
     }
@@ -234,19 +192,6 @@ public class Methods {
         Location location = new Location(world, x, y, z, 0, 0);
         serializeCache.put(cacheKey, location.clone());
         return location;
-    }
-
-
-
-    public static String formatTitle(String text) {
-        if (text == null || text.equals(""))
-            return "";
-        if (!UltimateRepairing.getInstance().isServerVersionAtLeast(ServerVersion.V1_9)) {
-            if (text.length() > 31)
-                text = text.substring(0, 29) + "...";
-        }
-        text = formatText(text);
-        return text;
     }
 
     public static String formatText(String text) {

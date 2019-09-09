@@ -22,10 +22,11 @@ public class BlockListeners implements Listener {
         this.instance = instance;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         try {
-            if (!event.getPlayer().hasPermission("ultimaterepairing.permPlace") || !event.getBlockPlaced().getType().equals(Material.ANVIL)) {
+            if (!Methods.isAnvil(event.getBlockPlaced().getType())
+                    || !event.getPlayer().hasPermission("ultimaterepairing.permPlace")) {
                 return;
             }
 
@@ -36,7 +37,7 @@ public class BlockListeners implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         try {
             String loc = Methods.serializeLocation(event.getBlock());

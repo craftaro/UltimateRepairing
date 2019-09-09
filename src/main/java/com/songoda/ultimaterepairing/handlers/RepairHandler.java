@@ -1,24 +1,29 @@
 package com.songoda.ultimaterepairing.handlers;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.compatibility.CompatibleSound;
+import com.songoda.core.gui.GuiManager;
+import com.songoda.core.hooks.EconomyManager;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData.RepairType;
+import com.songoda.ultimaterepairing.gui.RepairTypeGui;
+import com.songoda.ultimaterepairing.gui.StartConfirmGui;
 import com.songoda.ultimaterepairing.utils.Debugger;
 import com.songoda.ultimaterepairing.utils.Methods;
-import com.songoda.ultimaterepairing.utils.ServerVersion;
-import org.bukkit.*;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.util.Vector;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import org.bukkit.Bukkit;
+import org.bukkit.Effect;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.util.Vector;
 
 /**
  * Created by songoda on 2/25/2017.
@@ -26,90 +31,33 @@ import java.util.UUID;
 public class RepairHandler {
 
     private final UltimateRepairing instance;
+    private final GuiManager guiManager;
 
     private final Map<UUID, PlayerAnvilData> playerAnvilData = new HashMap<>();
 
-    public RepairHandler(UltimateRepairing instance) {
+    public RepairHandler(UltimateRepairing instance, GuiManager guiManager) {
         this.instance = instance;
+        this.guiManager = guiManager;
     }
 
-    private void repairType(Player p) {
+    private void repairType(Player p, Location l) {
         try {
             if (getDataFor(p).getInRepair()) {
                 yesNo(p, getDataFor(p).getType(), getDataFor(p).getToBeRepaired());
-                return;
+            } else {
+                guiManager.showGUI(p, new RepairTypeGui(p, l));
             }
-            Inventory i = Bukkit.createInventory(null, 27, Methods.formatText(instance.getLocale().getMessage("interface.repair.title").getMessage()));
-
-            int nu = 0;
-            while (nu != 27) {
-                i.setItem(nu, Methods.getGlass());
-                nu++;
-            }
-
-            ItemStack item = new ItemStack(Material.valueOf(instance.getConfig().getString("Interfaces.Economy Icon")), 1);
-            ItemMeta itemmeta = item.getItemMeta();
-            ArrayList<String> lore = new ArrayList<>();
-            lore.add(instance.getLocale().getMessage("interface.repair.ecolore").getMessage());
-            itemmeta.setLore(lore);
-            itemmeta.setDisplayName(instance.getLocale().getMessage("interface.repair.eco").getMessage());
-            item.setItemMeta(itemmeta);
-
-            Material mat = Methods.getType(p.getItemInHand());
-
-            ItemStack item3 = new ItemStack(mat, 1);
-            String name = (mat.name().substring(0, 1).toUpperCase() + mat.name().toLowerCase().substring(1)).replace("_", " ");
-            ItemMeta itemmeta3 = item3.getItemMeta();
-            ArrayList<String> lore3 = new ArrayList<>();
-            lore3.add(instance.getLocale().getMessage("interface.repair.itemlore")
-                    .processPlaceholder("item", name).getMessage());
-            itemmeta3.setLore(lore3);
-            itemmeta3.setDisplayName(instance.getLocale().getMessage("interface.repair.item")
-                    .processPlaceholder("ITEM", name).getMessage());
-            item3.setItemMeta(itemmeta3);
-
-            ItemStack item2 = new ItemStack(Material.valueOf(instance.getConfig().getString("Interfaces.XP Icon")), 1);
-            ItemMeta itemmeta2 = item2.getItemMeta();
-            ArrayList<String> lore2 = new ArrayList<>();
-            lore2.add(instance.getLocale().getMessage("interface.repair.xplore").getMessage());
-            itemmeta2.setLore(lore2);
-            itemmeta2.setDisplayName(instance.getLocale().getMessage("interface.repair.xp").getMessage());
-            item2.setItemMeta(itemmeta2);
-
-            if (p.hasPermission("ultimaterepairing.use.ECO"))
-                i.setItem(11, item);
-            if (p.hasPermission("ultimaterepairing.use.ITEM"))
-                i.setItem(13, item3);
-            if (p.hasPermission("ultimaterepairing.use.XP"))
-                i.setItem(15, item2);
-
-            i.setItem(0, Methods.getBackgroundGlass(true));
-            i.setItem(1, Methods.getBackgroundGlass(true));
-            i.setItem(2, Methods.getBackgroundGlass(false));
-            i.setItem(6, Methods.getBackgroundGlass(false));
-            i.setItem(7, Methods.getBackgroundGlass(true));
-            i.setItem(8, Methods.getBackgroundGlass(true));
-            i.setItem(9, Methods.getBackgroundGlass(true));
-            i.setItem(10, Methods.getBackgroundGlass(false));
-            i.setItem(16, Methods.getBackgroundGlass(false));
-            i.setItem(17, Methods.getBackgroundGlass(true));
-            i.setItem(18, Methods.getBackgroundGlass(true));
-            i.setItem(19, Methods.getBackgroundGlass(true));
-            i.setItem(20, Methods.getBackgroundGlass(false));
-            i.setItem(24, Methods.getBackgroundGlass(false));
-            i.setItem(25, Methods.getBackgroundGlass(true));
-            i.setItem(26, Methods.getBackgroundGlass(true));
-
-            p.openInventory(i);
         } catch (Exception ex) {
             Debugger.runReport(ex);
         }
     }
 
 
-    public void preRepair(Player player, RepairType type, Location loc) {
+    public void preRepair(Player player, RepairType type, Location anvil) {
         try {
-            Item item = player.getWorld().dropItem(loc.add(0.5, 2, 0.5), player.getItemInHand());
+            ItemStack itemStack = player.getItemInHand();
+            player.setItemInHand(null);
+            Item item = player.getWorld().dropItem(anvil.add(0.5, 2, 0.5), itemStack);
 
             // Support for EpicHoppers suction.
             item.setMetadata("grabbed", new FixedMetadataValue(instance, "true"));
@@ -126,13 +74,11 @@ public class RepairHandler {
             // Get from Map, put new instance in Map if it doesn't exist
             PlayerAnvilData playerData = playerAnvilData.computeIfAbsent(player.getUniqueId(), uuid -> new PlayerAnvilData());
             playerData.setItem(item);
-            playerData.setToBeRepaired(player.getItemInHand());
-            playerData.setLocations(loc.add(0, -2, 0));
+            playerData.setToBeRepaired(itemStack);
+            playerData.setLocations(anvil.add(0, -2, 0));
 
-            yesNo(player, type, player.getItemInHand());
+            yesNo(player, type, itemStack);
 
-
-            player.setItemInHand(null);
             Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
                 if (item.isValid() && !playerData.isBeingRepaired()) {
 
@@ -147,17 +93,8 @@ public class RepairHandler {
         }
     }
 
-    public void initRepair(Player player, Location location) {
-        int num = 0;
-        if (player.hasPermission("ultimaterepairing.use.ECO"))
-            num++;
-        if (player.hasPermission("ultimaterepairing.use.XP"))
-            num++;
-        if (player.hasPermission("ultimaterepairing.use.ITEM"))
-            num++;
-
-
-        if (location.add(0, 1, 0).getBlock().getType() != Material.AIR) {
+    public void initRepair(Player player, Location anvil) {
+        if (anvil.add(0, 1, 0).getBlock().getType() != Material.AIR) {
             instance.getLocale().getMessage("event.repair.needspace").sendPrefixedMessage(player);
             return;
         }
@@ -170,15 +107,24 @@ public class RepairHandler {
             return;
         }
 
+        int num = 0;
+        if (player.hasPermission("ultimaterepairing.use.ECO"))
+            num++;
+        if (player.hasPermission("ultimaterepairing.use.XP"))
+            num++;
+        if (num != 2 && player.hasPermission("ultimaterepairing.use.ITEM"))
+            num++;
+
+
         if (num >= 2 || player.hasPermission("ultimaterepairing.use.*")) {
-            repairType(player);
-            getDataFor(player).setLocation(location);
+            repairType(player, anvil);
+            getDataFor(player).setLocation(anvil);
         } else if (player.hasPermission("ultimaterepairing.use.eco"))
-            instance.getRepairHandler().preRepair(player, RepairType.ECONOMY, location);
+            instance.getRepairHandler().preRepair(player, RepairType.ECONOMY, anvil);
         else if (player.hasPermission("ultimaterepairing.use.XP"))
-            instance.getRepairHandler().preRepair(player, RepairType.XP, location);
+            instance.getRepairHandler().preRepair(player, RepairType.XP, anvil);
         else if (player.hasPermission("ultimaterepairing.use.ITEM"))
-            instance.getRepairHandler().preRepair(player, RepairType.ITEM, location);
+            instance.getRepairHandler().preRepair(player, RepairType.ITEM, anvil);
     }
 
     private void yesNo(Player p, RepairType type, ItemStack item) {
@@ -189,66 +135,12 @@ public class RepairHandler {
                 return;
             }
 
-            playerData.setInRepair(true);
-
             int price = Methods.getCost(type, item);
-            String cost = "0";
-
-            Material mat = Methods.getType(item);
-            String name = Methods.formatText(mat.name(), true);
-
-            if (type == RepairType.XP)
-                cost = price + " XP";
-            else if (type == RepairType.ECONOMY)
-                cost = "\\$" + price;
-            else if (type == RepairType.ITEM)
-                cost = price + " " + name;
-
-            Inventory inventory = Bukkit.createInventory(null, 27,
-                    Methods.formatTitle(instance.getLocale().getMessage("interface.yesno.title")
-                            .processPlaceholder("cost", cost).getMessage()));
-
-            int nu = 0;
-            while (nu != 27) {
-                inventory.setItem(nu, Methods.getGlass());
-                nu++;
-            }
-
-            ItemStack item2 = new ItemStack(Material.valueOf(instance.getConfig().getString("Interfaces.Buy Icon")), 1);
-            ItemMeta itemmeta2 = item2.getItemMeta();
-            itemmeta2.setDisplayName(instance.getLocale().getMessage("interface.yesno.yes").getMessage());
-            item2.setItemMeta(itemmeta2);
-
-            ItemStack item3 = new ItemStack(Material.valueOf(instance.getConfig().getString("Interfaces.Exit Icon")), 1);
-            ItemMeta itemmeta3 = item3.getItemMeta();
-            itemmeta3.setDisplayName(instance.getLocale().getMessage("interface.yesno.no").getMessage());
-            item3.setItemMeta(itemmeta3);
-
-            inventory.setItem(4, item);
-            inventory.setItem(11, item2);
-            inventory.setItem(15, item3);
-
-            Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> p.openInventory(inventory), 1);
-
+            playerData.setInRepair(true);
             playerData.setType(type);
             playerData.setPrice(price);
 
-            inventory.setItem(0, Methods.getBackgroundGlass(true));
-            inventory.setItem(1, Methods.getBackgroundGlass(true));
-            inventory.setItem(2, Methods.getBackgroundGlass(false));
-            inventory.setItem(6, Methods.getBackgroundGlass(false));
-            inventory.setItem(7, Methods.getBackgroundGlass(true));
-            inventory.setItem(8, Methods.getBackgroundGlass(true));
-            inventory.setItem(9, Methods.getBackgroundGlass(true));
-            inventory.setItem(10, Methods.getBackgroundGlass(false));
-            inventory.setItem(16, Methods.getBackgroundGlass(false));
-            inventory.setItem(17, Methods.getBackgroundGlass(true));
-            inventory.setItem(18, Methods.getBackgroundGlass(true));
-            inventory.setItem(19, Methods.getBackgroundGlass(true));
-            inventory.setItem(20, Methods.getBackgroundGlass(false));
-            inventory.setItem(24, Methods.getBackgroundGlass(false));
-            inventory.setItem(25, Methods.getBackgroundGlass(true));
-            inventory.setItem(26, Methods.getBackgroundGlass(true));
+            guiManager.showGUI(p, new StartConfirmGui(playerData.getLocation(), type, p, item));
 
         } catch (Exception ex) {
             Debugger.runReport(ex);
@@ -268,11 +160,11 @@ public class RepairHandler {
             ItemStack players = playerData.getToBeRepaired();
 
             boolean sold = false;
-            if (type == RepairType.ECONOMY && instance.getEconomy() != null) {
+            if (type == RepairType.ECONOMY && EconomyManager.isEnabled()) {
                 int price = playerData.getPrice();
 
-                if (instance.getEconomy().hasBalance(player, price)) {
-                    instance.getEconomy().withdrawBalance(player, price);
+                if(EconomyManager.hasBalance(player, price)) {
+                    EconomyManager.withdrawBalance(player, price);
                     sold = true;
                 }
             }
@@ -303,7 +195,7 @@ public class RepairHandler {
                 } else if (typeStr.contains("STONE")) {
                     blockType = Material.STONE;
                 } else if (typeStr.contains("WOOD")) {
-                    blockType = instance.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_PLANKS : Material.valueOf("WOOD");
+                    blockType = CompatibleMaterial.OAK_WOOD.getMaterial();
                 }
 
                 final Material blockTypeFinal = blockType;
@@ -315,18 +207,12 @@ public class RepairHandler {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
                     player.getWorld().playEffect(location, effect, blockTypeFinal);
                     player.getWorld().playEffect(location, effect, Material.STONE);
-                    if (instance.isServerVersion(ServerVersion.V1_8))
-                        player.playSound(location, Sound.valueOf("ANVIL_LAND"), 1L, 1L);
-                    else
-                        player.playSound(location, Sound.valueOf("BLOCK_ANVIL_LAND"), 1L, 1L);
+                    CompatibleSound.BLOCK_ANVIL_LAND.play(player);
                 }, 10L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, runnable, 15L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, runnable, 20L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
-                    if (instance.isServerVersion(ServerVersion.V1_8))
-                        player.playSound(location, Sound.valueOf("ANVIL_LAND"), 1L, 1L);
-                    else
-                        player.playSound(location, Sound.valueOf("BLOCK_ANVIL_LAND"), 1L, 1L);
+                    CompatibleSound.BLOCK_ANVIL_LAND.play(player);
                     player.getWorld().playEffect(location, effect, blockTypeFinal);
                     player.getWorld().playEffect(location, effect, Material.ANVIL);
                     instance.getLocale().getMessage("event.repair.success").sendPrefixedMessage(player);
@@ -360,6 +246,8 @@ public class RepairHandler {
                 instance.getLocale().getMessage("event.repair.notenough")
                         .processPlaceholder("type", name).sendPrefixedMessage(player);
 
+            // we've failed to repair, so return the item
+            removeItem(playerData, player);
 
         } catch (Exception ex) {
             Debugger.runReport(ex);

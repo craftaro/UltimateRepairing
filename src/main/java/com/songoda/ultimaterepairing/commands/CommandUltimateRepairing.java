@@ -1,23 +1,25 @@
-package com.songoda.ultimaterepairing.command.commands;
+package com.songoda.ultimaterepairing.commands;
 
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimaterepairing.UltimateRepairing;
-import com.songoda.ultimaterepairing.command.AbstractCommand;
 import com.songoda.ultimaterepairing.utils.Methods;
+import java.util.List;
 import org.bukkit.command.CommandSender;
 
 public class CommandUltimateRepairing extends AbstractCommand {
 
     public CommandUltimateRepairing() {
-        super("UltimateRepairing", null, false);
+        super(false, "UltimateRepairing");
     }
 
     @Override
-    protected ReturnType runCommand(UltimateRepairing instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(CommandSender sender, String... args) {
         sender.sendMessage("");
+        UltimateRepairing instance = UltimateRepairing.getInstance();
         instance.getLocale().newMessage("&7Version " + instance.getDescription().getVersion()
                 + " Created with <3 by &5&l&oSongoda").sendPrefixedMessage(sender);
 
-        for (AbstractCommand command : instance.getCommandManager().getCommands()) {
+        for (AbstractCommand command : instance.getCommandManager().getAllCommands()) {
             if (command.getPermissionNode() == null || sender.hasPermission(command.getPermissionNode())) {
                 sender.sendMessage(Methods.formatText("&8 - &a" + command.getSyntax() + "&7 - " + command.getDescription()));
             }
@@ -25,6 +27,11 @@ public class CommandUltimateRepairing extends AbstractCommand {
         sender.sendMessage("");
 
         return ReturnType.SUCCESS;
+    }
+
+    @Override
+    protected List<String> onTab(CommandSender cs, String... strings) {
+        return null;
     }
 
     @Override

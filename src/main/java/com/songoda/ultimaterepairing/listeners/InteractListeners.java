@@ -1,10 +1,13 @@
 package com.songoda.ultimaterepairing.listeners;
 
+import com.songoda.core.gui.GuiManager;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.UAnvil;
+import com.songoda.ultimaterepairing.gui.AnvilSettingsGui;
+import com.songoda.ultimaterepairing.settings.Settings;
 import com.songoda.ultimaterepairing.utils.Debugger;
+import com.songoda.ultimaterepairing.utils.Methods;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,57 +23,62 @@ import org.bukkit.inventory.Inventory;
 public class InteractListeners implements Listener {
 
     private final UltimateRepairing instance;
+    private final GuiManager guiManager;
 
-    public InteractListeners(UltimateRepairing instance) {
+    public InteractListeners(UltimateRepairing instance, GuiManager guiManager) {
         this.instance = instance;
+        this.guiManager = guiManager;
     }
 
     @EventHandler
     public void onAnvilClick(PlayerInteractEvent event) {
         try {
-            boolean repair = false;
-            boolean anvil = false;
+            boolean ourRepair = false;
+            boolean vanillaRepair = false;
             Player player = event.getPlayer();
             if (event.getClickedBlock() == null) return;
 
-            UAnvil anvil1 = instance.getAnvilManager().getAnvil(event.getClickedBlock());
+            UAnvil anvil1 = null;
 
-            if (event.getClickedBlock().getType() != Material.ANVIL
-                    || !(anvil1.isPermPlaced()
-                    || !instance.getConfig().getBoolean("Main.Require Permission On UltimateRepairing Anvil Place"))) {
+            if (!Methods.isAnvil(event.getClickedBlock().getType()) // don't pay attention if it's not an anvil
+                    // also don't handle if we don't have perms to use this repair anvil
+                    || !(Settings.PERMISSION_ANVIL_PLACE.getBoolean()
+                    || !((anvil1 = instance.getAnvilManager().getAnvil(event.getClickedBlock())).isPermPlaced()))) {
                 return;
             }
-            if (anvil1.isInfinity()) {
-                event.getClickedBlock().setType(Material.AIR);
-                event.getClickedBlock().setType(Material.ANVIL); //ToDO: This may not work.
-            }
-            if (!instance.getConfig().getBoolean("Main.Enable Default Anvil Function") && !player.isSneaking())
+            anvil1 = anvil1 != null ? anvil1 : instance.getAnvilManager().getAnvil(event.getClickedBlock());
+//            if (anvil1.isInfinity()) {
+//                event.getClickedBlock().setType(Material.AIR);
+//                event.getClickedBlock().setType(Material.ANVIL); //ToDO: This may not work.
+//            }
+            // check if we should process this as a right click
+            boolean rightClick = (event.getAction() == Action.RIGHT_CLICK_BLOCK) ^ (Settings.SWAP_LEFT_RIGHT.getBoolean());
+            // admin interface?
+            if(rightClick && player.isSneaking() && player.hasPermission("ultimaterepairing.admin")) {
+                guiManager.showGUI(player, new AnvilSettingsGui(anvil1));
                 event.setCancelled(true);
-            if (event.getAction() == Action.RIGHT_CLICK_BLOCK &&
-                    !player.isSneaking()) {
-                if (instance.getConfig().getBoolean("Main.Swap Right And Left Click Options"))
-                    repair = true;
-                else if (!instance.getConfig().getBoolean("Main.Enable Default Anvil Function"))
-                    repair = true;
-            } else if (event.getAction() == Action.LEFT_CLICK_BLOCK &&
-                    !player.isSneaking()) {
-                if (instance.getConfig().getBoolean("Main.Swap Right And Left Click Options")) {
-                    if (instance.getConfig().getBoolean("Main.Enable Default Anvil Function"))
-                        anvil = true;
-                    else
-                        repair = true;
-                } else
-                    repair = true;
-            } else if (player.isSneaking()
-                    && player.hasPermission("ultimaterepairing.admin")
-                    && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                instance.getEditor().open(player, event.getClickedBlock());
-                event.setCancelled(true);
+            } else if (!Settings.ENABLE_ANVIL_DEFAULT_FUNCTION.getBoolean()) {
+                // if not allowing default anvil, then always use ourRepair
+                if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    event.setCancelled(true);
+                }
+                // replace our functions for vanilla mechanics only
+                if(!rightClick) {
+                    return;
+                }
+                ourRepair = true;
+            } else if(rightClick) {
+                // allowing normal repair
+                vanillaRepair = true;
+            } else if(!player.isSneaking()) {
+                // that's us!
+                ourRepair = true;
             }
-            if (repair) {
+
+            if (ourRepair) {
                 instance.getRepairHandler().initRepair(player, event.getClickedBlock().getLocation());
                 event.setCancelled(true);
-            } else if (anvil && instance.getConfig().getBoolean("Main.Enable Default Anvil Function")) {
+            } else if (vanillaRepair && anvil1.isInfinity()) {
                 Inventory inv = Bukkit.createInventory(null, InventoryType.ANVIL, "Repair & Name");
                 player.openInventory(inv);
                 event.setCancelled(true);
