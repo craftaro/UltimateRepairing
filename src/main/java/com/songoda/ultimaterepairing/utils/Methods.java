@@ -88,10 +88,6 @@ public class Methods {
         return Settings.ITEM_ICON.getMaterial(CompatibleMaterial.DIAMOND).getMaterial();
     }
 
-    public static boolean isAnvil(Material material){
-        return material.equals(Material.ANVIL) || material.equals(Material.CHIPPED_ANVIL) || material.equals(Material.DAMAGED_ANVIL);
-    }
-
     /**
      * Checks if the inventory contains the specified item.
      *

@@ -40,7 +40,7 @@ public class InteractListeners implements Listener {
 
             UAnvil anvil1 = null;
 
-            if (!Methods.isAnvil(event.getClickedBlock().getType()) // don't pay attention if it's not an anvil
+            if (!event.getClickedBlock().getType().name().contains("ANVIL") // don't pay attention if it's not an anvil
                     // also don't handle if we don't have perms to use this repair anvil
                     || !(Settings.PERMISSION_ANVIL_PLACE.getBoolean()
                     || !((anvil1 = instance.getAnvilManager().getAnvil(event.getClickedBlock())).isPermPlaced()))) {
