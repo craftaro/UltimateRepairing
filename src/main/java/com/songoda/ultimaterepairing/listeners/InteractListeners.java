@@ -6,7 +6,6 @@ import com.songoda.ultimaterepairing.anvil.UAnvil;
 import com.songoda.ultimaterepairing.gui.AnvilSettingsGui;
 import com.songoda.ultimaterepairing.settings.Settings;
 import com.songoda.ultimaterepairing.utils.Debugger;
-import com.songoda.ultimaterepairing.utils.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,8 +41,8 @@ public class InteractListeners implements Listener {
 
             if (!event.getClickedBlock().getType().name().contains("ANVIL") // don't pay attention if it's not an anvil
                     // also don't handle if we don't have perms to use this repair anvil
-                    || !(Settings.PERMISSION_ANVIL_PLACE.getBoolean()
-                    || !((anvil1 = instance.getAnvilManager().getAnvil(event.getClickedBlock())).isPermPlaced()))) {
+                    || (Settings.PERMISSION_ANVIL_PLACE.getBoolean()
+                    && !(anvil1 = instance.getAnvilManager().getAnvil(event.getClickedBlock())).isPermPlaced())) {
                 return;
             }
             anvil1 = anvil1 != null ? anvil1 : instance.getAnvilManager().getAnvil(event.getClickedBlock());
