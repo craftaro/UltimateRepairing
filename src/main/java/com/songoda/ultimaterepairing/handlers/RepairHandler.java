@@ -1,26 +1,29 @@
 package com.songoda.ultimaterepairing.handlers;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.compatibility.CompatibleSound;
+import com.songoda.core.gui.GuiManager;
+import com.songoda.core.hooks.EconomyManager;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData.RepairType;
+import com.songoda.ultimaterepairing.gui.RepairTypeGui;
+import com.songoda.ultimaterepairing.gui.StartConfirmGui;
 import com.songoda.ultimaterepairing.utils.Debugger;
 import com.songoda.ultimaterepairing.utils.Methods;
-import com.songoda.ultimaterepairing.utils.ServerVersion;
-import net.milkbowl.vault.economy.Economy;
-import org.bukkit.*;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.util.Vector;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import org.bukkit.Bukkit;
+import org.bukkit.Effect;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.util.Vector;
 
 /**
  * Created by songoda on 2/25/2017.
@@ -28,116 +31,60 @@ import java.util.UUID;
 public class RepairHandler {
 
     private final UltimateRepairing instance;
+    private final GuiManager guiManager;
 
     private final Map<UUID, PlayerAnvilData> playerAnvilData = new HashMap<>();
 
-    public RepairHandler(UltimateRepairing instance) {
+    public RepairHandler(UltimateRepairing instance, GuiManager guiManager) {
         this.instance = instance;
+        this.guiManager = guiManager;
     }
 
-    private void repairType(Player p) {
+    private void repairType(Player p, Location l) {
         try {
             if (getDataFor(p).getInRepair()) {
                 yesNo(p, getDataFor(p).getType(), getDataFor(p).getToBeRepaired());
-                return;
+            } else {
+                guiManager.showGUI(p, new RepairTypeGui(p, l));
             }
-            Inventory i = Bukkit.createInventory(null, 27, Methods.formatText(instance.getLocale().getMessage("interface.repair.title")));
-
-            int nu = 0;
-            while (nu != 27) {
-                i.setItem(nu, Methods.getGlass());
-                nu++;
-            }
-
-            ItemStack item = new ItemStack(Material.valueOf(instance.getConfig().getString("Interfaces.Economy Icon")), 1);
-            ItemMeta itemmeta = item.getItemMeta();
-            ArrayList<String> lore = new ArrayList<>();
-            lore.add(instance.getLocale().getMessage("interface.repair.ecolore"));
-            itemmeta.setLore(lore);
-            itemmeta.setDisplayName(instance.getLocale().getMessage("interface.repair.eco"));
-            item.setItemMeta(itemmeta);
-
-            Material mat = Methods.getType(p.getItemInHand());
-
-            ItemStack item3 = new ItemStack(mat, 1);
-            String name = (mat.name().substring(0, 1).toUpperCase() + mat.name().toLowerCase().substring(1)).replace("_", " ");
-            ItemMeta itemmeta3 = item3.getItemMeta();
-            ArrayList<String> lore3 = new ArrayList<>();
-            lore3.add(instance.getLocale().getMessage("interface.repair.itemlore", name));
-            itemmeta3.setLore(lore3);
-            itemmeta3.setDisplayName(instance.getLocale().getMessage("interface.repair.item", name));
-            item3.setItemMeta(itemmeta3);
-
-            ItemStack item2 = new ItemStack(Material.valueOf(instance.getConfig().getString("Interfaces.XP Icon")), 1);
-            ItemMeta itemmeta2 = item2.getItemMeta();
-            ArrayList<String> lore2 = new ArrayList<>();
-            lore2.add(instance.getLocale().getMessage("interface.repair.xplore"));
-            itemmeta2.setLore(lore2);
-            itemmeta2.setDisplayName(instance.getLocale().getMessage("interface.repair.xp"));
-            item2.setItemMeta(itemmeta2);
-
-            if (p.hasPermission("ultimaterepairing.use.ECO"))
-                i.setItem(11, item);
-            if (p.hasPermission("ultimaterepairing.use.ITEM"))
-                i.setItem(13, item3);
-            if (p.hasPermission("ultimaterepairing.use.XP"))
-                i.setItem(15, item2);
-
-            i.setItem(0, Methods.getBackgroundGlass(true));
-            i.setItem(1, Methods.getBackgroundGlass(true));
-            i.setItem(2, Methods.getBackgroundGlass(false));
-            i.setItem(6, Methods.getBackgroundGlass(false));
-            i.setItem(7, Methods.getBackgroundGlass(true));
-            i.setItem(8, Methods.getBackgroundGlass(true));
-            i.setItem(9, Methods.getBackgroundGlass(true));
-            i.setItem(10, Methods.getBackgroundGlass(false));
-            i.setItem(16, Methods.getBackgroundGlass(false));
-            i.setItem(17, Methods.getBackgroundGlass(true));
-            i.setItem(18, Methods.getBackgroundGlass(true));
-            i.setItem(19, Methods.getBackgroundGlass(true));
-            i.setItem(20, Methods.getBackgroundGlass(false));
-            i.setItem(24, Methods.getBackgroundGlass(false));
-            i.setItem(25, Methods.getBackgroundGlass(true));
-            i.setItem(26, Methods.getBackgroundGlass(true));
-
-            p.openInventory(i);
         } catch (Exception ex) {
             Debugger.runReport(ex);
         }
     }
 
 
-    public void preRepair(Player p, RepairType type, Location loc) {
+    public void preRepair(Player player, RepairType type, Location anvil) {
         try {
-            Item i = p.getWorld().dropItem(loc.add(0.5, 2, 0.5), p.getItemInHand());
+            ItemStack itemStack = player.getItemInHand();
+            player.setItemInHand(null);
+            Item item = player.getWorld().dropItem(anvil.add(0.5, 2, 0.5), itemStack);
 
             // Support for EpicHoppers suction.
-            i.setMetadata("grabbed", new FixedMetadataValue(instance, "true"));
+            item.setMetadata("grabbed", new FixedMetadataValue(instance, "true"));
 
-            i.setMetadata("betterdrops_ignore", new FixedMetadataValue(instance, true));
-            Vector vec = p.getEyeLocation().getDirection();
+            item.setMetadata("betterdrops_ignore", new FixedMetadataValue(instance, true));
+            Vector vec = player.getEyeLocation().getDirection();
             vec.setX(0);
             vec.setY(0);
             vec.setZ(0);
-            i.setVelocity(vec);
-            i.setPickupDelay(3600);
-            i.setMetadata("UltimateRepairing", new FixedMetadataValue(instance, ""));
+            item.setVelocity(vec);
+            item.setPickupDelay(3600);
+            item.setMetadata("UltimateRepairing", new FixedMetadataValue(instance, ""));
 
             // Get from Map, put new instance in Map if it doesn't exist
-            PlayerAnvilData playerData = playerAnvilData.computeIfAbsent(p.getUniqueId(), uuid -> new PlayerAnvilData());
-            playerData.setItem(i);
-            playerData.setToBeRepaired(p.getItemInHand());
-            playerData.setLocations(loc.add(0, -2, 0));
+            PlayerAnvilData playerData = playerAnvilData.computeIfAbsent(player.getUniqueId(), uuid -> new PlayerAnvilData());
+            playerData.setItem(item);
+            playerData.setToBeRepaired(itemStack);
+            playerData.setLocations(anvil.add(0, -2, 0));
 
-            yesNo(p, type, p.getItemInHand());
+            yesNo(player, type, itemStack);
 
-
-            p.setItemInHand(null);
             Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
-                if (i.isValid() && !playerData.isBeingRepaired()) {
-                    p.sendMessage(Methods.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.timeout")));
-                    removeItem(playerData, p);
-                    p.closeInventory();
+                if (item.isValid() && !playerData.isBeingRepaired()) {
+
+                    instance.getLocale().getMessage("event.repair.timeout").sendPrefixedMessage(player);
+                    removeItem(playerData, player);
+                    player.closeInventory();
 
                 }
             }, instance.getConfig().getLong("Main.Time Before Repair Auto Canceled"));
@@ -146,38 +93,38 @@ public class RepairHandler {
         }
     }
 
-    public void initRepair(Player p, Location location) {
+    public void initRepair(Player player, Location anvil) {
+        if (anvil.add(0, 1, 0).getBlock().getType() != Material.AIR) {
+            instance.getLocale().getMessage("event.repair.needspace").sendPrefixedMessage(player);
+            return;
+        }
+        if (player.getItemInHand().getDurability() <= 0) {
+            instance.getLocale().getMessage("event.repair.notdamaged").sendPrefixedMessage(player);
+            return;
+        }
+        if (player.getItemInHand().getMaxStackSize() != 1) {
+            instance.getLocale().getMessage("event.repair.cantrepair").sendPrefixedMessage(player);
+            return;
+        }
+
         int num = 0;
-        if (p.hasPermission("ultimaterepairing.use.ECO"))
+        if (player.hasPermission("ultimaterepairing.use.ECO"))
             num++;
-        if (p.hasPermission("ultimaterepairing.use.XP"))
+        if (player.hasPermission("ultimaterepairing.use.XP"))
             num++;
-        if (p.hasPermission("ultimaterepairing.use.ITEM"))
+        if (num != 2 && player.hasPermission("ultimaterepairing.use.ITEM"))
             num++;
 
 
-        if (location.add(0, 1, 0).getBlock().getType() != Material.AIR) {
-            p.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.needspace"));
-            return;
-        }
-        if (p.getItemInHand().getDurability() <= 0) {
-            p.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notdamaged"));
-            return;
-        }
-        if (p.getItemInHand().getMaxStackSize() != 1) {
-            p.sendMessage(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.cantrepair"));
-            return;
-        }
-
-        if (num >= 2 || p.hasPermission("ultimaterepairing.use.*")) {
-            repairType(p);
-            getDataFor(p).setLocation(location);
-        } else if (p.hasPermission("ultimaterepairing.use.eco"))
-            instance.getRepairHandler().preRepair(p, RepairType.ECONOMY, location);
-        else if (p.hasPermission("ultimaterepairing.use.XP"))
-            instance.getRepairHandler().preRepair(p, RepairType.XP, location);
-        else if (p.hasPermission("ultimaterepairing.use.ITEM"))
-            instance.getRepairHandler().preRepair(p, RepairType.ITEM, location);
+        if (num >= 2 || player.hasPermission("ultimaterepairing.use.*")) {
+            repairType(player, anvil);
+            getDataFor(player).setLocation(anvil);
+        } else if (player.hasPermission("ultimaterepairing.use.eco"))
+            instance.getRepairHandler().preRepair(player, RepairType.ECONOMY, anvil);
+        else if (player.hasPermission("ultimaterepairing.use.XP"))
+            instance.getRepairHandler().preRepair(player, RepairType.XP, anvil);
+        else if (player.hasPermission("ultimaterepairing.use.ITEM"))
+            instance.getRepairHandler().preRepair(player, RepairType.ITEM, anvil);
     }
 
     private void yesNo(Player p, RepairType type, ItemStack item) {
@@ -188,64 +135,12 @@ public class RepairHandler {
                 return;
             }
 
-            playerData.setInRepair(true);
-
             int price = Methods.getCost(type, item);
-            String cost = "0";
-
-            Material mat = new Methods().getType(item);
-            String name = Methods.formatText(mat.name(), true);
-
-            if (type == RepairType.XP)
-                cost = price + " XP";
-            else if (type == RepairType.ECONOMY)
-                cost = "\\$" + price;
-            else if (type == RepairType.ITEM)
-                cost = price + " " + name;
-
-            Inventory i = Bukkit.createInventory(null, 27, Methods.formatTitle(instance.getLocale().getMessage("interface.yesno.title", cost)));
-
-            int nu = 0;
-            while (nu != 27) {
-                i.setItem(nu, Methods.getGlass());
-                nu++;
-            }
-
-            ItemStack item2 = new ItemStack(Material.valueOf(instance.getConfig().getString("Interfaces.Buy Icon")), 1);
-            ItemMeta itemmeta2 = item2.getItemMeta();
-            itemmeta2.setDisplayName(instance.getLocale().getMessage("interface.yesno.yes"));
-            item2.setItemMeta(itemmeta2);
-
-            ItemStack item3 = new ItemStack(Material.valueOf(instance.getConfig().getString("Interfaces.Exit Icon")), 1);
-            ItemMeta itemmeta3 = item3.getItemMeta();
-            itemmeta3.setDisplayName(instance.getLocale().getMessage("interface.yesno.no"));
-            item3.setItemMeta(itemmeta3);
-
-            i.setItem(4, item);
-            i.setItem(11, item2);
-            i.setItem(15, item3);
-
-            Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> p.openInventory(i), 1);
-
+            playerData.setInRepair(true);
             playerData.setType(type);
             playerData.setPrice(price);
 
-            i.setItem(0, Methods.getBackgroundGlass(true));
-            i.setItem(1, Methods.getBackgroundGlass(true));
-            i.setItem(2, Methods.getBackgroundGlass(false));
-            i.setItem(6, Methods.getBackgroundGlass(false));
-            i.setItem(7, Methods.getBackgroundGlass(true));
-            i.setItem(8, Methods.getBackgroundGlass(true));
-            i.setItem(9, Methods.getBackgroundGlass(true));
-            i.setItem(10, Methods.getBackgroundGlass(false));
-            i.setItem(16, Methods.getBackgroundGlass(false));
-            i.setItem(17, Methods.getBackgroundGlass(true));
-            i.setItem(18, Methods.getBackgroundGlass(true));
-            i.setItem(19, Methods.getBackgroundGlass(true));
-            i.setItem(20, Methods.getBackgroundGlass(false));
-            i.setItem(24, Methods.getBackgroundGlass(false));
-            i.setItem(25, Methods.getBackgroundGlass(true));
-            i.setItem(26, Methods.getBackgroundGlass(true));
+            guiManager.showGUI(p, new StartConfirmGui(playerData.getLocation(), type, p, item));
 
         } catch (Exception ex) {
             Debugger.runReport(ex);
@@ -258,24 +153,20 @@ public class RepairHandler {
             PlayerAnvilData playerData = playerAnvilData.computeIfAbsent(player.getUniqueId(), uuid -> new PlayerAnvilData());
             if (!answer) {
                 removeItem(playerData, player);
-                player.sendMessage(Methods.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.cancelled")));
+                instance.getLocale().getMessage("event.repair.cancelled").sendPrefixedMessage(player);
                 return;
             }
             RepairType type = playerData.getType();
             ItemStack players = playerData.getToBeRepaired();
 
-            boolean economy = false;
             boolean sold = false;
-            if (instance.getServer().getPluginManager().getPlugin("Vault") != null && type == RepairType.ECONOMY) {
-                RegisteredServiceProvider<Economy> rsp = instance.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-                net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
+            if (type == RepairType.ECONOMY && EconomyManager.isEnabled()) {
                 int price = playerData.getPrice();
 
-                if (econ.has(player, price)) {
-                    econ.withdrawPlayer(player, price);
+                if(EconomyManager.hasBalance(player, price)) {
+                    EconomyManager.withdrawBalance(player, price);
                     sold = true;
                 }
-                economy = true;
             }
 
             int cost = Methods.getCost(type, players);
@@ -304,42 +195,34 @@ public class RepairHandler {
                 } else if (typeStr.contains("STONE")) {
                     blockType = Material.STONE;
                 } else if (typeStr.contains("WOOD")) {
-                    blockType = instance.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.OAK_PLANKS : Material.valueOf("WOOD");
+                    blockType = CompatibleMaterial.OAK_WOOD.getMaterial();
                 }
 
                 final Material blockTypeFinal = blockType;
 
                 Location location = playerData.getLocations();
                 player.getWorld().playEffect(location, effect, blockType);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, blockTypeFinal), 5L);
+                Runnable runnable = () -> player.getWorld().playEffect(location, effect, blockTypeFinal);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, runnable, 5L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
                     player.getWorld().playEffect(location, effect, blockTypeFinal);
                     player.getWorld().playEffect(location, effect, Material.STONE);
-                    if (instance.isServerVersion(ServerVersion.V1_8))
-                        player.playSound(location, Sound.valueOf("ANVIL_LAND"), 1L, 1L);
-                    else
-                        player.playSound(location, Sound.valueOf("BLOCK_ANVIL_LAND"), 1L, 1L);
+                    CompatibleSound.BLOCK_ANVIL_LAND.play(player);
                 }, 10L);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, blockTypeFinal), 15L);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> player.getWorld().playEffect(location, effect, blockTypeFinal), 20L);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, runnable, 15L);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(instance, runnable, 20L);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
-                    if (instance.isServerVersion(ServerVersion.V1_8))
-                        player.playSound(location, Sound.valueOf("ANVIL_LAND"), 1L, 1L);
-                    else
-                        player.playSound(location, Sound.valueOf("BLOCK_ANVIL_LAND"), 1L, 1L);
+                    CompatibleSound.BLOCK_ANVIL_LAND.play(player);
                     player.getWorld().playEffect(location, effect, blockTypeFinal);
                     player.getWorld().playEffect(location, effect, Material.ANVIL);
-                    player.sendMessage(Methods.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.success")));
-                    ItemStack repairedi = playerData.getToBeRepaired();
-                    repairedi.setDurability((short) 0);
-                    Item repaired = player.getWorld().dropItemNaturally(player.getLocation(), repairedi);
-                    repaired.remove();
-                    HashMap<Integer, ItemStack> items = player.getInventory().addItem(playerData.getToBeRepaired());
+                    instance.getLocale().getMessage("event.repair.success").sendPrefixedMessage(player);
 
+                    playerData.getToBeRepaired().setDurability((short) 0);
+                    HashMap<Integer, ItemStack> items = player.getInventory().addItem(playerData.getToBeRepaired());
                     for (ItemStack item : items.values()) {
                         player.getWorld().dropItemNaturally(player.getLocation(), item);
                     }
-                    
+
                     playerData.getItem().remove();
                     if (player.getGameMode() != GameMode.CREATIVE &&
                             type == RepairType.XP) {
@@ -352,34 +235,38 @@ public class RepairHandler {
             }
 
             if (type == RepairType.ECONOMY) {
-                if (!economy)
-                    player.sendMessage("Vault is not installed.");
-                else
-                    player.sendMessage(Methods.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notenough", instance.getLocale().getMessage("interface.repair.eco"))));
+                instance.getLocale().getMessage("event.repair.notenough")
+                        .processPlaceholder("type", instance.getLocale().getMessage("interface.repair.eco").getMessage())
+                        .sendPrefixedMessage(player);
             } else if (type == RepairType.XP)
-                player.sendMessage(Methods.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notenough", instance.getLocale().getMessage("interface.repair.xp"))));
+                instance.getLocale().getMessage("event.repair.notenough")
+                        .processPlaceholder("type", instance.getLocale().getMessage("interface.repair.xp").getMessage())
+                        .sendPrefixedMessage(player);
             else
-                player.sendMessage(Methods.formatText(instance.references.getPrefix() + instance.getLocale().getMessage("event.repair.notenough", name)));
+                instance.getLocale().getMessage("event.repair.notenough")
+                        .processPlaceholder("type", name).sendPrefixedMessage(player);
 
+            // we've failed to repair, so return the item
+            removeItem(playerData, player);
 
         } catch (Exception ex) {
             Debugger.runReport(ex);
         }
     }
 
-    public void removeItem(PlayerAnvilData playerData, Player p) {
+    public void removeItem(PlayerAnvilData playerData, Player player) {
         try {
-            p.getInventory().addItem(playerData.getToBeRepaired());
+            player.getInventory().addItem(playerData.getToBeRepaired());
             playerData.getItem().remove();
 
-            this.playerAnvilData.remove(p.getUniqueId());
+            this.playerAnvilData.remove(player.getUniqueId());
         } catch (Exception ex) {
             Debugger.runReport(ex);
         }
     }
 
     public boolean hasInstance(Player player) {
-        return playerAnvilData.containsKey(player);
+        return playerAnvilData.containsKey(player.getUniqueId());
     }
 
     public PlayerAnvilData getDataFor(Player player) {

@@ -1,16 +1,18 @@
 package com.songoda.ultimaterepairing.anvil;
 
+import com.songoda.core.hooks.HologramManager;
 import com.songoda.ultimaterepairing.UltimateRepairing;
-import com.songoda.ultimaterepairing.utils.Methods;
+import com.songoda.ultimaterepairing.settings.Settings;
+import java.util.ArrayList;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 
 import java.util.Objects;
+import org.bukkit.Bukkit;
 
 public class UAnvil {
 
-    private Location location;
+    private final Location location;
 
     private boolean hologram = false;
     private boolean particles = false;
@@ -27,12 +29,37 @@ public class UAnvil {
 
     public void setHologram(boolean hologram) {
         this.hologram = hologram;
-        if (UltimateRepairing.getInstance().getHologram() != null)
-            UltimateRepairing.getInstance().getHologram().update(this);
+        if (HologramManager.getManager().isEnabled()) {
+
+            ArrayList<String> lines = new ArrayList<>();
+
+            if (!Settings.ENABLE_ANVIL_DEFAULT_FUNCTION.getBoolean()) {
+                lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.oneclick").getMessage());
+            } else if (Settings.SWAP_LEFT_RIGHT.getBoolean()) {
+                lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.swapclick").getMessage());
+            } else {
+                lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.torepair").getMessage());
+            }
+
+            lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.torepair").getMessage());
+
+            Bukkit.getScheduler().runTaskLater(UltimateRepairing.getInstance(), ()->{
+                if (!hologram) {
+                    HologramManager.removeHologram(location);
+                } else {
+                    HologramManager.updateHologram(location, lines);
+                }
+            }, 1L);
+
+        }
     }
 
     public boolean isParticles() {
         return particles;
+    }
+
+    public boolean isInLoadedChunk() {
+        return location.getWorld() != null && location.getWorld().isChunkLoaded(((int) location.getX()) >> 4, ((int) location.getZ()) >> 4);
     }
 
     public void setParticles(boolean particles) {

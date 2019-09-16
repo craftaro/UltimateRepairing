@@ -1,206 +1,158 @@
 package com.songoda.ultimaterepairing;
 
+import com.songoda.core.SongodaCore;
+import com.songoda.core.SongodaPlugin;
+import com.songoda.core.commands.CommandManager;
+import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.configuration.Config;
+import com.songoda.core.gui.GuiManager;
+import com.songoda.core.hooks.EconomyManager;
+import com.songoda.core.hooks.HologramManager;
 import com.songoda.ultimaterepairing.anvil.AnvilManager;
 import com.songoda.ultimaterepairing.anvil.UAnvil;
-import com.songoda.ultimaterepairing.anvil.editor.Editor;
-import com.songoda.ultimaterepairing.command.CommandManager;
-import com.songoda.ultimaterepairing.events.BlockListeners;
-import com.songoda.ultimaterepairing.events.InteractListeners;
-import com.songoda.ultimaterepairing.events.InventoryListeners;
-import com.songoda.ultimaterepairing.events.PlayerListeners;
-import com.songoda.ultimaterepairing.handlers.ParticleHandler;
+import com.songoda.ultimaterepairing.commands.*;
+import com.songoda.ultimaterepairing.handlers.ParticleTask;
 import com.songoda.ultimaterepairing.handlers.RepairHandler;
-import com.songoda.ultimaterepairing.hologram.Hologram;
-import com.songoda.ultimaterepairing.hologram.HologramHolographicDisplays;
-import com.songoda.ultimaterepairing.utils.*;
-import com.songoda.ultimaterepairing.utils.updateModules.LocaleModule;
-import com.songoda.update.Plugin;
-import com.songoda.update.SongodaUpdate;
-import org.apache.commons.lang.ArrayUtils;
+import com.songoda.ultimaterepairing.listeners.BlockListeners;
+import com.songoda.ultimaterepairing.listeners.InteractListeners;
+import com.songoda.ultimaterepairing.listeners.InventoryListeners;
+import com.songoda.ultimaterepairing.listeners.PlayerListeners;
+import com.songoda.ultimaterepairing.settings.Settings;
+import com.songoda.ultimaterepairing.utils.Debugger;
+import com.songoda.ultimaterepairing.utils.Methods;
+import java.util.Arrays;
+import java.util.List;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 
-public final class UltimateRepairing extends JavaPlugin implements Listener {
-    private static CommandSender console = Bukkit.getConsoleSender();
+public class UltimateRepairing extends SongodaPlugin {
 
     private static UltimateRepairing INSTANCE;
 
-    private ConfigWrapper dataFile = new ConfigWrapper(this, "", "data.yml");
-
-    public References references = null;
-
-    private ServerVersion serverVersion = ServerVersion.fromPackageName(Bukkit.getServer().getClass().getPackage().getName());
-
-    private Locale locale;
+    private final Config dataFile = new Config(this, "data.yml");
+    private final GuiManager guiManager = new GuiManager(this);
+    private final ParticleTask particleTask = new ParticleTask(this);
 
     private RepairHandler repairHandler;
-    private SettingsManager settingsManager;
     private CommandManager commandManager;
     private AnvilManager anvilManager;
-
-    private Hologram hologram;
-
-    private Editor editor;
 
     public static UltimateRepairing getInstance() {
         return INSTANCE;
     }
 
     @Override
-    public void onEnable() {
+    public void onPluginLoad() {
         INSTANCE = this;
+    }
 
-        console.sendMessage(Methods.formatText("&a============================="));
-        console.sendMessage(Methods.formatText("&7UltimateRepairing " + this.getDescription().getVersion() + " by &5Brianna <3!"));
-        console.sendMessage(Methods.formatText("&7Action: &aEnabling&7..."));
-        Bukkit.getPluginManager().registerEvents(this, this);
+    @Override
+    public void onPluginEnable() {
+        // Register in Songoda Core
+        SongodaCore.registerPlugin(this, 20, CompatibleMaterial.ANVIL);
 
-        settingsManager = new SettingsManager(this);
-        settingsManager.updateSettings();
-        setupConfig();
+        Settings.setupConfig();
 
-        String langMode = getConfig().getString("System.Language Mode");
-        Locale.init(this);
-        Locale.saveDefaultLocale("en_US");
-        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode", langMode));
-
-        //Running Songoda Updater
-        Plugin plugin = new Plugin(this, 20);
-        plugin.addModule(new LocaleModule());
-        SongodaUpdate.load(plugin);
-
-        this.editor = new Editor(this);
-        this.anvilManager = new AnvilManager();
-
-        references = new References();
-
-        this.repairHandler = new RepairHandler(this);
-        this.commandManager = new CommandManager(this);
-        new ParticleHandler(this);
+        // Load Economy & Hologram hooks
+        EconomyManager.load();
+        HologramManager.load(this);
+        
+		this.setLocale(Settings.LANGUGE_MODE.getString(), false);
 
         PluginManager pluginManager = getServer().getPluginManager();
 
-        // Register Hologram Plugin
-        if (pluginManager.isPluginEnabled("HolographicDisplays"))
-            hologram = new HologramHolographicDisplays(this);
+        // Set Economy & Hologram preference
+        EconomyManager.getManager().setPreferredHook(Settings.ECONOMY.getString());
+        HologramManager.getManager().setPreferredHook(Settings.HOLOGRAM.getString());
 
-        /*
-         * Register anvils into AnvilManager from Configuration.
-         */
-        if (dataFile.getConfig().contains("data")) {
-            for (String key : dataFile.getConfig().getConfigurationSection("data").getKeys(false)) {
-                Location location = Methods.unserializeLocation(key);
-                UAnvil anvil = anvilManager.getAnvil(location);
-                anvil.setHologram(dataFile.getConfig().getBoolean("data." + key + ".hologram"));
-                anvil.setInfinity(dataFile.getConfig().getBoolean("data." + key + ".infinity"));
-                anvil.setParticles(dataFile.getConfig().getBoolean("data." + key + ".particles"));
-                anvil.setPermPlaced(dataFile.getConfig().getBoolean("data." + key + ".permPlaced"));
+        this.anvilManager = new AnvilManager();
+
+        this.repairHandler = new RepairHandler(this, guiManager);
+        this.commandManager = new CommandManager(this);
+        this.commandManager.addCommand(new CommandUltimateRepairing())
+                .addSubCommands(
+                        new CommandReload(),
+                        new CommandSettings(guiManager),
+                        new CommandURAnvil());
+        this.commandManager.addCommand(new CommandURAnvil());
+
+        Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
+            /*
+             * Register anvils into AnvilManager from Configuration.
+             */
+            dataFile.load();
+            if (dataFile.contains("data")) {
+                for (String key : dataFile.getConfigurationSection("data").getKeys(false)) {
+                    Location location = Methods.unserializeLocation(key);
+                    UAnvil anvil = anvilManager.getAnvil(location);
+                    anvil.setHologram(dataFile.getBoolean("data." + key + ".hologram"));
+                    anvil.setInfinity(dataFile.getBoolean("data." + key + ".infinity"));
+                    anvil.setParticles(dataFile.getBoolean("data." + key + ".particles"));
+                    anvil.setPermPlaced(dataFile.getBoolean("data." + key + ".permPlaced"));
+                }
             }
-        }
+            particleTask.start();
+        }, 6L);
 
-        getServer().getPluginManager().registerEvents(new PlayerListeners(this), this);
-        getServer().getPluginManager().registerEvents(new BlockListeners(this), this);
-        getServer().getPluginManager().registerEvents(new InteractListeners(this), this);
-        getServer().getPluginManager().registerEvents(new InventoryListeners(this), this);
+        // Event registration
+        guiManager.init();
+        pluginManager.registerEvents(new PlayerListeners(this), this);
+        pluginManager.registerEvents(new BlockListeners(this), this);
+        pluginManager.registerEvents(new InteractListeners(this, guiManager), this);
+        pluginManager.registerEvents(new InventoryListeners(this), this);
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, 6000, 6000);
-        console.sendMessage(Methods.formatText("&a============================="));
     }
 
-    public void onDisable() {
-        console.sendMessage(Methods.formatText("&a============================="));
-        console.sendMessage(Methods.formatText("&7UltimateRepairing " + this.getDescription().getVersion() + " by &5Brianna <3!"));
-        console.sendMessage(Methods.formatText("&7Action: &cDisabling&7..."));
-        console.sendMessage(Methods.formatText("&a============================="));
+    @Override
+    public void onPluginDisable() {
         saveConfig();
         saveToFile();
     }
 
-
-    public ServerVersion getServerVersion() {
-        return serverVersion;
-    }
-
-    public boolean isServerVersion(ServerVersion version) {
-        return serverVersion == version;
-    }
-    public boolean isServerVersion(ServerVersion... versions) {
-        return ArrayUtils.contains(versions, serverVersion);
-    }
-
-    public boolean isServerVersionAtLeast(ServerVersion version) {
-        return serverVersion.ordinal() >= version.ordinal();
+    @Override
+    public List<Config> getExtraConfig() {
+        return Arrays.asList(dataFile);
     }
 
     /*
      * Saves registered kits to file.
      */
     private void saveToFile() {
-        // Wipe old kit information
-        dataFile.getConfig().set("data", null);
+        // Wipe old information
+        dataFile.set("data", null);
 
         if (anvilManager.getAnvils() == null) return;
-        
+
         /*
          * Save anvils from AnvilManager to Configuration.
          */
         for (UAnvil anvil : anvilManager.getAnvils()) {
-            if (!anvil.shouldSave())continue;
+            if (!anvil.shouldSave()) continue;
             String locationStr = Methods.serializeLocation(anvil.getLocation());
-            dataFile.getConfig().set("data." + locationStr + ".hologram", anvil.isHologram());
-            dataFile.getConfig().set("data." + locationStr + ".particles", anvil.isParticles());
-            dataFile.getConfig().set("data." + locationStr + ".infinity", anvil.isInfinity());
-            dataFile.getConfig().set("data." + locationStr + ".permPlaced", anvil.isPermPlaced());
+            dataFile.set("data." + locationStr + ".hologram", anvil.isHologram());
+            dataFile.set("data." + locationStr + ".particles", anvil.isParticles());
+            dataFile.set("data." + locationStr + ".infinity", anvil.isInfinity());
+            dataFile.set("data." + locationStr + ".permPlaced", anvil.isPermPlaced());
         }
 
         // Save to file
-        dataFile.saveConfig();
+        dataFile.save();
     }
 
-    private void setupConfig() {
+    @Override
+    public void onConfigReload() {
         try {
-            settingsManager.updateSettings();
-            getConfig().options().copyDefaults(true);
-            saveConfig();
+            this.setLocale(Settings.LANGUGE_MODE.getString(), true);
+            particleTask.reload();
         } catch (Exception ex) {
             Debugger.runReport(ex);
         }
-    }
-
-    public void reload() {
-        try {
-            locale.reloadMessages();
-            references = new References();
-            reloadConfig();
-            saveConfig();
-        } catch (Exception ex) {
-            Debugger.runReport(ex);
-        }
-    }
-
-    public Locale getLocale() {
-        return locale;
-    }
-
-    public Editor getEditor() {
-        return editor;
     }
 
     public RepairHandler getRepairHandler() {
         return repairHandler;
-    }
-
-    public Hologram getHologram() {
-        return hologram;
-    }
-
-    public SettingsManager getSettingsManager() {
-        return settingsManager;
     }
 
     public CommandManager getCommandManager() {

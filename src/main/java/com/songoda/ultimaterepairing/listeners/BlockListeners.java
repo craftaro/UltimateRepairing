@@ -1,10 +1,9 @@
-package com.songoda.ultimaterepairing.events;
+package com.songoda.ultimaterepairing.listeners;
 
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.UAnvil;
 import com.songoda.ultimaterepairing.utils.Debugger;
 import com.songoda.ultimaterepairing.utils.Methods;
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -22,10 +21,11 @@ public class BlockListeners implements Listener {
         this.instance = instance;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         try {
-            if (!event.getPlayer().hasPermission("ultimaterepairing.permPlace") || !event.getBlockPlaced().getType().equals(Material.ANVIL)) {
+            if (!event.getBlockPlaced().getType().name().contains("ANVIL")
+                    || !event.getPlayer().hasPermission("ultimaterepairing.permPlace")) {
                 return;
             }
 
@@ -36,12 +36,12 @@ public class BlockListeners implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         try {
             String loc = Methods.serializeLocation(event.getBlock());
 
-            if (!event.getBlock().getType().equals(Material.ANVIL) && !instance.getConfig().contains("data.anvil." + loc)) {
+            if (!event.getBlock().getType().name().contains("ANVIL") && !instance.getConfig().contains("data.anvil." + loc)) {
                 return;
             }
 

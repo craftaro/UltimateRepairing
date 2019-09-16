@@ -1,4 +1,4 @@
-package com.songoda.ultimaterepairing.events;
+package com.songoda.ultimaterepairing.listeners;
 
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData;
@@ -18,7 +18,8 @@ public class PlayerListeners implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
 
-        if (!instance.getRepairHandler().hasInstance(event.getPlayer()) || !instance.getRepairHandler().getDataFor(event.getPlayer()).getInRepair())
+        if (!instance.getRepairHandler().hasInstance(event.getPlayer())
+                || !instance.getRepairHandler().getDataFor(event.getPlayer()).getInRepair())
             return;
 
         PlayerAnvilData playerData = instance.getRepairHandler().getDataFor(event.getPlayer());

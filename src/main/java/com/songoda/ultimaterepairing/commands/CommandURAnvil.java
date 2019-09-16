@@ -1,21 +1,27 @@
-package com.songoda.ultimaterepairing.command.commands;
+package com.songoda.ultimaterepairing.commands;
 
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimaterepairing.UltimateRepairing;
-import com.songoda.ultimaterepairing.command.AbstractCommand;
+import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CommandURAnvil extends AbstractCommand {
 
     public CommandURAnvil() {
-        super("URAnvil", null, true);
+        super(true, "URAnvil");
     }
 
     @Override
-    protected ReturnType runCommand(UltimateRepairing instance, CommandSender sender, String... args) {
+    protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
-        instance.getRepairHandler().initRepair(player, player.getLocation());
+        UltimateRepairing.getInstance().getRepairHandler().initRepair(player, player.getLocation());
         return ReturnType.SUCCESS;
+    }
+
+    @Override
+    protected List<String> onTab(CommandSender cs, String... strings) {
+        return null;
     }
 
     @Override

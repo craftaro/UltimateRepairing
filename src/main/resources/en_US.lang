@@ -21,6 +21,7 @@ interface.repair.itemlore = "&7Click to repair with %item%."
 
 #Event Messages
 
+event.general.nopermission = "&cYou do not have permission to do that."
 event.repair.timeout = "&cYour repair timed out..."
 event.repair.notdamaged = "&aThis item is not damaged."
 event.repair.needspace = "&cYou need to have free space above the anvil!"
