@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class Settings {
 
-    static final Config config = UltimateRepairing.getInstance().getConfig().getCoreConfig();
+    static final Config config = UltimateRepairing.getInstance().getCoreConfig();
 
     public static final ConfigSetting TIMEOUT = new ConfigSetting(config, "Main.Time Before Repair Auto Canceled", 200L);
 

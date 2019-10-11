@@ -38,10 +38,12 @@ public class UAnvil {
             } else if (Settings.SWAP_LEFT_RIGHT.getBoolean()) {
                 lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.swapclick").getMessage());
             } else {
-                lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.torepair").getMessage());
+                lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.click").getMessage());
             }
 
             lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.torepair").getMessage());
+
+            Location location = getLocation().add(0, .1, 0);
 
             Bukkit.getScheduler().runTaskLater(UltimateRepairing.getInstance(), ()->{
                 if (!hologram) {
