@@ -73,8 +73,7 @@ public class UltimateRepairing extends SongodaPlugin {
         this.commandManager.addCommand(new CommandUltimateRepairing())
                 .addSubCommands(
                         new CommandReload(),
-                        new CommandSettings(guiManager),
-                        new CommandURAnvil());
+                        new CommandSettings(guiManager));
         this.commandManager.addCommand(new CommandURAnvil());
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
