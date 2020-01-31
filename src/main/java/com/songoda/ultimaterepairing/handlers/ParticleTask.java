@@ -3,7 +3,6 @@ package com.songoda.ultimaterepairing.handlers;
 import com.songoda.core.compatibility.CompatibleParticleHandler;
 import com.songoda.core.compatibility.CompatibleParticleHandler.ParticleType;
 import com.songoda.ultimaterepairing.UltimateRepairing;
-import com.songoda.ultimaterepairing.utils.Debugger;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
@@ -48,12 +47,8 @@ public class ParticleTask implements Listener {
 
     public void applyParticles() {
         if (instance.getAnvilManager().getAnvils().isEmpty()) return;
-        try {
-            instance.getAnvilManager().getAnvils().parallelStream()
-                    .filter(anvil -> anvil.isParticles() && anvil.isInLoadedChunk())
-                    .forEach(anvil -> CompatibleParticleHandler.spawnParticles(type, anvil.getLocation().add(.5, 0, .5), amt, 0.25, 0.25, 0.25));
-        } catch (Exception ex) {
-            Debugger.runReport(ex);
-        }
+        instance.getAnvilManager().getAnvils().parallelStream()
+                .filter(anvil -> anvil.isParticles() && anvil.isInLoadedChunk())
+                .forEach(anvil -> CompatibleParticleHandler.spawnParticles(type, anvil.getLocation().add(.5, 0, .5), amt, 0.25, 0.25, 0.25));
     }
 }

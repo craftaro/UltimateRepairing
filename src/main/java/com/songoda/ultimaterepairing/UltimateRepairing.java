@@ -10,7 +10,10 @@ import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.hooks.HologramManager;
 import com.songoda.ultimaterepairing.anvil.AnvilManager;
 import com.songoda.ultimaterepairing.anvil.UAnvil;
-import com.songoda.ultimaterepairing.commands.*;
+import com.songoda.ultimaterepairing.commands.CommandReload;
+import com.songoda.ultimaterepairing.commands.CommandSettings;
+import com.songoda.ultimaterepairing.commands.CommandURAnvil;
+import com.songoda.ultimaterepairing.commands.CommandUltimateRepairing;
 import com.songoda.ultimaterepairing.handlers.ParticleTask;
 import com.songoda.ultimaterepairing.handlers.RepairHandler;
 import com.songoda.ultimaterepairing.listeners.BlockListeners;
@@ -18,13 +21,13 @@ import com.songoda.ultimaterepairing.listeners.InteractListeners;
 import com.songoda.ultimaterepairing.listeners.InventoryListeners;
 import com.songoda.ultimaterepairing.listeners.PlayerListeners;
 import com.songoda.ultimaterepairing.settings.Settings;
-import com.songoda.ultimaterepairing.utils.Debugger;
 import com.songoda.ultimaterepairing.utils.Methods;
-import java.util.Arrays;
-import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.plugin.PluginManager;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class UltimateRepairing extends SongodaPlugin {
 
@@ -57,8 +60,8 @@ public class UltimateRepairing extends SongodaPlugin {
         // Load Economy & Hologram hooks
         EconomyManager.load();
         HologramManager.load(this);
-        
-		this.setLocale(Settings.LANGUGE_MODE.getString(), false);
+
+        this.setLocale(Settings.LANGUGE_MODE.getString(), false);
 
         PluginManager pluginManager = getServer().getPluginManager();
 
@@ -142,12 +145,8 @@ public class UltimateRepairing extends SongodaPlugin {
 
     @Override
     public void onConfigReload() {
-        try {
-            this.setLocale(Settings.LANGUGE_MODE.getString(), true);
-            particleTask.reload();
-        } catch (Exception ex) {
-            Debugger.runReport(ex);
-        }
+        this.setLocale(Settings.LANGUGE_MODE.getString(), true);
+        particleTask.reload();
     }
 
     public RepairHandler getRepairHandler() {

@@ -2,7 +2,6 @@ package com.songoda.ultimaterepairing.listeners;
 
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.UAnvil;
-import com.songoda.ultimaterepairing.utils.Debugger;
 import com.songoda.ultimaterepairing.utils.Methods;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,33 +22,24 @@ public class BlockListeners implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
-        try {
-            if (!event.getBlockPlaced().getType().name().contains("ANVIL")
-                    || !event.getPlayer().hasPermission("ultimaterepairing.permPlace")) {
-                return;
-            }
-
-            instance.getAnvilManager().getAnvil(event.getBlock()).setPermPlaced(true);
-
-        } catch (Exception ex) {
-            Debugger.runReport(ex);
+        if (!event.getBlockPlaced().getType().name().contains("ANVIL")
+                || !event.getPlayer().hasPermission("ultimaterepairing.permPlace")) {
+            return;
         }
+
+        instance.getAnvilManager().getAnvil(event.getBlock()).setPermPlaced(true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        try {
-            String loc = Methods.serializeLocation(event.getBlock());
+        String loc = Methods.serializeLocation(event.getBlock());
 
-            if (!event.getBlock().getType().name().contains("ANVIL") && !instance.getConfig().contains("data.anvil." + loc)) {
-                return;
-            }
-
-            UAnvil anvil = instance.getAnvilManager().getAnvil(event.getBlock());
-            anvil.setHologram(false);
-            instance.getAnvilManager().removeAnvil(event.getBlock().getLocation());
-        } catch (Exception ex) {
-            Debugger.runReport(ex);
+        if (!event.getBlock().getType().name().contains("ANVIL") && !instance.getConfig().contains("data.anvil." + loc)) {
+            return;
         }
+
+        UAnvil anvil = instance.getAnvilManager().getAnvil(event.getBlock());
+        anvil.setHologram(false);
+        instance.getAnvilManager().removeAnvil(event.getBlock().getLocation());
     }
 }
