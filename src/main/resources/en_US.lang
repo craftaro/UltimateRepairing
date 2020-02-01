@@ -1,31 +1,40 @@
-#General Messages
+# General Messages
 
-general.nametag.prefix = "&8[&6UltimateRepairing&8]"
-general.hologram.click = "Left-Click with an item"
-general.hologram.swapclick = "Right-Click with an item"
-general.hologram.oneclick = "Click with an item"
-general.hologram.torepair = "to &6Repair&r!"
+general:
+  nametag:
+    prefix: '&8[&6UltimateRepairing&8]'
+  hologram:
+    click: Left-Click with an item
+    swapclick: Right-Click with an item
+    oneclick: Click with an item
+    torepair: to &6Repair&r!
 
-#Interface Messages
+# Interface Messages
 
-interface.repair.title = "&9How do you want to repair?"
-interface.yesno.title = "&9Repair for &a%cost%&9?"
-interface.yesno.yes = "&a&lYes"
-interface.yesno.no = "&c&lNo"
-interface.repair.xp = "&9XP"
-interface.repair.xplore = "&7Click to repair with XP."
-interface.repair.eco = "&9Economy"
-interface.repair.ecolore = "&7Click to repair with Economy."
-interface.repair.item = "&9%ITEM%"
-interface.repair.itemlore = "&7Click to repair with %item%."
+interface:
+  repair:
+    title: '&9How do you want to repair?'
+    xp: '&9XP'
+    xplore: '&7Click to repair with XP.'
+    eco: '&9Economy'
+    ecolore: '&7Click to repair with Economy.'
+    item: '&9%ITEM%'
+    itemlore: '&7Click to repair with %item%.'
+  yesno:
+    title: '&9Repair for &a%cost%&9?'
+    'yes': '&a&lYes'
+    'no': '&c&lNo'
 
-#Event Messages
+# Event Messages
 
-event.general.nopermission = "&cYou do not have permission to do that."
-event.repair.timeout = "&cYour repair timed out..."
-event.repair.notdamaged = "&aThis item is not damaged."
-event.repair.needspace = "&cYou need to have free space above the anvil!"
-event.repair.cantrepair = "&cYou can't repair this!"
-event.repair.notenough = "&cYou don't have enough %type% &cto repair this item!"
-event.repair.success = "&aYour item has been successfully repaired!"
-event.repair.cancelled = "&cCancelled repairing."
+event:
+  general:
+    nopermission: '&cYou do not have permission to do that.'
+  repair:
+    timeout: '&cYour repair timed out...'
+    notdamaged: '&aThis item is not damaged.'
+    needspace: '&cYou need to have free space above the anvil!'
+    cantrepair: '&cYou can''t repair this!'
+    notenough: '&cYou don''t have enough %type% &cto repair this item!'
+    success: '&aYour item has been successfully repaired!'
+    cancelled: '&cCancelled repairing.'
