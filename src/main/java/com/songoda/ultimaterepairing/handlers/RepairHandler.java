@@ -4,6 +4,7 @@ import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.gui.GuiManager;
 import com.songoda.core.hooks.EconomyManager;
+import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData.RepairType;
@@ -17,9 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by songoda on 2/25/2017.
@@ -233,7 +232,7 @@ public class RepairHandler {
     }
 
     public void removeItem(PlayerAnvilData playerData, Player player) {
-        player.getInventory().addItem(playerData.getToBeRepaired());
+        PlayerUtils.giveItem(player, playerData.getToBeRepaired());
         playerData.getItem().remove();
 
         this.playerAnvilData.remove(player.getUniqueId());
