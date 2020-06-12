@@ -21,5 +21,4 @@ public class InventoryListeners implements Listener {
         if (event.getItem().hasMetadata("UltimateRepairing"))
             event.setCancelled(true);
     }
-
 }
