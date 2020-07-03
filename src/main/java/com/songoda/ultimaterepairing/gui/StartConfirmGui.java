@@ -7,6 +7,7 @@ import com.songoda.core.utils.ItemUtils;
 import com.songoda.core.utils.TextUtils;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData;
+import com.songoda.ultimaterepairing.repair.RepairType;
 import com.songoda.ultimaterepairing.settings.Settings;
 import com.songoda.ultimaterepairing.utils.Methods;
 import org.bukkit.Location;
@@ -19,14 +20,14 @@ public class StartConfirmGui extends Gui {
     final Player player;
     final UltimateRepairing instance = UltimateRepairing.getInstance();
     final ItemStack item;
-    final PlayerAnvilData.RepairType type;
+    final RepairType type;
     boolean isYes = false;
 
-    public StartConfirmGui(Location anvil, PlayerAnvilData.RepairType type, Player player, ItemStack item) {
+    public StartConfirmGui(Location anvil, RepairType type, Player player, ItemStack item) {
         this(anvil, type, player, item, null);
     }
 
-    public StartConfirmGui(Location anvil, PlayerAnvilData.RepairType type, Player player, ItemStack item, Gui gui) {
+    public StartConfirmGui(Location anvil, RepairType type, Player player, ItemStack item, Gui gui) {
         super(gui);
         this.anvil = anvil;
         this.player = player;
@@ -41,11 +42,11 @@ public class StartConfirmGui extends Gui {
         String cost = "0";
         PlayerAnvilData playerData = instance.getRepairHandler().getDataFor(player);
 
-        if (type == PlayerAnvilData.RepairType.XP) {
+        if (type == RepairType.EXPERIENCE) {
             cost = playerData.getPrice() + " XP";
-        } else if (type == PlayerAnvilData.RepairType.ECONOMY) {
+        } else if (type == RepairType.ECONOMY) {
             cost = "$" + playerData.getPrice();
-        } else if (type == PlayerAnvilData.RepairType.ITEM) {
+        } else if (type == RepairType.ITEM) {
             cost = playerData.getPrice() + " " + Methods.formatText(Methods.getType(item).name(), true);
         }
 

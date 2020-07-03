@@ -14,12 +14,16 @@ general:
 interface:
   repair:
     title: '&9How do you want to repair?'
+    xpTitle: '&9XP'
     xp: '&9XP'
     xplore: '&7Click to repair with XP.'
+    ecoTitle: '&9Economy'
     eco: '&9Economy'
     ecolore: '&7Click to repair with Economy.'
+    itemTitle: '&9Item'
     item: '&9%ITEM%'
     itemlore: '&7Click to repair with %item%.'
+    swap: '&7Click to swap repair type.'
   yesno:
     title: '&9Repair for &a%cost%&9?'
     'yes': '&a&lYes'
@@ -32,9 +36,7 @@ event:
     nopermission: '&cYou do not have permission to do that.'
   repair:
     timeout: '&cYour repair timed out...'
-    notdamaged: '&aThis item is not damaged.'
     needspace: '&cYou need to have free space above the anvil!'
-    cantrepair: '&cYou can''t repair this!'
     notenough: '&cYou don''t have enough %type% &cto repair this item!'
     success: '&aYour item has been successfully repaired!'
     cancelled: '&cCancelled repairing.'

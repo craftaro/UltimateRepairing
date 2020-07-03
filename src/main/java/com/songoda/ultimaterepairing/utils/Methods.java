@@ -2,7 +2,7 @@ package com.songoda.ultimaterepairing.utils;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.ultimaterepairing.UltimateRepairing;
-import com.songoda.ultimaterepairing.anvil.PlayerAnvilData.RepairType;
+import com.songoda.ultimaterepairing.repair.RepairType;
 import com.songoda.ultimaterepairing.settings.Settings;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -20,6 +20,7 @@ import java.util.*;
 public class Methods {
 
     static Random rand = new Random();
+
     public static CompatibleMaterial getRainbowGlass() {
         return CompatibleMaterial.getGlassPaneColor(rand.nextInt(16));
     }
@@ -58,7 +59,7 @@ public class Methods {
                 ITEMCost = ITEMCost * multi;
             }
 
-            if (type == RepairType.XP)
+            if (type == RepairType.EXPERIENCE)
                 return XPCost;
             else if (type == RepairType.ITEM)
                 return ITEMCost;
@@ -72,6 +73,8 @@ public class Methods {
 
     public static Material getType(ItemStack item) {
         if (Settings.REPAIR_ONLY_SAME_TYPE.getBoolean()) {
+            if (item.getType().name().contains("NETHERITE"))
+                return CompatibleMaterial.NETHERITE_BLOCK.getMaterial();
             if (item.getType().name().contains("DIAMOND"))
                 return CompatibleMaterial.DIAMOND.getMaterial();
             if (item.getType().name().contains("IRON"))
