@@ -6,10 +6,10 @@ version: maven-version-number
 author: Songoda
 api-version: 1.13
 commands:
-  ultimaterepairing:
+  ur:
     description: View information on this plugin.
     default: true
-    aliases: [ur]
+    aliases: [UltimateRepairing]
     usage: /ur
   uranvil:
     description: View information on this plugin.

@@ -4,6 +4,7 @@ import com.songoda.core.gui.GuiManager;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.UAnvil;
 import com.songoda.ultimaterepairing.gui.AnvilSettingsGui;
+import com.songoda.ultimaterepairing.gui.RepairGui;
 import com.songoda.ultimaterepairing.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -73,7 +74,7 @@ public class InteractListeners implements Listener {
         }
 
         if (ourRepair) {
-            instance.getRepairHandler().initRepair(player, event.getClickedBlock().getLocation());
+            RepairGui.newGui(player, anvil1.getLocation());
             event.setCancelled(true);
         } else if (vanillaRepair && anvil1.isInfinity()) {
             player.openInventory(Bukkit.createInventory(null, InventoryType.ANVIL, ChatColor.DARK_GRAY + "Repair & Name"));

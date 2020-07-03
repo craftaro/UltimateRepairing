@@ -13,7 +13,6 @@ import com.songoda.ultimaterepairing.anvil.UAnvil;
 import com.songoda.ultimaterepairing.commands.CommandReload;
 import com.songoda.ultimaterepairing.commands.CommandSettings;
 import com.songoda.ultimaterepairing.commands.CommandURAnvil;
-import com.songoda.ultimaterepairing.commands.CommandUltimateRepairing;
 import com.songoda.ultimaterepairing.handlers.ParticleTask;
 import com.songoda.ultimaterepairing.handlers.RepairHandler;
 import com.songoda.ultimaterepairing.listeners.BlockListeners;
@@ -73,7 +72,7 @@ public class UltimateRepairing extends SongodaPlugin {
 
         this.repairHandler = new RepairHandler(this, guiManager);
         this.commandManager = new CommandManager(this);
-        this.commandManager.addCommand(new CommandUltimateRepairing())
+        this.commandManager.addMainCommand("ur")
                 .addSubCommands(
                         new CommandReload(),
                         new CommandSettings(guiManager));
@@ -159,5 +158,9 @@ public class UltimateRepairing extends SongodaPlugin {
 
     public AnvilManager getAnvilManager() {
         return anvilManager;
+    }
+
+    public GuiManager getGuiManager() {
+        return guiManager;
     }
 }

@@ -7,9 +7,9 @@ import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.utils.PlayerUtils;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData;
-import com.songoda.ultimaterepairing.anvil.PlayerAnvilData.RepairType;
-import com.songoda.ultimaterepairing.gui.RepairTypeGui;
+import com.songoda.ultimaterepairing.gui.RepairGui;
 import com.songoda.ultimaterepairing.gui.StartConfirmGui;
+import com.songoda.ultimaterepairing.repair.RepairType;
 import com.songoda.ultimaterepairing.utils.Methods;
 import org.bukkit.*;
 import org.bukkit.entity.Item;
@@ -18,7 +18,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by songoda on 2/25/2017.
@@ -39,14 +41,13 @@ public class RepairHandler {
         if (getDataFor(p).getInRepair()) {
             yesNo(p, getDataFor(p).getType(), getDataFor(p).getToBeRepaired());
         } else {
-            guiManager.showGUI(p, new RepairTypeGui(p, l));
+            RepairGui.newGui(p, l);
         }
     }
 
 
-    public void preRepair(Player player, RepairType type, Location anvil) {
-        ItemStack itemStack = player.getItemInHand();
-        player.setItemInHand(null);
+    public void preRepair(ItemStack itemStack, Player player, RepairType type, Location anvil) {
+        player.getInventory().removeItem(itemStack);
         Item item = player.getWorld().dropItem(anvil.add(0.5, 2, 0.5), itemStack);
 
         // Support for EpicHoppers suction.
@@ -85,33 +86,8 @@ public class RepairHandler {
             instance.getLocale().getMessage("event.repair.needspace").sendPrefixedMessage(player);
             return;
         }
-        if (player.getItemInHand().getDurability() <= 0) {
-            instance.getLocale().getMessage("event.repair.notdamaged").sendPrefixedMessage(player);
-            return;
-        }
-        if (player.getItemInHand().getMaxStackSize() != 1) {
-            instance.getLocale().getMessage("event.repair.cantrepair").sendPrefixedMessage(player);
-            return;
-        }
 
-        int num = 0;
-        if (player.hasPermission("ultimaterepairing.use.ECO"))
-            num++;
-        if (player.hasPermission("ultimaterepairing.use.XP"))
-            num++;
-        if (num != 2 && player.hasPermission("ultimaterepairing.use.ITEM"))
-            num++;
-
-
-        if (num >= 2 || player.hasPermission("ultimaterepairing.use.*")) {
-            repairType(player, anvil);
-            getDataFor(player).setLocation(anvil);
-        } else if (player.hasPermission("ultimaterepairing.use.eco"))
-            instance.getRepairHandler().preRepair(player, RepairType.ECONOMY, anvil);
-        else if (player.hasPermission("ultimaterepairing.use.XP"))
-            instance.getRepairHandler().preRepair(player, RepairType.XP, anvil);
-        else if (player.hasPermission("ultimaterepairing.use.ITEM"))
-            instance.getRepairHandler().preRepair(player, RepairType.ITEM, anvil);
+        repairType(player, anvil);
     }
 
     private void yesNo(Player p, RepairType type, ItemStack item) {
@@ -158,7 +134,7 @@ public class RepairHandler {
             sold = true;
         }
 
-        if (type == RepairType.XP && player.getLevel() >= playerData.getPrice() || sold || player.getGameMode() == GameMode.CREATIVE) {
+        if (type == RepairType.ECONOMY && player.getLevel() >= playerData.getPrice() || sold || player.getGameMode() == GameMode.CREATIVE) {
             playerData.setBeingRepaired(true);
 
             Effect effect = Effect.STEP_SOUND;
@@ -206,7 +182,7 @@ public class RepairHandler {
 
                 playerData.getItem().remove();
                 if (player.getGameMode() != GameMode.CREATIVE &&
-                        type == RepairType.XP) {
+                        type == RepairType.EXPERIENCE) {
                     player.setLevel(player.getLevel() - playerData.getPrice());
                 }
                 this.playerAnvilData.remove(player.getUniqueId());
@@ -219,7 +195,7 @@ public class RepairHandler {
             instance.getLocale().getMessage("event.repair.notenough")
                     .processPlaceholder("type", instance.getLocale().getMessage("interface.repair.eco").getMessage())
                     .sendPrefixedMessage(player);
-        } else if (type == RepairType.XP)
+        } else if (type == RepairType.EXPERIENCE)
             instance.getLocale().getMessage("event.repair.notenough")
                     .processPlaceholder("type", instance.getLocale().getMessage("interface.repair.xp").getMessage())
                     .sendPrefixedMessage(player);
