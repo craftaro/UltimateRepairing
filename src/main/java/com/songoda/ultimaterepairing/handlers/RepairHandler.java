@@ -2,6 +2,7 @@ package com.songoda.ultimaterepairing.handlers;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.CompatibleSound;
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.gui.GuiManager;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.utils.PlayerUtils;
@@ -14,6 +15,8 @@ import com.songoda.ultimaterepairing.utils.Methods;
 import org.bukkit.*;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
@@ -47,7 +50,35 @@ public class RepairHandler {
 
 
     public void preRepair(ItemStack itemStack, Player player, RepairType type, Location anvil) {
+        // Get from Map, put new instance in Map if it doesn't exist
+        PlayerAnvilData playerData = playerAnvilData.computeIfAbsent(player.getUniqueId(), uuid -> new PlayerAnvilData());
+
+        EntityEquipment equipment = player.getEquipment();
+        if (equipment != null) {
+            if (equipment.getItemInMainHand().equals(itemStack)) {
+                equipment.setItemInMainHand(null);
+                playerData.setSlot(EquipmentSlot.HAND);
+            } else if (itemStack.equals(equipment.getHelmet())) {
+                equipment.setHelmet(null);
+                playerData.setSlot(EquipmentSlot.HEAD);
+            } else if (itemStack.equals(equipment.getChestplate())) {
+                equipment.setChestplate(null);
+                playerData.setSlot(EquipmentSlot.CHEST);
+            } else if (itemStack.equals(equipment.getLeggings())) {
+                equipment.setLeggings(null);
+                playerData.setSlot(EquipmentSlot.LEGS);
+            } else if (itemStack.equals(equipment.getBoots())) {
+                equipment.setBoots(null);
+                playerData.setSlot(EquipmentSlot.FEET);
+            } else if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
+                if (itemStack.equals(equipment.getItemInOffHand())) {
+                    equipment.setItemInOffHand(null);
+                    playerData.setSlot(EquipmentSlot.OFF_HAND);
+                }
+            }
+        }
         player.getInventory().removeItem(itemStack);
+
         Item item = player.getWorld().dropItem(anvil.add(0.5, 2, 0.5), itemStack);
 
         // Support for EpicHoppers suction.
@@ -62,8 +93,6 @@ public class RepairHandler {
         item.setPickupDelay(3600);
         item.setMetadata("UltimateRepairing", new FixedMetadataValue(instance, ""));
 
-        // Get from Map, put new instance in Map if it doesn't exist
-        PlayerAnvilData playerData = playerAnvilData.computeIfAbsent(player.getUniqueId(), uuid -> new PlayerAnvilData());
         playerData.setItem(item);
         playerData.setToBeRepaired(itemStack);
         playerData.setLocations(anvil.add(0, -2, 0));
@@ -139,26 +168,28 @@ public class RepairHandler {
 
             Effect effect = Effect.STEP_SOUND;
 
-            Material blockType = Material.REDSTONE_BLOCK;
+            CompatibleMaterial blockType = CompatibleMaterial.REDSTONE_BLOCK;
 
             String typeStr = playerData.getToBeRepaired().getType().name().toUpperCase();
 
-            if (typeStr.contains("DIAMOND")) {
-                blockType = Material.DIAMOND_BLOCK;
+            if (typeStr.contains("NETHERITE")) {
+                blockType = CompatibleMaterial.NETHERITE_BLOCK;
+            } else if (typeStr.contains("DIAMOND")) {
+                blockType = CompatibleMaterial.DIAMOND_BLOCK;
             } else if (typeStr.contains("IRON")) {
-                blockType = Material.IRON_BLOCK;
+                blockType = CompatibleMaterial.IRON_BLOCK;
             } else if (typeStr.contains("GOLD")) {
-                blockType = Material.GOLD_BLOCK;
+                blockType = CompatibleMaterial.GOLD_BLOCK;
             } else if (typeStr.contains("STONE")) {
-                blockType = Material.STONE;
+                blockType = CompatibleMaterial.STONE;
             } else if (typeStr.contains("WOOD")) {
-                blockType = CompatibleMaterial.OAK_WOOD.getMaterial();
+                blockType = CompatibleMaterial.OAK_WOOD;
             }
 
-            final Material blockTypeFinal = blockType;
+            final Material blockTypeFinal = blockType.getMaterial();
 
             Location location = playerData.getLocations();
-            player.getWorld().playEffect(location, effect, blockType);
+            player.getWorld().playEffect(location, effect, blockType.getMaterial());
             Runnable runnable = () -> player.getWorld().playEffect(location, effect, blockTypeFinal);
             Bukkit.getScheduler().scheduleSyncDelayedTask(instance, runnable, 5L);
             Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
@@ -175,17 +206,12 @@ public class RepairHandler {
                 instance.getLocale().getMessage("event.repair.success").sendPrefixedMessage(player);
 
                 playerData.getToBeRepaired().setDurability((short) 0);
-                HashMap<Integer, ItemStack> items = player.getInventory().addItem(playerData.getToBeRepaired());
-                for (ItemStack item : items.values()) {
-                    player.getWorld().dropItemNaturally(player.getLocation(), item);
-                }
+                removeItem(playerData, player);
 
-                playerData.getItem().remove();
                 if (player.getGameMode() != GameMode.CREATIVE &&
                         type == RepairType.EXPERIENCE) {
                     player.setLevel(player.getLevel() - playerData.getPrice());
                 }
-                this.playerAnvilData.remove(player.getUniqueId());
                 player.closeInventory();
             }, 25L);
             return;
@@ -208,8 +234,34 @@ public class RepairHandler {
     }
 
     public void removeItem(PlayerAnvilData playerData, Player player) {
-        PlayerUtils.giveItem(player, playerData.getToBeRepaired());
-        playerData.getItem().remove();
+        EquipmentSlot slot = playerData.getSlot();
+        if (slot == null)
+            PlayerUtils.giveItem(player, playerData.getToBeRepaired());
+        else if (player.getEquipment() != null) {
+            EntityEquipment equipment = player.getEquipment();
+            ItemStack item = playerData.getToBeRepaired();
+            switch (slot) {
+                case HAND:
+                    equipment.setItemInMainHand(item);
+                    break;
+                case OFF_HAND:
+                    equipment.setItemInOffHand(item);
+                    break;
+                case HEAD:
+                    equipment.setHelmet(item);
+                    break;
+                case CHEST:
+                    equipment.setChestplate(item);
+                    break;
+                case LEGS:
+                    equipment.setLeggings(item);
+                    break;
+                case FEET:
+                    equipment.setBoots(item);
+            }
+        }
+        if (playerData.getItem() != null)
+            playerData.getItem().remove();
 
         this.playerAnvilData.remove(player.getUniqueId());
     }

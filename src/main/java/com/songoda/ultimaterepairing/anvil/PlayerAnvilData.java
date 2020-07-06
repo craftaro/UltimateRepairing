@@ -3,6 +3,7 @@ package com.songoda.ultimaterepairing.anvil;
 import com.songoda.ultimaterepairing.repair.RepairType;
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerAnvilData {
@@ -12,6 +13,7 @@ public class PlayerAnvilData {
     private RepairType type;
     private Item item;
     private ItemStack toBeRepaired;
+    private EquipmentSlot slot = null;
     private Location locations;
     private boolean inRepair;
     private boolean beingRepaired;
@@ -78,5 +80,13 @@ public class PlayerAnvilData {
 
     public void setBeingRepaired(boolean beingRepaired) {
         this.beingRepaired = beingRepaired;
+    }
+
+    public EquipmentSlot getSlot() {
+        return slot;
+    }
+
+    public void setSlot(EquipmentSlot slot) {
+        this.slot = slot;
     }
 }
