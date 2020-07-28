@@ -163,7 +163,7 @@ public class RepairHandler {
             sold = true;
         }
 
-        if (type == RepairType.ECONOMY && player.getLevel() >= playerData.getPrice() || sold || player.getGameMode() == GameMode.CREATIVE) {
+        if (type == RepairType.EXPERIENCE && player.getLevel() >= playerData.getPrice() || sold || player.getGameMode() == GameMode.CREATIVE) {
             playerData.setBeingRepaired(true);
 
             Effect effect = Effect.STEP_SOUND;
