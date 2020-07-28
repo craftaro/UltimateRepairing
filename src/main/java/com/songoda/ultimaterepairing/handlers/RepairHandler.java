@@ -55,8 +55,8 @@ public class RepairHandler {
 
         EntityEquipment equipment = player.getEquipment();
         if (equipment != null) {
-            if (equipment.getItemInMainHand().equals(itemStack)) {
-                equipment.setItemInMainHand(null);
+            if (equipment.getItemInHand().equals(itemStack)) {
+                equipment.setItemInHand(null);
                 playerData.setSlot(EquipmentSlot.HAND);
             } else if (itemStack.equals(equipment.getHelmet())) {
                 equipment.setHelmet(null);
@@ -242,7 +242,7 @@ public class RepairHandler {
             ItemStack item = playerData.getToBeRepaired();
             switch (slot) {
                 case HAND:
-                    equipment.setItemInMainHand(item);
+                    equipment.setItemInHand(item);
                     break;
                 case OFF_HAND:
                     equipment.setItemInOffHand(item);
