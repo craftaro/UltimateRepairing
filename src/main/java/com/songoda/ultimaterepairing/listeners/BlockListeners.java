@@ -27,7 +27,10 @@ public class BlockListeners implements Listener {
             return;
         }
 
-        instance.getAnvilManager().getAnvil(event.getBlock()).setPermPlaced(true);
+        UAnvil anvil = instance.getAnvilManager().getAnvil(event.getBlock());
+        anvil.setParticles(true);
+        anvil.setHologram(true);
+        anvil.setPermPlaced(true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
