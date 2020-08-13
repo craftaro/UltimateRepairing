@@ -16,7 +16,6 @@ import org.bukkit.*;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
@@ -49,35 +48,12 @@ public class RepairHandler {
     }
 
 
-    public void preRepair(ItemStack itemStack, Player player, RepairType type, Location anvil) {
+    public void preRepair(ItemStack itemStack, int playerslot, Player player, RepairType type, Location anvil) {
         // Get from Map, put new instance in Map if it doesn't exist
         PlayerAnvilData playerData = playerAnvilData.computeIfAbsent(player.getUniqueId(), uuid -> new PlayerAnvilData());
 
-        EntityEquipment equipment = player.getEquipment();
-        if (equipment != null) {
-            if (equipment.getItemInHand().equals(itemStack)) {
-                equipment.setItemInHand(null);
-                playerData.setSlot(EquipmentSlot.HAND);
-            } else if (itemStack.equals(equipment.getHelmet())) {
-                equipment.setHelmet(null);
-                playerData.setSlot(EquipmentSlot.HEAD);
-            } else if (itemStack.equals(equipment.getChestplate())) {
-                equipment.setChestplate(null);
-                playerData.setSlot(EquipmentSlot.CHEST);
-            } else if (itemStack.equals(equipment.getLeggings())) {
-                equipment.setLeggings(null);
-                playerData.setSlot(EquipmentSlot.LEGS);
-            } else if (itemStack.equals(equipment.getBoots())) {
-                equipment.setBoots(null);
-                playerData.setSlot(EquipmentSlot.FEET);
-            } else if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
-                if (itemStack.equals(equipment.getItemInOffHand())) {
-                    equipment.setItemInOffHand(null);
-                    playerData.setSlot(EquipmentSlot.OFF_HAND);
-                }
-            }
-        }
-        player.getInventory().removeItem(itemStack);
+        player.getInventory().setItem(playerslot, null);
+        playerData.setSlot(playerslot);
 
         Item item = player.getWorld().dropItem(anvil.add(0.5, 2, 0.5), itemStack);
 
@@ -234,31 +210,12 @@ public class RepairHandler {
     }
 
     public void removeItem(PlayerAnvilData playerData, Player player) {
-        EquipmentSlot slot = playerData.getSlot();
-        if (slot == null)
+        int slot = playerData.getSlot();
+        if (slot < 0)
             PlayerUtils.giveItem(player, playerData.getToBeRepaired());
-        else if (player.getEquipment() != null) {
-            EntityEquipment equipment = player.getEquipment();
+        else {
             ItemStack item = playerData.getToBeRepaired();
-            switch (slot) {
-                case HAND:
-                    equipment.setItemInHand(item);
-                    break;
-                case OFF_HAND:
-                    equipment.setItemInOffHand(item);
-                    break;
-                case HEAD:
-                    equipment.setHelmet(item);
-                    break;
-                case CHEST:
-                    equipment.setChestplate(item);
-                    break;
-                case LEGS:
-                    equipment.setLeggings(item);
-                    break;
-                case FEET:
-                    equipment.setBoots(item);
-            }
+            player.getInventory().setItem(slot, item);
         }
         if (playerData.getItem() != null)
             playerData.getItem().remove();
