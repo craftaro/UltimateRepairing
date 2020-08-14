@@ -28,8 +28,8 @@ public class BlockListeners implements Listener {
         }
 
         UAnvil anvil = instance.getAnvilManager().getAnvil(event.getBlock());
-        anvil.setParticles(true);
-        anvil.setHologram(true);
+        anvil.setParticles(instance.getConfig().getBoolean("Main.Show Particles By Default"));
+        anvil.setHologram(instance.getConfig().getBoolean("Main.Show Holograms By Default"));
         anvil.setPermPlaced(true);
     }
 

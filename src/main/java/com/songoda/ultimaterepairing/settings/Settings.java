@@ -69,6 +69,12 @@ public class Settings {
     public static final ConfigSetting LANGUGE_MODE = new ConfigSetting(config, "System.Language Mode", "en_US",
             "The enabled language file.",
             "More language files (if available) can be found in the plugins data folder.");
+    
+    public static final ConfigSetting SHOW_PARTICLES_BY_DEFAULT = new ConfigSetting(config, "Main.Show Particles By Default", true,
+            "Should particles be enabled when an anvil is placed down?");
+    
+    public static final ConfigSetting SHOW_HOLOGRAMS_BY_DEFAULT = new ConfigSetting(config, "Main.Show Holograms By Default", true,
+            "Should holograms be enabled when an anvil is placed down?");
 
     /**
      * In order to set dynamic economy comment correctly, this needs to be
