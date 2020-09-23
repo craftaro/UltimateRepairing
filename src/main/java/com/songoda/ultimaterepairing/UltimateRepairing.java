@@ -78,24 +78,6 @@ public class UltimateRepairing extends SongodaPlugin {
                         new CommandSettings(guiManager));
         this.commandManager.addCommand(new CommandURAnvil());
 
-        Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
-            /*
-             * Register anvils into AnvilManager from Configuration.
-             */
-            dataFile.load();
-            if (dataFile.contains("data")) {
-                for (String key : dataFile.getConfigurationSection("data").getKeys(false)) {
-                    Location location = Methods.unserializeLocation(key);
-                    UAnvil anvil = anvilManager.getAnvil(location);
-                    anvil.setHologram(dataFile.getBoolean("data." + key + ".hologram"));
-                    anvil.setInfinity(dataFile.getBoolean("data." + key + ".infinity"));
-                    anvil.setParticles(dataFile.getBoolean("data." + key + ".particles"));
-                    anvil.setPermPlaced(dataFile.getBoolean("data." + key + ".permPlaced"));
-                }
-            }
-            particleTask.start();
-        }, 6L);
-
         // Event registration
         guiManager.init();
         pluginManager.registerEvents(new PlayerListeners(this), this);
@@ -104,6 +86,25 @@ public class UltimateRepairing extends SongodaPlugin {
         pluginManager.registerEvents(new InventoryListeners(this), this);
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, 6000, 6000);
+    }
+
+    @Override
+    public void onDataLoad() {
+        /*
+         * Register anvils into AnvilManager from Configuration.
+         */
+        dataFile.load();
+        if (dataFile.contains("data")) {
+            for (String key : dataFile.getConfigurationSection("data").getKeys(false)) {
+                Location location = Methods.unserializeLocation(key);
+                UAnvil anvil = anvilManager.getAnvil(location);
+                anvil.setHologram(dataFile.getBoolean("data." + key + ".hologram"));
+                anvil.setInfinity(dataFile.getBoolean("data." + key + ".infinity"));
+                anvil.setParticles(dataFile.getBoolean("data." + key + ".particles"));
+                anvil.setPermPlaced(dataFile.getBoolean("data." + key + ".permPlaced"));
+            }
+        }
+        particleTask.start();
     }
 
     @Override
