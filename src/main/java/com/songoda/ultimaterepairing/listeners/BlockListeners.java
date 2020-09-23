@@ -2,6 +2,7 @@ package com.songoda.ultimaterepairing.listeners;
 
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.UAnvil;
+import com.songoda.ultimaterepairing.settings.Settings;
 import com.songoda.ultimaterepairing.utils.Methods;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,7 +28,10 @@ public class BlockListeners implements Listener {
             return;
         }
 
-        instance.getAnvilManager().getAnvil(event.getBlock()).setPermPlaced(true);
+        UAnvil anvil = instance.getAnvilManager().getAnvil(event.getBlock());
+        anvil.setParticles(Settings.SHOW_PARTICLES_BY_DEFAULT.getBoolean());
+        anvil.setHologram(Settings.SHOW_HOLOGRAMS_BY_DEFAULT.getBoolean());
+        anvil.setPermPlaced(true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

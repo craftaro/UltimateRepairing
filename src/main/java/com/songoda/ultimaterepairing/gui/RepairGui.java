@@ -68,10 +68,11 @@ public class RepairGui extends Gui {
                     init(type.getNext(player)));
 
         int i = 9;
-        for (ItemStack item : player.getInventory().getContents()) {
+        for (int playerslot = 0; playerslot < player.getInventory().getContents().length; playerslot++) {
+            ItemStack item = player.getInventory().getContents()[playerslot];
             if (item == null || item.getDurability() <= 0 || item.getMaxStackSize() != 1) continue;
 
-            ItemStack toRepair = item;
+            ItemStack toRepair = item.clone();
 
             short durability = item.getDurability();
 
@@ -95,9 +96,10 @@ public class RepairGui extends Gui {
             }
             item.setDurability(durability);
 
+            int finalplayerslot = playerslot;
             setButton(i, item, (event) -> {
                 exit();
-                UltimateRepairing.getInstance().getRepairHandler().preRepair(toRepair, player, type, anvil);
+                UltimateRepairing.getInstance().getRepairHandler().preRepair(toRepair, finalplayerslot, player, type, anvil);
             });
             i++;
         }
