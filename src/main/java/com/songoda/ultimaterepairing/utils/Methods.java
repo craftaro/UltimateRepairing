@@ -4,7 +4,11 @@ import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.repair.RepairType;
 import com.songoda.ultimaterepairing.settings.Settings;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -12,7 +16,11 @@ import org.bukkit.inventory.ItemStack;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by songoda on 2/25/2017.
@@ -191,19 +199,5 @@ public class Methods {
         Location location = new Location(world, x, y, z, 0, 0);
         serializeCache.put(cacheKey, location.clone());
         return location;
-    }
-
-    public static String formatText(String text) {
-        if (text == null || text.equals(""))
-            return "";
-        return formatText(text, false);
-    }
-
-    public static String formatText(String text, boolean cap) {
-        if (text == null || text.equals(""))
-            return "";
-        if (cap)
-            text = text.substring(0, 1).toUpperCase() + text.substring(1);
-        return ChatColor.translateAlternateColorCodes('&', text);
     }
 }

@@ -6,6 +6,7 @@ import com.songoda.core.configuration.ConfigSetting;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.hooks.HologramManager;
 import com.songoda.ultimaterepairing.UltimateRepairing;
+
 import java.util.stream.Collectors;
 
 public class Settings {
@@ -26,12 +27,12 @@ public class Settings {
     public static final ConfigSetting MULTIPLY_COST_FOR_ENCHANTED = new ConfigSetting(config, "Main.Cost Multiplier For Enchanted Items", 2,
             "Should enchanted items have their repair costs multiplied?");
 
-    public static final ConfigSetting ECONOMY = new ConfigSetting(config, "Main.Economy", 
+    public static final ConfigSetting ECONOMY = new ConfigSetting(config, "Main.Economy",
             EconomyManager.getEconomy() == null ? "Vault" : EconomyManager.getEconomy().getName(),
             "Which economy plugin should be used?",
             "You can choose from \"" + EconomyManager.getManager().getRegisteredPlugins().stream().collect(Collectors.joining("\", \"")) + "\".");
 
-    public static final ConfigSetting HOLOGRAM = new ConfigSetting(config, "Main.Hologram", 
+    public static final ConfigSetting HOLOGRAM = new ConfigSetting(config, "Main.Hologram",
             HologramManager.getHolograms() == null ? "HolographicDisplays" : HologramManager.getHolograms().getName(),
             "Which hologram plugin should be used?",
             "You can choose from \"" + HologramManager.getManager().getRegisteredPlugins().stream().collect(Collectors.joining(", ")) + "\".");
@@ -69,10 +70,10 @@ public class Settings {
     public static final ConfigSetting LANGUGE_MODE = new ConfigSetting(config, "System.Language Mode", "en_US",
             "The enabled language file.",
             "More language files (if available) can be found in the plugins data folder.");
-    
+
     public static final ConfigSetting SHOW_PARTICLES_BY_DEFAULT = new ConfigSetting(config, "Main.Show Particles By Default", true,
             "Should particles be enabled when an anvil is placed down?");
-    
+
     public static final ConfigSetting SHOW_HOLOGRAMS_BY_DEFAULT = new ConfigSetting(config, "Main.Show Holograms By Default", true,
             "Should holograms be enabled when an anvil is placed down?");
 

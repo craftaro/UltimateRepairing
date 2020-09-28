@@ -1,6 +1,5 @@
 package com.songoda.ultimaterepairing.gui;
 
-import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.utils.ItemUtils;
@@ -17,10 +16,10 @@ import java.util.Arrays;
 
 public class RepairGui extends Gui {
 
-    final Location anvil;
-    final Player player;
-    final UltimateRepairing plugin = UltimateRepairing.getInstance();
-    final ItemStack item;
+    private final Location anvil;
+    private final Player player;
+    private final UltimateRepairing plugin = UltimateRepairing.getInstance();
+    private final ItemStack item;
 
     public static void newGui(Player player, Location anvil) {
         RepairType type = RepairType.EXPERIENCE;

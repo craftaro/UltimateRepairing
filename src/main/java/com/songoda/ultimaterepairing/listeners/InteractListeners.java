@@ -21,11 +21,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class InteractListeners implements Listener {
 
-    private final UltimateRepairing instance;
+    private final UltimateRepairing plugin;
     private final GuiManager guiManager;
 
-    public InteractListeners(UltimateRepairing instance, GuiManager guiManager) {
-        this.instance = instance;
+    public InteractListeners(UltimateRepairing plugin, GuiManager guiManager) {
+        this.plugin = plugin;
         this.guiManager = guiManager;
     }
 
@@ -41,14 +41,10 @@ public class InteractListeners implements Listener {
         if (!event.getClickedBlock().getType().name().contains("ANVIL") // don't pay attention if it's not an anvil
                 // also don't handle if we don't have perms to use this repair anvil
                 || (Settings.PERMISSION_ANVIL_PLACE.getBoolean()
-                && !(anvil1 = instance.getAnvilManager().getAnvil(event.getClickedBlock())).isPermPlaced())) {
+                && !(anvil1 = plugin.getAnvilManager().getAnvil(event.getClickedBlock())).isPermPlaced())) {
             return;
         }
-        anvil1 = anvil1 != null ? anvil1 : instance.getAnvilManager().getAnvil(event.getClickedBlock());
-//            if (anvil1.isInfinity()) {
-//                event.getClickedBlock().setType(Material.AIR);
-//                event.getClickedBlock().setType(Material.ANVIL); //ToDO: This may not work.
-//            }
+        anvil1 = anvil1 != null ? anvil1 : plugin.getAnvilManager().getAnvil(event.getClickedBlock());
         // check if we should process this as a right click
         boolean rightClick = (event.getAction() == Action.RIGHT_CLICK_BLOCK) ^ (Settings.SWAP_LEFT_RIGHT.getBoolean());
         // admin interface?

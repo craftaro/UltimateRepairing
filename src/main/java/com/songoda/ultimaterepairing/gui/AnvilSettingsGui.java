@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class AnvilSettingsGui extends Gui {
 
-    final UAnvil anvil;
+    private final UAnvil anvil;
 
     public AnvilSettingsGui(UAnvil anvil, Gui gui) {
         super(gui);

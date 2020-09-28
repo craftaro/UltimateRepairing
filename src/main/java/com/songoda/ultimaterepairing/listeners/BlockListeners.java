@@ -15,10 +15,10 @@ import org.bukkit.event.block.BlockPlaceEvent;
  */
 public class BlockListeners implements Listener {
 
-    private final UltimateRepairing instance;
+    private final UltimateRepairing plugin;
 
-    public BlockListeners(UltimateRepairing instance) {
-        this.instance = instance;
+    public BlockListeners(UltimateRepairing plugin) {
+        this.plugin = plugin;
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -28,7 +28,7 @@ public class BlockListeners implements Listener {
             return;
         }
 
-        UAnvil anvil = instance.getAnvilManager().getAnvil(event.getBlock());
+        UAnvil anvil = plugin.getAnvilManager().getAnvil(event.getBlock());
         anvil.setParticles(Settings.SHOW_PARTICLES_BY_DEFAULT.getBoolean());
         anvil.setHologram(Settings.SHOW_HOLOGRAMS_BY_DEFAULT.getBoolean());
         anvil.setPermPlaced(true);
@@ -38,12 +38,12 @@ public class BlockListeners implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         String loc = Methods.serializeLocation(event.getBlock());
 
-        if (!event.getBlock().getType().name().contains("ANVIL") && !instance.getConfig().contains("data.anvil." + loc)) {
+        if (!event.getBlock().getType().name().contains("ANVIL") && !plugin.getConfig().contains("data.anvil." + loc)) {
             return;
         }
 
-        UAnvil anvil = instance.getAnvilManager().getAnvil(event.getBlock());
+        UAnvil anvil = plugin.getAnvilManager().getAnvil(event.getBlock());
         anvil.setHologram(false);
-        instance.getAnvilManager().removeAnvil(event.getBlock().getLocation());
+        plugin.getAnvilManager().removeAnvil(event.getBlock().getLocation());
     }
 }
