@@ -78,18 +78,18 @@ public class RepairGui extends Gui {
 
             final String itemName = TextUtils.formatText(ItemUtils.getItemName(item).replace("_", " "), true);
             if (type == RepairType.ECONOMY) {
-                item = GuiUtils.createButtonItem(CompatibleMaterial.getMaterial(item),
+                item = GuiUtils.createButtonItem(item,
                         plugin.getLocale().getMessage("interface.repair.item")
                                 .processPlaceholder("ITEM", itemName).getMessage(),
                         plugin.getLocale().getMessage("interface.repair.ecolore").getMessage());
             } else if (type == RepairType.ITEM) {
-                item = GuiUtils.createButtonItem(CompatibleMaterial.getMaterial(item),
+                item = GuiUtils.createButtonItem(item,
                         plugin.getLocale().getMessage("interface.repair.item")
                                 .processPlaceholder("ITEM", itemName).getMessage(),
                         plugin.getLocale().getMessage("interface.repair.itemlore")
                                 .processPlaceholder("item", itemName).getMessage());
             } else if (type == RepairType.EXPERIENCE) {
-                item = GuiUtils.createButtonItem(CompatibleMaterial.getMaterial(item),
+                item = GuiUtils.createButtonItem(item,
                         plugin.getLocale().getMessage("interface.repair.item")
                                 .processPlaceholder("ITEM", itemName).getMessage(),
                         plugin.getLocale().getMessage("interface.repair.xplore").getMessage());
