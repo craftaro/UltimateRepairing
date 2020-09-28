@@ -2,7 +2,6 @@ package com.songoda.ultimaterepairing.handlers;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.CompatibleSound;
-import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.gui.GuiManager;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.utils.PlayerUtils;
@@ -12,10 +11,13 @@ import com.songoda.ultimaterepairing.gui.RepairGui;
 import com.songoda.ultimaterepairing.gui.StartConfirmGui;
 import com.songoda.ultimaterepairing.repair.RepairType;
 import com.songoda.ultimaterepairing.utils.Methods;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Effect;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
@@ -107,7 +109,7 @@ public class RepairHandler {
         playerData.setType(type);
         playerData.setPrice(price);
 
-        guiManager.showGUI(p, new StartConfirmGui(playerData.getLocation(), type, p, item));
+        guiManager.showGUI(p, new StartConfirmGui(type, p, item));
     }
 
 

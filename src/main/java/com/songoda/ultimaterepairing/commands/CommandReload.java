@@ -2,8 +2,9 @@ package com.songoda.ultimaterepairing.commands;
 
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimaterepairing.UltimateRepairing;
-import java.util.List;
 import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public class CommandReload extends AbstractCommand {
 

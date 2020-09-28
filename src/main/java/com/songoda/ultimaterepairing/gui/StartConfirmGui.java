@@ -3,33 +3,29 @@ package com.songoda.ultimaterepairing.gui;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
-import com.songoda.core.utils.ItemUtils;
 import com.songoda.core.utils.TextUtils;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.anvil.PlayerAnvilData;
 import com.songoda.ultimaterepairing.repair.RepairType;
 import com.songoda.ultimaterepairing.settings.Settings;
 import com.songoda.ultimaterepairing.utils.Methods;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class StartConfirmGui extends Gui {
 
-    final Location anvil;
-    final Player player;
-    final UltimateRepairing instance = UltimateRepairing.getInstance();
-    final ItemStack item;
-    final RepairType type;
+    private final Player player;
+    private final UltimateRepairing instance = UltimateRepairing.getInstance();
+    private final ItemStack item;
+    private final RepairType type;
     boolean isYes = false;
 
-    public StartConfirmGui(Location anvil, RepairType type, Player player, ItemStack item) {
-        this(anvil, type, player, item, null);
+    public StartConfirmGui(RepairType type, Player player, ItemStack item) {
+        this(type, player, item, null);
     }
 
-    public StartConfirmGui(Location anvil, RepairType type, Player player, ItemStack item, Gui gui) {
+    public StartConfirmGui(RepairType type, Player player, ItemStack item, Gui gui) {
         super(gui);
-        this.anvil = anvil;
         this.player = player;
         this.item = item;
         this.type = type;
@@ -47,7 +43,7 @@ public class StartConfirmGui extends Gui {
         } else if (type == RepairType.ECONOMY) {
             cost = "$" + playerData.getPrice();
         } else if (type == RepairType.ITEM) {
-            cost = playerData.getPrice() + " " + Methods.formatText(Methods.getType(item).name(), true);
+            cost = playerData.getPrice() + " " + TextUtils.formatText(Methods.getType(item).name(), true);
         }
 
         setTitle(instance.getLocale().getMessage("interface.yesno.title")
@@ -82,13 +78,15 @@ public class StartConfirmGui extends Gui {
                     instance.getRepairHandler().finish(false, player);
                 });
 
-        if(Settings.RAINBOW.getBoolean()) {
-            for(int cell = 0; cell < rows * 9; ++cell) {
-                if(getItem(cell) == null) {
+        if (Settings.RAINBOW.getBoolean()) {
+            for (int cell = 0; cell < rows * 9; ++cell) {
+                if (getItem(cell) == null) {
                     setItem(cell, GuiUtils.getBorderItem(Methods.getRainbowGlass()));
                 }
             }
         }
-        setOnClose((event) -> {if(!isYes) instance.getRepairHandler().finish(false, player);});
+        setOnClose((event) -> {
+            if (!isYes) instance.getRepairHandler().finish(false, player);
+        });
     }
 }

@@ -3,12 +3,12 @@ package com.songoda.ultimaterepairing.anvil;
 import com.songoda.core.hooks.HologramManager;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.settings.Settings;
-import java.util.ArrayList;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import java.util.ArrayList;
 import java.util.Objects;
-import org.bukkit.Bukkit;
 
 public class UAnvil {
 
@@ -45,7 +45,7 @@ public class UAnvil {
 
             Location location = getLocation().add(0, .1, 0);
 
-            Bukkit.getScheduler().runTaskLater(UltimateRepairing.getInstance(), ()->{
+            Bukkit.getScheduler().runTaskLater(UltimateRepairing.getInstance(), () -> {
                 if (!hologram) {
                     HologramManager.removeHologram(location);
                 } else {
@@ -117,7 +117,8 @@ public class UAnvil {
         UAnvil other = (UAnvil) obj;
         return Objects.equals(location, other.location);
     }
-    public boolean shouldSave(){
+
+    public boolean shouldSave() {
         return hologram || particles || infinity || permPlaced;
     }
 

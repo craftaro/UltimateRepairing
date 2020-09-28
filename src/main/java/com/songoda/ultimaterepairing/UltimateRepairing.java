@@ -83,7 +83,7 @@ public class UltimateRepairing extends SongodaPlugin {
         pluginManager.registerEvents(new PlayerListeners(this), this);
         pluginManager.registerEvents(new BlockListeners(this), this);
         pluginManager.registerEvents(new InteractListeners(this, guiManager), this);
-        pluginManager.registerEvents(new InventoryListeners(this), this);
+        pluginManager.registerEvents(new InventoryListeners(), this);
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, this::saveToFile, 6000, 6000);
     }

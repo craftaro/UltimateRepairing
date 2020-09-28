@@ -1,6 +1,5 @@
 package com.songoda.ultimaterepairing.gui;
 
-import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.utils.ItemUtils;
@@ -17,10 +16,10 @@ import java.util.Arrays;
 
 public class RepairGui extends Gui {
 
-    final Location anvil;
-    final Player player;
-    final UltimateRepairing plugin = UltimateRepairing.getInstance();
-    final ItemStack item;
+    private final Location anvil;
+    private final Player player;
+    private final UltimateRepairing plugin = UltimateRepairing.getInstance();
+    private final ItemStack item;
 
     public static void newGui(Player player, Location anvil) {
         RepairType type = RepairType.EXPERIENCE;
@@ -78,18 +77,18 @@ public class RepairGui extends Gui {
 
             final String itemName = TextUtils.formatText(ItemUtils.getItemName(item).replace("_", " "), true);
             if (type == RepairType.ECONOMY) {
-                item = GuiUtils.createButtonItem(CompatibleMaterial.getMaterial(item),
+                item = GuiUtils.createButtonItem(item,
                         plugin.getLocale().getMessage("interface.repair.item")
                                 .processPlaceholder("ITEM", itemName).getMessage(),
                         plugin.getLocale().getMessage("interface.repair.ecolore").getMessage());
             } else if (type == RepairType.ITEM) {
-                item = GuiUtils.createButtonItem(CompatibleMaterial.getMaterial(item),
+                item = GuiUtils.createButtonItem(item,
                         plugin.getLocale().getMessage("interface.repair.item")
                                 .processPlaceholder("ITEM", itemName).getMessage(),
                         plugin.getLocale().getMessage("interface.repair.itemlore")
                                 .processPlaceholder("item", itemName).getMessage());
             } else if (type == RepairType.EXPERIENCE) {
-                item = GuiUtils.createButtonItem(CompatibleMaterial.getMaterial(item),
+                item = GuiUtils.createButtonItem(item,
                         plugin.getLocale().getMessage("interface.repair.item")
                                 .processPlaceholder("ITEM", itemName).getMessage(),
                         plugin.getLocale().getMessage("interface.repair.xplore").getMessage());

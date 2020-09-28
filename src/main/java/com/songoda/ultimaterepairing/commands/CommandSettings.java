@@ -4,13 +4,14 @@ import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.configuration.editor.PluginConfigGui;
 import com.songoda.core.gui.GuiManager;
 import com.songoda.ultimaterepairing.UltimateRepairing;
-import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class CommandSettings extends AbstractCommand {
 
-    GuiManager guiManager;
+    private GuiManager guiManager;
 
     public CommandSettings(GuiManager guiManager) {
         super(true, "settings");

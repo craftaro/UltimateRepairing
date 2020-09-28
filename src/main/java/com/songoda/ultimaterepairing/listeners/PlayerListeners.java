@@ -8,21 +8,20 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerListeners implements Listener {
 
+    private final UltimateRepairing plugin;
 
-    private final UltimateRepairing instance;
-
-    public PlayerListeners(UltimateRepairing instance) {
-        this.instance = instance;
+    public PlayerListeners(UltimateRepairing plugin) {
+        this.plugin = plugin;
     }
 
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
 
-        if (!instance.getRepairHandler().hasInstance(event.getPlayer())
-                || !instance.getRepairHandler().getDataFor(event.getPlayer()).getInRepair())
+        if (!plugin.getRepairHandler().hasInstance(event.getPlayer())
+                || !plugin.getRepairHandler().getDataFor(event.getPlayer()).getInRepair())
             return;
 
-        PlayerAnvilData playerData = instance.getRepairHandler().getDataFor(event.getPlayer());
-        instance.getRepairHandler().removeItem(playerData, event.getPlayer());
+        PlayerAnvilData playerData = plugin.getRepairHandler().getDataFor(event.getPlayer());
+        plugin.getRepairHandler().removeItem(playerData, event.getPlayer());
     }
 }
