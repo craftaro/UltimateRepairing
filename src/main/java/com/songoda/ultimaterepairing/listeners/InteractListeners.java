@@ -8,6 +8,7 @@ import com.songoda.ultimaterepairing.gui.RepairGui;
 import com.songoda.ultimaterepairing.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,17 +35,18 @@ public class InteractListeners implements Listener {
         boolean ourRepair = false;
         boolean vanillaRepair = false;
         Player player = event.getPlayer();
-        if (event.getClickedBlock() == null) return;
+        Block block = event.getClickedBlock();
+        if (block == null) return;
 
         UAnvil anvil1 = null;
 
-        if (!event.getClickedBlock().getType().name().contains("ANVIL") // don't pay attention if it's not an anvil
+        if (!block.getType().name().contains("ANVIL") // don't pay attention if it's not an anvil
                 // also don't handle if we don't have perms to use this repair anvil
                 || (Settings.PERMISSION_ANVIL_PLACE.getBoolean()
-                && !(anvil1 = plugin.getAnvilManager().getAnvil(event.getClickedBlock())).isPermPlaced())) {
+                && !(anvil1 = plugin.getAnvilManager().getAnvil(block)).isPermPlaced())) {
             return;
         }
-        anvil1 = anvil1 != null ? anvil1 : plugin.getAnvilManager().getAnvil(event.getClickedBlock());
+        anvil1 = anvil1 != null ? anvil1 : plugin.getAnvilManager().getAnvil(block);
         // check if we should process this as a right click
         boolean rightClick = (event.getAction() == Action.RIGHT_CLICK_BLOCK) ^ (Settings.SWAP_LEFT_RIGHT.getBoolean());
         // admin interface?

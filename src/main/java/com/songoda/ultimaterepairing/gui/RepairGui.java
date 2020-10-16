@@ -18,25 +18,23 @@ public class RepairGui extends Gui {
 
     private final Location anvil;
     private final Player player;
-    private final UltimateRepairing plugin = UltimateRepairing.getInstance();
-    private final ItemStack item;
+    private static final UltimateRepairing plugin = UltimateRepairing.getInstance();
 
     public static void newGui(Player player, Location anvil) {
         RepairType type = RepairType.EXPERIENCE;
         if (!type.hasPermission(player))
             type = type.getNext(player);
         if (type == null) {
-            UltimateRepairing.getInstance().getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(player);
+            plugin.getLocale().getMessage("event.general.nopermission").sendPrefixedMessage(player);
             return;
         }
-        UltimateRepairing.getInstance().getGuiManager().showGUI(player, new RepairGui(player, anvil, null, type));
+        plugin.getGuiManager().showGUI(player, new RepairGui(player, anvil, null, type));
     }
 
     private RepairGui(Player player, Location anvil, Gui gui, RepairType type) {
         super(gui);
         this.anvil = anvil;
         this.player = player;
-        this.item = player.getItemInHand();
 
         setRows(6);
         setTitle(plugin.getLocale().getMessage("interface.repair.title").getMessage());
@@ -98,16 +96,19 @@ public class RepairGui extends Gui {
             int finalplayerslot = playerslot;
             setButton(i, item, (event) -> {
                 exit();
-                UltimateRepairing.getInstance().getRepairHandler().preRepair(toRepair, finalplayerslot, player, type, anvil);
+                if (!player.getInventory().contains(toRepair)) {
+                    plugin.getLocale().getMessage("event.repair.notfound").sendPrefixedMessage(player);
+                    return;
+                }
+                plugin.getRepairHandler().preRepair(toRepair, finalplayerslot, player, type, anvil);
             });
             i++;
         }
 
         if (Settings.RAINBOW.getBoolean()) {
             for (int cell = 0; cell < rows * 9; ++cell) {
-                if (getItem(cell) == null) {
+                if (getItem(cell) == null)
                     setItem(cell, GuiUtils.getBorderItem(Methods.getRainbowGlass()));
-                }
             }
         }
     }

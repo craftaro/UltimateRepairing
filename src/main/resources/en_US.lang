@@ -40,3 +40,4 @@ event:
     notenough: '&cYou don''t have enough %type% &cto repair this item!'
     success: '&aYour item has been successfully repaired!'
     cancelled: '&cCancelled repairing.'
+    notfound: '&cThe item you attempted to repair has disappeared.'

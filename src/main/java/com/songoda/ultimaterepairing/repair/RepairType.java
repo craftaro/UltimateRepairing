@@ -41,9 +41,9 @@ public enum RepairType {
     }
 
     public RepairType getNext(Player player) {
-        for (int i = 0; i < values().length; i++) {
+        for (int i = 1; i < values().length + 1; i++) {
             int index = ordinal();
-            int nextIndex = index + 1;
+            int nextIndex = index + i;
             RepairType[] cars = RepairType.values();
             nextIndex %= cars.length;
             RepairType type = cars[nextIndex];
