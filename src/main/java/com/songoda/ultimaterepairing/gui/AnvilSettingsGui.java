@@ -12,12 +12,6 @@ public class AnvilSettingsGui extends Gui {
 
     private final UAnvil anvil;
 
-    public AnvilSettingsGui(UAnvil anvil, Gui gui) {
-        super(gui);
-        this.anvil = anvil;
-        init();
-    }
-
     public AnvilSettingsGui(UAnvil anvil) {
         this.anvil = anvil;
         init();
