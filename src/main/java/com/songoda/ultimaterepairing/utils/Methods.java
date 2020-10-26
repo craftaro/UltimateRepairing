@@ -5,7 +5,6 @@ import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.repair.RepairType;
 import com.songoda.ultimaterepairing.settings.Settings;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -36,7 +35,7 @@ public class Methods {
     public static int getCost(RepairType type, ItemStack item) {
         try {
 
-            ScriptEngineManager mgr = new ScriptEngineManager();
+            ScriptEngineManager mgr = new ScriptEngineManager(null);
             ScriptEngine engine = mgr.getEngineByName("JavaScript");
 
             String equationXP = Settings.EXPERIENCE_EQUATION.getString();
