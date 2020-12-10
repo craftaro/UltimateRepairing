@@ -33,7 +33,6 @@ public class InteractListeners implements Listener {
     @EventHandler
     public void onAnvilClick(PlayerInteractEvent event) {
         boolean ourRepair = false;
-        boolean vanillaRepair = false;
         Player player = event.getPlayer();
         Block block = event.getClickedBlock();
         if (block == null) return;
@@ -63,19 +62,13 @@ public class InteractListeners implements Listener {
                 return;
             }
             ourRepair = true;
-        } else if (rightClick) {
-            // allowing normal repair
-            vanillaRepair = true;
-        } else if (!player.isSneaking()) {
+        } else if (!rightClick && !player.isSneaking()) {
             // that's us!
             ourRepair = true;
         }
 
         if (ourRepair) {
             RepairGui.newGui(player, anvil1.getLocation());
-            event.setCancelled(true);
-        } else if (vanillaRepair && anvil1.isInfinity()) {
-            player.openInventory(Bukkit.createInventory(null, InventoryType.ANVIL, ChatColor.DARK_GRAY + "Repair & Name"));
             event.setCancelled(true);
         }
     }
