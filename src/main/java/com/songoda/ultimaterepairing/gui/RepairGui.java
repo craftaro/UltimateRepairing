@@ -53,9 +53,9 @@ public class RepairGui extends Gui {
 
         setDefaultItem(glass1);
 
-        GuiUtils.mirrorFill(this, 0, 0, true, true, glass2);
-        GuiUtils.mirrorFill(this, 0, 1, true, true, glass2);
-        GuiUtils.mirrorFill(this, 0, 2, true, true, glass3);
+        mirrorFill(0, 0, true, true, glass2);
+        mirrorFill(0, 1, true, true, glass2);
+        mirrorFill(0, 2, true, true, glass3);
 
 
         if (Arrays.stream(RepairType.values()).filter(p -> p.hasPermission(player)).count() > 1)
@@ -100,6 +100,7 @@ public class RepairGui extends Gui {
                     plugin.getLocale().getMessage("event.repair.notfound").sendPrefixedMessage(player);
                     return;
                 }
+                player.getInventory().removeItem(toRepair);
                 plugin.getRepairHandler().preRepair(toRepair, finalplayerslot, player, type, anvil);
             });
             i++;

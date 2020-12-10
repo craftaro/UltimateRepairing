@@ -55,11 +55,11 @@ public class StartConfirmGui extends Gui {
 
         setDefaultItem(glass1);
 
-        GuiUtils.mirrorFill(this, 0, 0, true, true, glass2);
-        GuiUtils.mirrorFill(this, 0, 1, true, true, glass2);
-        GuiUtils.mirrorFill(this, 0, 2, true, true, glass3);
-        GuiUtils.mirrorFill(this, 1, 0, false, true, glass2);
-        GuiUtils.mirrorFill(this, 1, 1, false, true, glass3);
+        mirrorFill(0, 0, true, true, glass2);
+        mirrorFill(0, 1, true, true, glass2);
+        mirrorFill(0, 2, true, true, glass3);
+        mirrorFill(1, 0, false, true, glass2);
+        mirrorFill(1, 1, false, true, glass3);
 
         setItem(4, item);
 
