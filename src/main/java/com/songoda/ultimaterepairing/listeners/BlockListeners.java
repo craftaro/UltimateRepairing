@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 /**
@@ -46,4 +47,17 @@ public class BlockListeners implements Listener {
         anvil.setHologram(false);
         plugin.getAnvilManager().removeAnvil(event.getBlock().getLocation());
     }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onBlockDamage(BlockDamageEvent event) {
+        String loc = Methods.serializeLocation(event.getBlock());
+        if (!event.getBlock().getType().name().contains("ANVIL") && !plugin.getConfig().contains("data.anvil." + loc))
+            return;
+
+        UAnvil anvil = plugin.getAnvilManager().getAnvil(event.getBlock());
+        if (anvil.isInfinity())
+            event.setCancelled(true);
+    }
+
+
 }
