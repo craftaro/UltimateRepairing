@@ -81,7 +81,7 @@ public class Methods {
     public static Material getType(ItemStack item) {
         if (Settings.REPAIR_ONLY_SAME_TYPE.getBoolean()) {
             if (item.getType().name().contains("NETHERITE"))
-                return CompatibleMaterial.NETHERITE_BLOCK.getMaterial();
+                return CompatibleMaterial.NETHERITE_INGOT.getMaterial();
             if (item.getType().name().contains("DIAMOND"))
                 return CompatibleMaterial.DIAMOND.getMaterial();
             if (item.getType().name().contains("IRON"))
