@@ -1,6 +1,7 @@
 package com.songoda.ultimaterepairing.utils;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.math.MathUtils;
 import com.songoda.ultimaterepairing.UltimateRepairing;
 import com.songoda.ultimaterepairing.repair.RepairType;
 import com.songoda.ultimaterepairing.settings.Settings;
@@ -12,9 +13,6 @@ import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -33,48 +31,40 @@ public class Methods {
     }
 
     public static int getCost(RepairType type, ItemStack item) {
-        try {
+        String equationXP = Settings.EXPERIENCE_EQUATION.getString();
+        String equationECO = Settings.ECONOMY_EQUATION.getString();
+        String equationITEM = Settings.ITEM_EQUATION.getString();
 
-            ScriptEngineManager mgr = new ScriptEngineManager(null);
-            ScriptEngine engine = mgr.getEngineByName("JavaScript");
+        equationXP = equationXP.replace("{MaxDurability}", Short.toString(item.getType().getMaxDurability()))
+                .replace("{Durability}", Short.toString(item.getDurability()));
+        int XPCost = (int) Math.round(MathUtils.eval(equationXP));
 
-            String equationXP = Settings.EXPERIENCE_EQUATION.getString();
-            String equationECO = Settings.ECONOMY_EQUATION.getString();
-            String equationITEM = Settings.ITEM_EQUATION.getString();
+        equationECO = equationECO.replace("{MaxDurability}", Short.toString(item.getType().getMaxDurability()))
+                .replace("{Durability}", Short.toString(item.getDurability()))
+                .replace("{XPCost}", Integer.toString(XPCost));
 
-            equationXP = equationXP.replace("{MaxDurability}", Short.toString(item.getType().getMaxDurability()))
-                    .replace("{Durability}", Short.toString(item.getDurability()));
-            int XPCost = (int) Math.round(Double.parseDouble(engine.eval(equationXP).toString()));
+        int ECOCost = (int) Math.round(MathUtils.eval(equationECO));
 
-            equationECO = equationECO.replace("{MaxDurability}", Short.toString(item.getType().getMaxDurability()))
-                    .replace("{Durability}", Short.toString(item.getDurability()))
-                    .replace("{XPCost}", Integer.toString(XPCost));
+        equationITEM = equationITEM.replace("{MaxDurability}", Short.toString(item.getType().getMaxDurability()))
+                .replace("{Durability}", Short.toString(item.getDurability()))
+                .replace("{XPCost}", Integer.toString(XPCost));
 
-            int ECOCost = (int) Math.round(Double.parseDouble(engine.eval(equationECO).toString()));
+        int ITEMCost = (int) Math.round(MathUtils.eval(equationITEM));
 
-            equationITEM = equationITEM.replace("{MaxDurability}", Short.toString(item.getType().getMaxDurability()))
-                    .replace("{Durability}", Short.toString(item.getDurability()))
-                    .replace("{XPCost}", Integer.toString(XPCost));
-
-            int ITEMCost = (int) Math.round(Double.parseDouble(engine.eval(equationITEM).toString()));
-
-            if (item.hasItemMeta() &&
-                    item.getItemMeta().hasEnchants()) {
-                int multi = UltimateRepairing.getInstance().getConfig().getInt("Main.Cost Multiplier For Enchanted Items");
-                XPCost = XPCost * multi;
-                ECOCost = ECOCost * multi;
-                ITEMCost = ITEMCost * multi;
-            }
-
-            if (type == RepairType.EXPERIENCE)
-                return XPCost;
-            else if (type == RepairType.ITEM)
-                return ITEMCost;
-            else if (type == RepairType.ECONOMY)
-                return ECOCost;
-        } catch (ScriptException e) {
-            e.printStackTrace();
+        if (item.hasItemMeta() &&
+                item.getItemMeta().hasEnchants()) {
+            int multi = UltimateRepairing.getInstance().getConfig().getInt("Main.Cost Multiplier For Enchanted Items");
+            XPCost = XPCost * multi;
+            ECOCost = ECOCost * multi;
+            ITEMCost = ITEMCost * multi;
         }
+
+        if (type == RepairType.EXPERIENCE)
+            return XPCost;
+        else if (type == RepairType.ITEM)
+            return ITEMCost;
+        else if (type == RepairType.ECONOMY)
+            return ECOCost;
         return 9999999;
     }
 
