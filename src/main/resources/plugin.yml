@@ -1,15 +1,16 @@
 name: UltimateRepairing
 description: UltimateRepairing
 main: com.songoda.ultimaterepairing.UltimateRepairing
-softdepend: [HolographicDisplays, Vault]
+softdepend: [ HolographicDisplays, Vault ]
 version: maven-version-number
 author: Songoda
 api-version: 1.13
+
 commands:
   ur:
     description: View information on this plugin.
     default: true
-    aliases: [UltimateRepairing]
+    aliases: [ UltimateRepairing ]
     usage: /ur
   uranvil:
     description: View information on this plugin.

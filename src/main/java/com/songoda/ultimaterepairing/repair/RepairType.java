@@ -5,7 +5,6 @@ import com.songoda.ultimaterepairing.UltimateRepairing;
 import org.bukkit.entity.Player;
 
 public enum RepairType {
-
     ECONOMY(CompatibleMaterial.SUNFLOWER,
             "ultimaterepairing.use.ECO",
             "interface.repair.ecoTitle"),

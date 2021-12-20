@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class UltimateRepairing extends SongodaPlugin {
-
     private static UltimateRepairing INSTANCE;
 
     private final Config dataFile = new Config(this, "data.yml");
