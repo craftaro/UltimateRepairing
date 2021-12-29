@@ -23,7 +23,6 @@ import java.util.Random;
  * Created by songoda on 2/25/2017.
  */
 public class Methods {
-
     static Random rand = new Random();
 
     public static CompatibleMaterial getRainbowGlass() {
@@ -85,6 +84,7 @@ public class Methods {
             if (item.getType().name().contains("WOOD"))
                 return CompatibleMaterial.OAK_WOOD.getMaterial();
         }
+        
         return Settings.ITEM_ICON.getMaterial(CompatibleMaterial.DIAMOND).getMaterial();
     }
 
@@ -93,6 +93,7 @@ public class Methods {
      *
      * @param inventory The inventory to check
      * @param item      The item to check for.
+     *
      * @return Whether or not the inventory contains the item.
      */
     public static boolean inventoryContains(Inventory inventory, ItemStack item) {
@@ -102,10 +103,12 @@ public class Methods {
             if (item1 != null && item1.getType() == item.getType() && item1.getDurability() == item.getDurability()) {
                 count += item1.getAmount();
             }
+
             if (count >= item.getAmount()) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -132,6 +135,7 @@ public class Methods {
                 }
             }
         }
+
         inventory.setContents(items);
     }
 
@@ -139,11 +143,14 @@ public class Methods {
      * Serializes the location of the block specified.
      *
      * @param b The block whose location is to be saved.
+     *
      * @return The serialized data.
      */
     public static String serializeLocation(Block b) {
-        if (b == null)
+        if (b == null) {
             return "";
+        }
+
         return serializeLocation(b.getLocation());
     }
 
@@ -151,17 +158,21 @@ public class Methods {
      * Serializes the location specified.
      *
      * @param location The location that is to be saved.
+     *
      * @return The serialized data.
      */
     public static String serializeLocation(Location location) {
-        if (location == null || location.getWorld() == null)
+        if (location == null || location.getWorld() == null) {
             return "";
+        }
+
         String w = location.getWorld().getName();
         double x = location.getX();
         double y = location.getY();
         double z = location.getZ();
         String str = w + ":" + x + ":" + y + ":" + z;
-        str = str.replace(".0", "").replace("/", "");
+        str = str.replace(".0", "")
+                .replace("/", "");
         return str;
     }
 
@@ -171,20 +182,29 @@ public class Methods {
      * Deserializes a location from the string.
      *
      * @param str The string to parse.
+     *
      * @return The location that was serialized in the string.
      */
     public static Location unserializeLocation(String str) {
-        if (str == null || str.equals(""))
+        if (str == null || str.equals("")) {
             return null;
+        }
         if (serializeCache.containsKey(str)) {
             return serializeCache.get(str).clone();
         }
+
         String cacheKey = str;
-        str = str.replace("y:", ":").replace("z:", ":").replace("w:", "").replace("x:", ":").replace("/", ".");
+        str = str.replace("y:", ":")
+                .replace("z:", ":")
+                .replace("w:", "")
+                .replace("x:", ":")
+                .replace("/", ".");
         List<String> args = Arrays.asList(str.split("\\s*:\\s*"));
 
         World world = Bukkit.getWorld(args.get(0));
-        double x = Double.parseDouble(args.get(1)), y = Double.parseDouble(args.get(2)), z = Double.parseDouble(args.get(3));
+        double x = Double.parseDouble(args.get(1)),
+                y = Double.parseDouble(args.get(2)),
+                z = Double.parseDouble(args.get(3));
         Location location = new Location(world, x, y, z, 0, 0);
         serializeCache.put(cacheKey, location.clone());
         return location;
