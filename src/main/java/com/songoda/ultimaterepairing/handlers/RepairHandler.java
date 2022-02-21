@@ -148,7 +148,7 @@ public class RepairHandler {
 
             CompatibleMaterial blockType = CompatibleMaterial.REDSTONE_BLOCK;
 
-            String typeStr = playerData.getToBeRepaired().getType().name().toUpperCase();
+            String typeStr = playerData.getToBeRepaired().getType().name();
 
             if (typeStr.contains("NETHERITE")) {
                 blockType = CompatibleMaterial.NETHERITE_BLOCK;
