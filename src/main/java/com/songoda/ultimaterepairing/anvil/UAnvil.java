@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class UAnvil {
+    private static int nextHologramId = 0;
+    private final String hologramId = "UltimateRepairing-Anvil#" + (++nextHologramId);
 
     private final Location location;
 
@@ -30,26 +32,28 @@ public class UAnvil {
     public void setHologram(boolean hologram) {
         this.hologram = hologram;
         if (HologramManager.getManager().isEnabled()) {
-
-            ArrayList<String> lines = new ArrayList<>();
-
-            if (!Settings.ENABLE_ANVIL_DEFAULT_FUNCTION.getBoolean()) {
-                lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.oneclick").getMessage());
-            } else if (Settings.SWAP_LEFT_RIGHT.getBoolean()) {
-                lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.swapclick").getMessage());
-            } else {
-                lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.click").getMessage());
-            }
-
-            lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.torepair").getMessage());
-
-            Location location = getLocation().add(0, .1, 0);
-
             Bukkit.getScheduler().runTaskLater(UltimateRepairing.getInstance(), () -> {
                 if (!hologram) {
-                    HologramManager.removeHologram(location);
+                    HologramManager.removeHologram(hologramId);
                 } else {
-                    HologramManager.updateHologram(location, lines);
+                    ArrayList<String> lines = new ArrayList<>();
+
+                    if (!Settings.ENABLE_ANVIL_DEFAULT_FUNCTION.getBoolean()) {
+                        lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.oneclick").getMessage());
+                    } else if (Settings.SWAP_LEFT_RIGHT.getBoolean()) {
+                        lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.swapclick").getMessage());
+                    } else {
+                        lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.click").getMessage());
+                    }
+
+                    lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.torepair").getMessage());
+
+                    if (!HologramManager.isHologramLoaded(hologramId)) {
+                        HologramManager.createHologram(hologramId, getLocation().add(0, .1, 0), lines);
+                        return;
+                    }
+
+                    HologramManager.updateHologram(hologramId, lines);
                 }
             }, 1L);
 
