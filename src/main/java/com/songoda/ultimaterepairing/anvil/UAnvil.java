@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class UAnvil {
+    private static int nextHologramId = 0;
+    private final String hologramId = "UR-Anvil#" + (++nextHologramId);
 
     private final Location location;
 
@@ -30,26 +32,28 @@ public class UAnvil {
     public void setHologram(boolean hologram) {
         this.hologram = hologram;
         if (HologramManager.getManager().isEnabled()) {
-
-            ArrayList<String> lines = new ArrayList<>();
-
-            if (!Settings.ENABLE_ANVIL_DEFAULT_FUNCTION.getBoolean()) {
-                lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.oneclick").getMessage());
-            } else if (Settings.SWAP_LEFT_RIGHT.getBoolean()) {
-                lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.swapclick").getMessage());
-            } else {
-                lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.click").getMessage());
-            }
-
-            lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.torepair").getMessage());
-
-            Location location = getLocation().add(0, .1, 0);
-
             Bukkit.getScheduler().runTaskLater(UltimateRepairing.getInstance(), () -> {
                 if (!hologram) {
-                    HologramManager.removeHologram(location);
+                    HologramManager.removeHologram(hologramId);
                 } else {
-                    HologramManager.updateHologram(location, lines);
+                    ArrayList<String> lines = new ArrayList<>();
+
+                    if (!Settings.ENABLE_ANVIL_DEFAULT_FUNCTION.getBoolean()) {
+                        lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.oneclick").getMessage());
+                    } else if (Settings.SWAP_LEFT_RIGHT.getBoolean()) {
+                        lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.swapclick").getMessage());
+                    } else {
+                        lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.click").getMessage());
+                    }
+
+                    lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.torepair").getMessage());
+
+                    if (!HologramManager.isHologramLoaded(hologramId)) {
+                        HologramManager.createHologram(hologramId, getLocation().add(0, .1, 0), lines);
+                        return;
+                    }
+
+                    HologramManager.updateHologram(hologramId, lines);
                 }
             }, 1L);
 
@@ -104,33 +108,38 @@ public class UAnvil {
         return location.getWorld();
     }
 
-    @Override
-    public int hashCode() {
-        return 31 * (location == null ? 0 : location.hashCode());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof UAnvil)) return false;
-
-        UAnvil other = (UAnvil) obj;
-        return Objects.equals(location, other.location);
-    }
-
     public boolean shouldSave() {
         return hologram || particles || infinity || permPlaced;
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UAnvil uAnvil = (UAnvil) o;
+
+        return hologram == uAnvil.hologram &&
+                particles == uAnvil.particles &&
+                infinity == uAnvil.infinity &&
+                permPlaced == uAnvil.permPlaced &&
+                Objects.equals(hologramId, uAnvil.hologramId) &&
+                Objects.equals(location, uAnvil.location);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hologramId, location, hologram, particles, infinity, permPlaced);
+    }
+
+    @Override
     public String toString() {
-        return "UAnvil:{"
-                + "Location:{"
-                + "World:\"" + location.getWorld().getName() + "\","
-                + "X:" + location.getBlockX() + ","
-                + "Y:" + location.getBlockY() + ","
-                + "Z:" + location.getBlockZ()
-                + "}"
-                + "}";
+        return "UAnvil{" +
+                "hologramId='" + hologramId + '\'' +
+                ", location=" + location +
+                ", hologram=" + hologram +
+                ", particles=" + particles +
+                ", infinity=" + infinity +
+                ", permPlaced=" + permPlaced +
+                '}';
     }
 }
