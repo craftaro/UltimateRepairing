@@ -26,6 +26,7 @@ interface:
     swap: '&7Click to swap repair type.'
   yesno:
     title: '&9Repair for &a%cost%&9?'
+    titleEco: '&9Repair for &a$%cost%&9?'
     'yes': '&a&lYes'
     'no': '&c&lNo'
 

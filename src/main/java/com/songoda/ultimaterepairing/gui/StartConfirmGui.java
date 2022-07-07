@@ -41,12 +41,12 @@ public class StartConfirmGui extends Gui {
         if (type == RepairType.EXPERIENCE) {
             cost = playerData.getPrice() + " XP";
         } else if (type == RepairType.ECONOMY) {
-            cost = "$" + playerData.getPrice();
+            cost = String.valueOf(playerData.getPrice());
         } else if (type == RepairType.ITEM) {
             cost = playerData.getPrice() + " " + TextUtils.formatText(Methods.getType(item).name(), true);
         }
 
-        setTitle(instance.getLocale().getMessage("interface.yesno.title")
+        setTitle(instance.getLocale().getMessage("interface.yesno.title" + (type == RepairType.ECONOMY ? "Eco" : ""))
                 .processPlaceholder("cost", cost).getMessage());
 
         ItemStack glass1 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_1.getMaterial());
