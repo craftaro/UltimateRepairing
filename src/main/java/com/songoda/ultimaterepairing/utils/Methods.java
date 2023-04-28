@@ -12,6 +12,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,24 +31,27 @@ public class Methods {
     }
 
     public static int getCost(RepairType type, ItemStack item) {
+        if (!(item instanceof Damageable)) {
+            return Integer.MAX_VALUE;
+        }
         String equationXP = Settings.EXPERIENCE_EQUATION.getString();
         String equationECO = Settings.ECONOMY_EQUATION.getString();
         String equationITEM = Settings.ITEM_EQUATION.getString();
 
         equationXP = equationXP.replace("{MaxDurability}", Short.toString(item.getType().getMaxDurability()))
-                .replace("{Durability}", Short.toString(item.getType().getMaxDurability()))
+                .replace("{Durability}", Integer.toString(item.getType().getMaxDurability() - ((Damageable)item.getItemMeta()).getDamage()))
                 .replace("{Damage}", Short.toString(item.getDurability()));
         int XPCost = (int) Math.round(MathUtils.eval(equationXP));
 
         equationECO = equationECO.replace("{MaxDurability}", Short.toString(item.getType().getMaxDurability()))
-                .replace("{Durability}", Short.toString(item.getType().getMaxDurability()))
+                .replace("{Durability}", Integer.toString(item.getType().getMaxDurability() - ((Damageable)item.getItemMeta()).getDamage()))
                 .replace("{Damage}", Short.toString(item.getDurability()))
                 .replace("{XPCost}", Integer.toString(XPCost));
 
         int ECOCost = (int) Math.round(MathUtils.eval(equationECO));
 
         equationITEM = equationITEM.replace("{MaxDurability}", Short.toString(item.getType().getMaxDurability()))
-                .replace("{Durability}", Short.toString(item.getType().getMaxDurability()))
+                .replace("{Durability}", Integer.toString(item.getType().getMaxDurability() - ((Damageable)item.getItemMeta()).getDamage()))
                 .replace("{Damage}", Short.toString(item.getDurability()))
                 .replace("{XPCost}", Integer.toString(XPCost));
 
