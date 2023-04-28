@@ -35,17 +35,20 @@ public class Methods {
         String equationITEM = Settings.ITEM_EQUATION.getString();
 
         equationXP = equationXP.replace("{MaxDurability}", Short.toString(item.getType().getMaxDurability()))
-                .replace("{Durability}", Short.toString(item.getDurability()));
+                .replace("{Durability}", Short.toString(item.getType().getMaxDurability()))
+                .replace("{Damage}", Short.toString(item.getDurability()));
         int XPCost = (int) Math.round(MathUtils.eval(equationXP));
 
         equationECO = equationECO.replace("{MaxDurability}", Short.toString(item.getType().getMaxDurability()))
-                .replace("{Durability}", Short.toString(item.getDurability()))
+                .replace("{Durability}", Short.toString(item.getType().getMaxDurability()))
+                .replace("{Damage}", Short.toString(item.getDurability()))
                 .replace("{XPCost}", Integer.toString(XPCost));
 
         int ECOCost = (int) Math.round(MathUtils.eval(equationECO));
 
         equationITEM = equationITEM.replace("{MaxDurability}", Short.toString(item.getType().getMaxDurability()))
-                .replace("{Durability}", Short.toString(item.getDurability()))
+                .replace("{Durability}", Short.toString(item.getType().getMaxDurability()))
+                .replace("{Damage}", Short.toString(item.getDurability()))
                 .replace("{XPCost}", Integer.toString(XPCost));
 
         int ITEMCost = (int) Math.round(MathUtils.eval(equationITEM));
