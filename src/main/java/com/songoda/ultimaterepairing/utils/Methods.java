@@ -31,9 +31,6 @@ public class Methods {
     }
 
     public static int getCost(RepairType type, ItemStack item) {
-        if (!(item instanceof Damageable)) {
-            return Integer.MAX_VALUE;
-        }
         String equationXP = Settings.EXPERIENCE_EQUATION.getString();
         String equationECO = Settings.ECONOMY_EQUATION.getString();
         String equationITEM = Settings.ITEM_EQUATION.getString();
