@@ -1,11 +1,12 @@
-package com.songoda.ultimaterepairing.settings;
+package com.craftaro.ultimaterepairing.settings;
 
-import com.songoda.core.compatibility.CompatibleMaterial;
-import com.songoda.core.configuration.Config;
-import com.songoda.core.configuration.ConfigSetting;
-import com.songoda.core.hooks.EconomyManager;
-import com.songoda.core.hooks.HologramManager;
-import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.ultimaterepairing.UltimateRepairing;
+import com.craftaro.core.configuration.Config;
+import com.craftaro.core.configuration.ConfigSetting;
+import com.craftaro.core.hooks.EconomyManager;
+import com.craftaro.core.hooks.HologramManager;
 
 import java.util.stream.Collectors;
 
@@ -88,13 +89,13 @@ public class Settings {
         // convert glass pane settings
         int color;
         if ((color = GLASS_TYPE_1.getInt(-1)) != -1) {
-            config.set(GLASS_TYPE_1.getKey(), CompatibleMaterial.getGlassPaneColor(color).name());
+            config.set(GLASS_TYPE_1.getKey(), CompatibleMaterial.getGlassPaneForColor(color).name());
         }
         if ((color = GLASS_TYPE_2.getInt(-1)) != -1) {
-            config.set(GLASS_TYPE_2.getKey(), CompatibleMaterial.getGlassPaneColor(color).name());
+            config.set(GLASS_TYPE_2.getKey(), CompatibleMaterial.getGlassPaneForColor(color).name());
         }
         if ((color = GLASS_TYPE_3.getInt(-1)) != -1) {
-            config.set(GLASS_TYPE_3.getKey(), CompatibleMaterial.getGlassPaneColor(color).name());
+            config.set(GLASS_TYPE_3.getKey(), CompatibleMaterial.getGlassPaneForColor(color).name());
         }
 
         // convert economy settings

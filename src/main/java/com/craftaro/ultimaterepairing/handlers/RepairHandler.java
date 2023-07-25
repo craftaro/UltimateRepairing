@@ -1,16 +1,16 @@
-package com.songoda.ultimaterepairing.handlers;
+package com.craftaro.ultimaterepairing.handlers;
 
-import com.songoda.core.compatibility.CompatibleMaterial;
-import com.songoda.core.compatibility.CompatibleSound;
-import com.songoda.core.gui.GuiManager;
-import com.songoda.core.hooks.EconomyManager;
-import com.songoda.core.utils.PlayerUtils;
-import com.songoda.ultimaterepairing.UltimateRepairing;
-import com.songoda.ultimaterepairing.anvil.PlayerAnvilData;
-import com.songoda.ultimaterepairing.gui.RepairGui;
-import com.songoda.ultimaterepairing.gui.StartConfirmGui;
-import com.songoda.ultimaterepairing.repair.RepairType;
-import com.songoda.ultimaterepairing.utils.Methods;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XSound;
+import com.craftaro.ultimaterepairing.UltimateRepairing;
+import com.craftaro.ultimaterepairing.anvil.PlayerAnvilData;
+import com.craftaro.ultimaterepairing.gui.RepairGui;
+import com.craftaro.ultimaterepairing.gui.StartConfirmGui;
+import com.craftaro.ultimaterepairing.utils.Methods;
+import com.craftaro.core.gui.GuiManager;
+import com.craftaro.core.hooks.EconomyManager;
+import com.craftaro.core.utils.PlayerUtils;
+import com.craftaro.ultimaterepairing.repair.RepairType;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
@@ -146,39 +146,39 @@ public class RepairHandler {
 
             Effect effect = Effect.STEP_SOUND;
 
-            CompatibleMaterial blockType = CompatibleMaterial.REDSTONE_BLOCK;
+            XMaterial blockType = XMaterial.REDSTONE_BLOCK;
 
             String typeStr = playerData.getToBeRepaired().getType().name();
 
             if (typeStr.contains("NETHERITE")) {
-                blockType = CompatibleMaterial.NETHERITE_BLOCK;
+                blockType = XMaterial.NETHERITE_BLOCK;
             } else if (typeStr.contains("DIAMOND")) {
-                blockType = CompatibleMaterial.DIAMOND_BLOCK;
+                blockType = XMaterial.DIAMOND_BLOCK;
             } else if (typeStr.contains("IRON")) {
-                blockType = CompatibleMaterial.IRON_BLOCK;
+                blockType = XMaterial.IRON_BLOCK;
             } else if (typeStr.contains("GOLD")) {
-                blockType = CompatibleMaterial.GOLD_BLOCK;
+                blockType = XMaterial.GOLD_BLOCK;
             } else if (typeStr.contains("STONE")) {
-                blockType = CompatibleMaterial.STONE;
+                blockType = XMaterial.STONE;
             } else if (typeStr.contains("WOOD")) {
-                blockType = CompatibleMaterial.OAK_WOOD;
+                blockType = XMaterial.OAK_WOOD;
             }
 
-            final Material blockTypeFinal = blockType.getMaterial();
+            final Material blockTypeFinal = blockType.parseMaterial();
 
             Location location = playerData.getLocations();
-            player.getWorld().playEffect(location, effect, blockType.getMaterial());
+            player.getWorld().playEffect(location, effect, blockTypeFinal);
             Runnable runnable = () -> player.getWorld().playEffect(location, effect, blockTypeFinal);
             Bukkit.getScheduler().scheduleSyncDelayedTask(instance, runnable, 5L);
             Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
                 player.getWorld().playEffect(location, effect, blockTypeFinal);
                 player.getWorld().playEffect(location, effect, Material.STONE);
-                CompatibleSound.BLOCK_ANVIL_LAND.play(player);
+                XSound.BLOCK_ANVIL_LAND.play(player);
             }, 10L);
             Bukkit.getScheduler().scheduleSyncDelayedTask(instance, runnable, 15L);
             Bukkit.getScheduler().scheduleSyncDelayedTask(instance, runnable, 20L);
             Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
-                CompatibleSound.BLOCK_ANVIL_LAND.play(player);
+                XSound.BLOCK_ANVIL_LAND.play(player);
                 player.getWorld().playEffect(location, effect, blockTypeFinal);
                 player.getWorld().playEffect(location, effect, Material.ANVIL);
                 instance.getLocale().getMessage("event.repair.success").sendPrefixedMessage(player);

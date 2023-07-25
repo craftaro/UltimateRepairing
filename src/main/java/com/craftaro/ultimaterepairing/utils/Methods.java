@@ -1,10 +1,11 @@
-package com.songoda.ultimaterepairing.utils;
+package com.craftaro.ultimaterepairing.utils;
 
-import com.songoda.core.compatibility.CompatibleMaterial;
-import com.songoda.core.math.MathUtils;
-import com.songoda.ultimaterepairing.UltimateRepairing;
-import com.songoda.ultimaterepairing.repair.RepairType;
-import com.songoda.ultimaterepairing.settings.Settings;
+import com.craftaro.core.compatibility.CompatibleMaterial;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.ultimaterepairing.UltimateRepairing;
+import com.craftaro.core.math.MathUtils;
+import com.craftaro.ultimaterepairing.repair.RepairType;
+import com.craftaro.ultimaterepairing.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,8 +27,8 @@ import java.util.Random;
 public class Methods {
     static Random rand = new Random();
 
-    public static CompatibleMaterial getRainbowGlass() {
-        return CompatibleMaterial.getGlassPaneColor(rand.nextInt(16));
+    public static XMaterial getRainbowGlass() {
+        return CompatibleMaterial.getGlassPaneForColor(rand.nextInt(16));
     }
 
     public static int getCost(RepairType type, ItemStack item) {
@@ -74,22 +75,22 @@ public class Methods {
     public static Material getType(ItemStack item) {
         if (Settings.REPAIR_ONLY_SAME_TYPE.getBoolean()) {
             if (item.getType().name().contains("NETHERITE"))
-                return CompatibleMaterial.NETHERITE_INGOT.getMaterial();
+                return XMaterial.NETHERITE_INGOT.parseMaterial();
             if (item.getType().name().contains("DIAMOND"))
-                return CompatibleMaterial.DIAMOND.getMaterial();
+                return XMaterial.DIAMOND.parseMaterial();
             if (item.getType().name().contains("IRON"))
-                return CompatibleMaterial.IRON_INGOT.getMaterial();
+                return XMaterial.IRON_INGOT.parseMaterial();
             if (item.getType().name().contains("GOLD"))
-                return CompatibleMaterial.GOLD_INGOT.getMaterial();
+                return XMaterial.GOLD_INGOT.parseMaterial();
             if (item.getType().name().contains("LEATHER"))
-                return CompatibleMaterial.LEATHER.getMaterial();
+                return XMaterial.LEATHER.parseMaterial();
             if (item.getType().name().contains("STONE"))
-                return CompatibleMaterial.STONE.getMaterial();
+                return XMaterial.STONE.parseMaterial();
             if (item.getType().name().contains("WOOD"))
-                return CompatibleMaterial.OAK_WOOD.getMaterial();
+                return XMaterial.OAK_WOOD.parseMaterial();
         }
         
-        return Settings.ITEM_ICON.getMaterial(CompatibleMaterial.DIAMOND).getMaterial();
+        return Settings.ITEM_ICON.getMaterial(XMaterial.DIAMOND).parseMaterial();
     }
 
     /**

@@ -1,27 +1,27 @@
-package com.songoda.ultimaterepairing.repair;
+package com.craftaro.ultimaterepairing.repair;
 
-import com.songoda.core.compatibility.CompatibleMaterial;
-import com.songoda.ultimaterepairing.UltimateRepairing;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.ultimaterepairing.UltimateRepairing;
 import org.bukkit.entity.Player;
 
 public enum RepairType {
-    ECONOMY(CompatibleMaterial.SUNFLOWER,
+    ECONOMY(XMaterial.SUNFLOWER,
             "ultimaterepairing.use.ECO",
             "interface.repair.ecoTitle"),
 
-    ITEM(CompatibleMaterial.DIAMOND,
+    ITEM(XMaterial.DIAMOND,
             "ultimaterepairing.use.ITEM",
             "interface.repair.itemTitle"),
 
-    EXPERIENCE(CompatibleMaterial.EXPERIENCE_BOTTLE,
+    EXPERIENCE(XMaterial.EXPERIENCE_BOTTLE,
             "ultimaterepairing.use.XP",
             "interface.repair.xpTitle");
 
-    private final CompatibleMaterial material;
+    private final XMaterial material;
     private final String permission;
     private final String title;
 
-    RepairType(CompatibleMaterial material, String permission, String titleLang) {
+    RepairType(XMaterial material, String permission, String titleLang) {
         this.material = material;
         this.permission = permission;
         this.title = UltimateRepairing.getInstance().getLocale().getMessage(titleLang).getMessage();
@@ -31,7 +31,7 @@ public enum RepairType {
         return title;
     }
 
-    public CompatibleMaterial getMaterial() {
+    public XMaterial getMaterial() {
         return material;
     }
 

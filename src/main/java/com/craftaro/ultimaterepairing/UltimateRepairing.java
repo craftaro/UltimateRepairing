@@ -1,26 +1,26 @@
-package com.songoda.ultimaterepairing;
+package com.craftaro.ultimaterepairing;
 
-import com.songoda.core.SongodaCore;
-import com.songoda.core.SongodaPlugin;
-import com.songoda.core.commands.CommandManager;
-import com.songoda.core.compatibility.CompatibleMaterial;
-import com.songoda.core.configuration.Config;
-import com.songoda.core.gui.GuiManager;
-import com.songoda.core.hooks.EconomyManager;
-import com.songoda.core.hooks.HologramManager;
-import com.songoda.ultimaterepairing.anvil.AnvilManager;
-import com.songoda.ultimaterepairing.anvil.UAnvil;
-import com.songoda.ultimaterepairing.commands.CommandReload;
-import com.songoda.ultimaterepairing.commands.CommandSettings;
-import com.songoda.ultimaterepairing.commands.CommandURAnvil;
-import com.songoda.ultimaterepairing.handlers.ParticleTask;
-import com.songoda.ultimaterepairing.handlers.RepairHandler;
-import com.songoda.ultimaterepairing.listeners.BlockListeners;
-import com.songoda.ultimaterepairing.listeners.InteractListeners;
-import com.songoda.ultimaterepairing.listeners.InventoryListeners;
-import com.songoda.ultimaterepairing.listeners.PlayerListeners;
-import com.songoda.ultimaterepairing.settings.Settings;
-import com.songoda.ultimaterepairing.utils.Methods;
+import com.craftaro.core.SongodaCore;
+import com.craftaro.core.SongodaPlugin;
+import com.craftaro.core.commands.CommandManager;
+import com.craftaro.core.configuration.Config;
+import com.craftaro.core.gui.GuiManager;
+import com.craftaro.core.hooks.EconomyManager;
+import com.craftaro.core.hooks.HologramManager;
+import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.ultimaterepairing.anvil.AnvilManager;
+import com.craftaro.ultimaterepairing.anvil.UAnvil;
+import com.craftaro.ultimaterepairing.commands.CommandReload;
+import com.craftaro.ultimaterepairing.commands.CommandSettings;
+import com.craftaro.ultimaterepairing.commands.CommandURAnvil;
+import com.craftaro.ultimaterepairing.handlers.ParticleTask;
+import com.craftaro.ultimaterepairing.handlers.RepairHandler;
+import com.craftaro.ultimaterepairing.listeners.BlockListeners;
+import com.craftaro.ultimaterepairing.listeners.InteractListeners;
+import com.craftaro.ultimaterepairing.listeners.InventoryListeners;
+import com.craftaro.ultimaterepairing.listeners.PlayerListeners;
+import com.craftaro.ultimaterepairing.settings.Settings;
+import com.craftaro.ultimaterepairing.utils.Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.plugin.PluginManager;
@@ -51,7 +51,7 @@ public class UltimateRepairing extends SongodaPlugin {
     @Override
     public void onPluginEnable() {
         // Register in Songoda Core
-        SongodaCore.registerPlugin(this, 20, CompatibleMaterial.ANVIL);
+        SongodaCore.registerPlugin(this, 20, XMaterial.ANVIL);
 
         Settings.setupConfig();
 
