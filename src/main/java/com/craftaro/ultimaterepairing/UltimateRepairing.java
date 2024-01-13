@@ -4,10 +4,11 @@ import com.craftaro.core.SongodaCore;
 import com.craftaro.core.SongodaPlugin;
 import com.craftaro.core.commands.CommandManager;
 import com.craftaro.core.configuration.Config;
+import com.craftaro.core.dependency.Dependency;
 import com.craftaro.core.gui.GuiManager;
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.core.hooks.HologramManager;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.ultimaterepairing.anvil.AnvilManager;
 import com.craftaro.ultimaterepairing.anvil.UAnvil;
 import com.craftaro.ultimaterepairing.commands.CommandReload;
@@ -26,7 +27,9 @@ import org.bukkit.Location;
 import org.bukkit.plugin.PluginManager;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class UltimateRepairing extends SongodaPlugin {
     private static UltimateRepairing INSTANCE;
@@ -41,6 +44,11 @@ public class UltimateRepairing extends SongodaPlugin {
 
     public static UltimateRepairing getInstance() {
         return INSTANCE;
+    }
+
+    @Override
+    protected Set<Dependency> getDependencies() {
+        return new HashSet<>();
     }
 
     @Override

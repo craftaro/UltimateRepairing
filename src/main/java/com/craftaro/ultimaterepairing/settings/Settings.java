@@ -1,7 +1,7 @@
 package com.craftaro.ultimaterepairing.settings;
 
 import com.craftaro.core.compatibility.CompatibleMaterial;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.ultimaterepairing.UltimateRepairing;
 import com.craftaro.core.configuration.Config;
 import com.craftaro.core.configuration.ConfigSetting;

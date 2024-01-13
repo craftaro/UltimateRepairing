@@ -1,6 +1,6 @@
 package com.craftaro.ultimaterepairing.gui;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.ultimaterepairing.UltimateRepairing;
 import com.craftaro.ultimaterepairing.anvil.PlayerAnvilData;
 import com.craftaro.ultimaterepairing.utils.Methods;
