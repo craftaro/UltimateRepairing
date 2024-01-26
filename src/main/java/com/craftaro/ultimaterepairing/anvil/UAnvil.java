@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public class UAnvil {
     private static int nextHologramId = 0;
-    private final String hologramId = "UR-Anvil#" + (++nextHologramId);
+    private final String hologramId = "UR-Anvil-" + (++nextHologramId);
 
     private final Location location;
 
