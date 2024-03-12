@@ -14,7 +14,7 @@ import com.craftaro.ultimaterepairing.anvil.UAnvil;
 import com.craftaro.ultimaterepairing.commands.CommandReload;
 import com.craftaro.ultimaterepairing.commands.CommandSettings;
 import com.craftaro.ultimaterepairing.commands.CommandURAnvil;
-import com.craftaro.ultimaterepairing.handlers.ParticleTask;
+import com.craftaro.ultimaterepairing.task.ParticleTask;
 import com.craftaro.ultimaterepairing.handlers.RepairHandler;
 import com.craftaro.ultimaterepairing.listeners.BlockListeners;
 import com.craftaro.ultimaterepairing.listeners.InteractListeners;
@@ -170,5 +170,9 @@ public class UltimateRepairing extends SongodaPlugin {
 
     public GuiManager getGuiManager() {
         return guiManager;
+    }
+
+    public ParticleTask getParticleTask() {
+        return particleTask;
     }
 }
