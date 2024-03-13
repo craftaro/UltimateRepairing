@@ -14,6 +14,7 @@ general:
 interface:
   repair:
     title: '&9How do you want to repair?'
+    titleNone: '&cNothing needs repairing...'
     xpTitle: '&9XP'
     xp: '&9XP'
     xplore: '&7Click to repair with XP.'
