@@ -16,7 +16,6 @@ public class PlayerListeners implements Listener {
 
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
-
         if (!plugin.getRepairHandler().hasInstance(event.getPlayer())
                 || !plugin.getRepairHandler().getDataFor(event.getPlayer()).getInRepair())
             return;

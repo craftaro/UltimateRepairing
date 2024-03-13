@@ -1,6 +1,7 @@
 package com.craftaro.ultimaterepairing.gui;
 
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.ultimaterepairing.UltimateRepairing;
 import com.craftaro.ultimaterepairing.anvil.UAnvil;
 import com.craftaro.core.gui.Gui;
 import com.craftaro.core.gui.GuiUtils;
@@ -52,6 +53,7 @@ public class AnvilSettingsGui extends Gui {
                 (event) -> {
                     anvil.setParticles(!anvil.isParticles());
                     updateItemLore(event.slot, ChatColor.GRAY + "Currently: " + (anvil.isParticles() ? ChatColor.GREEN + "Enabled" : ChatColor.RED + "Disabled") + ChatColor.GRAY + ".");
+                    UltimateRepairing.getInstance().getParticleTask().start();
                 });
 
     }

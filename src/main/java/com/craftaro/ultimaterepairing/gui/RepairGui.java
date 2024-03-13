@@ -37,7 +37,7 @@ public class RepairGui extends Gui {
         this.player = player;
 
         setRows(6);
-        setTitle(plugin.getLocale().getMessage("interface.repair.title").getMessage());
+        setTitle(plugin.getLocale().getMessage("interface.repair.title" + (hasRepairableItems() ? "" : "None")).getMessage());
 
         init(type);
     }
@@ -64,11 +64,9 @@ public class RepairGui extends Gui {
                     plugin.getLocale().getMessage("interface.repair.swap").getMessage()), (event) ->
                     init(type.getNext(player)));
 
-        int i = 9;
-        for (int playerslot = 0; playerslot < player.getInventory().getContents().length; playerslot++) {
-            ItemStack item = player.getInventory().getContents()[playerslot];
-            if (item == null || item.getDurability() <= 0 || item.getMaxStackSize() != 1) continue;
 
+        int i = 9;
+        for (ItemStack item : getRepairableItems()) {
             ItemStack toRepair = item.clone();
 
             short durability = item.getDurability();
@@ -93,7 +91,7 @@ public class RepairGui extends Gui {
             }
             item.setDurability(durability);
 
-            int finalplayerslot = playerslot;
+            int playerslot = player.getInventory().first(toRepair);
             setButton(i, item, (event) -> {
                 exit();
                 if (!player.getInventory().contains(toRepair)) {
@@ -101,7 +99,7 @@ public class RepairGui extends Gui {
                     return;
                 }
                 player.getInventory().removeItem(toRepair);
-                plugin.getRepairHandler().preRepair(toRepair, finalplayerslot, player, type, anvil);
+                plugin.getRepairHandler().preRepair(toRepair, playerslot, player, type, anvil);
             });
             i++;
         }
@@ -114,5 +112,13 @@ public class RepairGui extends Gui {
         }
     }
 
+    private ItemStack[] getRepairableItems() {
+        return Arrays.stream(player.getInventory().getContents())
+                .filter(item -> item != null && item.getDurability() > 0 && item.getMaxStackSize() == 1)
+                .toArray(ItemStack[]::new);
+    }
 
+    private boolean hasRepairableItems() {
+        return getRepairableItems().length > 0;
+    }
 }
