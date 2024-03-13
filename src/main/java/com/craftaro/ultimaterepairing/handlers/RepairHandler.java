@@ -1,22 +1,19 @@
 package com.craftaro.ultimaterepairing.handlers;
 
+import com.craftaro.core.gui.GuiManager;
+import com.craftaro.core.hooks.EconomyManager;
+import com.craftaro.core.utils.PlayerUtils;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.third_party.com.cryptomorin.xseries.XSound;
 import com.craftaro.ultimaterepairing.UltimateRepairing;
 import com.craftaro.ultimaterepairing.anvil.PlayerAnvilData;
 import com.craftaro.ultimaterepairing.gui.RepairGui;
 import com.craftaro.ultimaterepairing.gui.StartConfirmGui;
-import com.craftaro.ultimaterepairing.utils.Methods;
-import com.craftaro.core.gui.GuiManager;
-import com.craftaro.core.hooks.EconomyManager;
-import com.craftaro.core.utils.PlayerUtils;
 import com.craftaro.ultimaterepairing.repair.RepairType;
-import org.bukkit.Bukkit;
-import org.bukkit.Effect;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import com.craftaro.ultimaterepairing.utils.Methods;
+import org.bukkit.*;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -202,6 +199,20 @@ public class RepairHandler {
                         XSound.BLOCK_ANVIL_LAND.play(player);
                         player.getWorld().playEffect(location, effect, blockTypeFinal);
                         player.getWorld().playEffect(location, effect, Material.ANVIL);
+
+                        // Move the repaired item up
+                        Item item = playerData.getItem();
+                        if (item != null && item.isValid()) {
+                            item.setVelocity(new Vector(0, 0.3, 0)); // Adjust the velocity as needed
+                            item.setPickupDelay(20); // Adjust the pickup delay as needed
+                        }
+                    });
+                    Thread.sleep(250);
+                    XSound.ENTITY_PLAYER_LEVELUP.play(player);
+
+                    // Delay for 30 ticks (1.5 seconds)
+                    Thread.sleep(300);
+                    Bukkit.getScheduler().runTask(plugin, () -> {
                         plugin.getLocale().getMessage("event.repair.success").sendPrefixedMessage(player);
                         playerData.getToBeRepaired().setDurability((short) 0);
                         removeItem(playerData, player);
