@@ -19,17 +19,23 @@ public class ParticleTask extends BukkitRunnable {
     private int amt;
     private String typeName;
     private ParticleType type;
+    private boolean hasStarted = false;
 
     public ParticleTask(UltimateRepairing plugin) {
         this.plugin = plugin;
     }
 
     public void start() {
-        if (isCancelled())
+        if (hasStarted && !isCancelled())
             return;
 
         reload();
-        runTaskTimerAsynchronously(plugin, 0L, 4L);
+        if (hasStarted)
+            run();
+        else
+            runTaskTimerAsynchronously(plugin, 0L, 4L);
+
+        hasStarted = true;
     }
 
     public void reload() {
