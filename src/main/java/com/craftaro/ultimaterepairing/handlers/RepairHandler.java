@@ -1,22 +1,19 @@
 package com.craftaro.ultimaterepairing.handlers;
 
+import com.craftaro.core.gui.GuiManager;
+import com.craftaro.core.hooks.EconomyManager;
+import com.craftaro.core.utils.PlayerUtils;
 import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.third_party.com.cryptomorin.xseries.XSound;
 import com.craftaro.ultimaterepairing.UltimateRepairing;
 import com.craftaro.ultimaterepairing.anvil.PlayerAnvilData;
 import com.craftaro.ultimaterepairing.gui.RepairGui;
 import com.craftaro.ultimaterepairing.gui.StartConfirmGui;
-import com.craftaro.ultimaterepairing.utils.Methods;
-import com.craftaro.core.gui.GuiManager;
-import com.craftaro.core.hooks.EconomyManager;
-import com.craftaro.core.utils.PlayerUtils;
 import com.craftaro.ultimaterepairing.repair.RepairType;
-import org.bukkit.Bukkit;
-import org.bukkit.Effect;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import com.craftaro.ultimaterepairing.utils.Methods;
+import org.bukkit.*;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -31,13 +28,13 @@ import java.util.UUID;
  */
 public class RepairHandler {
 
-    private final UltimateRepairing instance;
+    private final UltimateRepairing plugin;
     private final GuiManager guiManager;
 
     private final Map<UUID, PlayerAnvilData> playerAnvilData = new HashMap<>();
 
-    public RepairHandler(UltimateRepairing instance, GuiManager guiManager) {
-        this.instance = instance;
+    public RepairHandler(UltimateRepairing plugin, GuiManager guiManager) {
+        this.plugin = plugin;
         this.guiManager = guiManager;
     }
 
@@ -60,16 +57,16 @@ public class RepairHandler {
         Item item = player.getWorld().dropItem(anvil.add(0.5, 2, 0.5), itemStack);
 
         // Support for EpicHoppers suction.
-        item.setMetadata("grabbed", new FixedMetadataValue(instance, "true"));
+        item.setMetadata("grabbed", new FixedMetadataValue(plugin, "true"));
 
-        item.setMetadata("betterdrops_ignore", new FixedMetadataValue(instance, true));
+        item.setMetadata("betterdrops_ignore", new FixedMetadataValue(plugin, true));
         Vector vec = player.getEyeLocation().getDirection();
         vec.setX(0);
         vec.setY(0);
         vec.setZ(0);
         item.setVelocity(vec);
         item.setPickupDelay(3600);
-        item.setMetadata("UltimateRepairing", new FixedMetadataValue(instance, ""));
+        item.setMetadata("UltimateRepairing", new FixedMetadataValue(plugin, ""));
 
         playerData.setItem(item);
         playerData.setToBeRepaired(itemStack);
@@ -77,20 +74,20 @@ public class RepairHandler {
 
         yesNo(player, type, itemStack);
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             if (item.isValid() && !playerData.isBeingRepaired()) {
 
-                instance.getLocale().getMessage("event.repair.timeout").sendPrefixedMessage(player);
+                plugin.getLocale().getMessage("event.repair.timeout").sendPrefixedMessage(player);
                 removeItem(playerData, player);
                 player.closeInventory();
 
             }
-        }, instance.getConfig().getLong("Main.Time Before Repair Auto Canceled"));
+        }, plugin.getConfig().getLong("Main.Time Before Repair Auto Canceled"));
     }
 
     public void initRepair(Player player, Location anvil) {
         if (anvil.add(0, 1, 0).getBlock().getType() != Material.AIR) {
-            instance.getLocale().getMessage("event.repair.needspace").sendPrefixedMessage(player);
+            plugin.getLocale().getMessage("event.repair.needspace").sendPrefixedMessage(player);
             return;
         }
 
@@ -117,7 +114,7 @@ public class RepairHandler {
         PlayerAnvilData playerData = playerAnvilData.computeIfAbsent(player.getUniqueId(), uuid -> new PlayerAnvilData());
         if (!answer) {
             removeItem(playerData, player);
-            instance.getLocale().getMessage("event.repair.cancelled").sendPrefixedMessage(player);
+            plugin.getLocale().getMessage("event.repair.cancelled").sendPrefixedMessage(player);
             return;
         }
         RepairType type = playerData.getType();
@@ -168,43 +165,79 @@ public class RepairHandler {
 
             Location location = playerData.getLocations();
             player.getWorld().playEffect(location, effect, blockTypeFinal);
-            Runnable runnable = () -> player.getWorld().playEffect(location, effect, blockTypeFinal);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(instance, runnable, 5L);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
-                player.getWorld().playEffect(location, effect, blockTypeFinal);
-                player.getWorld().playEffect(location, effect, Material.STONE);
-                XSound.BLOCK_ANVIL_LAND.play(player);
-            }, 10L);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(instance, runnable, 15L);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(instance, runnable, 20L);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> {
-                XSound.BLOCK_ANVIL_LAND.play(player);
-                player.getWorld().playEffect(location, effect, blockTypeFinal);
-                player.getWorld().playEffect(location, effect, Material.ANVIL);
-                instance.getLocale().getMessage("event.repair.success").sendPrefixedMessage(player);
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                try {
+                    Runnable runnable = () -> player.getWorld().playEffect(location, effect, blockTypeFinal);
 
-                playerData.getToBeRepaired().setDurability((short) 0);
-                removeItem(playerData, player);
+                    // Delay for 5 ticks (0.25 seconds)
+                    Thread.sleep(250);
+                    Bukkit.getScheduler().runTask(plugin, runnable);
 
-                if (player.getGameMode() != GameMode.CREATIVE &&
-                        type == RepairType.EXPERIENCE) {
-                    player.setLevel(player.getLevel() - playerData.getPrice());
+                    // Delay for 10 ticks (0.5 seconds)
+                    Thread.sleep(500);
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        player.getWorld().playEffect(location, effect, blockTypeFinal);
+                        player.getWorld().playEffect(location, effect, Material.STONE);
+                        XSound.BLOCK_ANVIL_LAND.play(player);
+                    });
+
+                    // Delay for 15 ticks (0.75 seconds)
+                    Thread.sleep(500);
+                    Bukkit.getScheduler().runTask(plugin, runnable);
+
+                    // Delay for 20 ticks (1 second)
+                    Thread.sleep(250);
+                    Bukkit.getScheduler().runTask(plugin, runnable);
+
+                    // Delay for 20 ticks (1 second)
+                    Thread.sleep(250);
+                    Bukkit.getScheduler().runTask(plugin, runnable);
+
+                    // Delay for 25 ticks (1.25 seconds)
+                    Thread.sleep(500);
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        XSound.BLOCK_ANVIL_LAND.play(player);
+                        player.getWorld().playEffect(location, effect, blockTypeFinal);
+                        player.getWorld().playEffect(location, effect, Material.ANVIL);
+
+                        // Move the repaired item up
+                        Item item = playerData.getItem();
+                        if (item != null && item.isValid()) {
+                            item.setVelocity(new Vector(0, 0.3, 0)); // Adjust the velocity as needed
+                            item.setPickupDelay(20); // Adjust the pickup delay as needed
+                        }
+                    });
+                    Thread.sleep(250);
+                    XSound.ENTITY_PLAYER_LEVELUP.play(player);
+
+                    // Delay for 30 ticks (1.5 seconds)
+                    Thread.sleep(300);
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        plugin.getLocale().getMessage("event.repair.success").sendPrefixedMessage(player);
+                        playerData.getToBeRepaired().setDurability((short) 0);
+                        removeItem(playerData, player);
+                        if (player.getGameMode() != GameMode.CREATIVE && type == RepairType.EXPERIENCE) {
+                            player.setLevel(player.getLevel() - playerData.getPrice());
+                        }
+                        player.closeInventory();
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                player.closeInventory();
-            }, 25L);
+            });
             return;
         }
 
         if (type == RepairType.ECONOMY) {
-            instance.getLocale().getMessage("event.repair.notenough")
-                    .processPlaceholder("type", instance.getLocale().getMessage("interface.repair.eco").getMessage())
+            plugin.getLocale().getMessage("event.repair.notenough")
+                    .processPlaceholder("type", plugin.getLocale().getMessage("interface.repair.eco").getMessage())
                     .sendPrefixedMessage(player);
         } else if (type == RepairType.EXPERIENCE)
-            instance.getLocale().getMessage("event.repair.notenough")
-                    .processPlaceholder("type", instance.getLocale().getMessage("interface.repair.xp").getMessage())
+            plugin.getLocale().getMessage("event.repair.notenough")
+                    .processPlaceholder("type", plugin.getLocale().getMessage("interface.repair.xp").getMessage())
                     .sendPrefixedMessage(player);
         else
-            instance.getLocale().getMessage("event.repair.notenough")
+            plugin.getLocale().getMessage("event.repair.notenough")
                     .processPlaceholder("type", name).sendPrefixedMessage(player);
 
         // we've failed to repair, so return the item
