@@ -24,7 +24,7 @@ public enum RepairType {
     RepairType(XMaterial material, String permission, String titleLang) {
         this.material = material;
         this.permission = permission;
-        this.title = UltimateRepairing.getInstance().getLocale().getMessage(titleLang).getMessage();
+        this.title = UltimateRepairing.getInstance().getLocale().getMessage(titleLang).toText();
     }
 
     public String getTitle() {
