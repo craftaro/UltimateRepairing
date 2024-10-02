@@ -61,7 +61,7 @@ public class RepairGui extends Gui {
         if (Arrays.stream(RepairType.values()).filter(p -> p.hasPermission(player)).count() > 1)
             setButton(4, GuiUtils.createButtonItem(type.getMaterial(),
                     type.getTitle(),
-                    plugin.getLocale().getMessage("interface.repair.swap").getMessage()), (event) ->
+                    plugin.getLocale().getMessage("interface.repair.swap").toText()), (event) ->
                     init(type.getNext(player)));
 
 

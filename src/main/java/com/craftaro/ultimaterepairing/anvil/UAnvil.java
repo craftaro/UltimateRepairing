@@ -39,14 +39,14 @@ public class UAnvil {
                     ArrayList<String> lines = new ArrayList<>();
 
                     if (!Settings.ENABLE_ANVIL_DEFAULT_FUNCTION.getBoolean()) {
-                        lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.oneclick").getMessage());
+                        lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.oneclick").toText());
                     } else if (Settings.SWAP_LEFT_RIGHT.getBoolean()) {
-                        lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.swapclick").getMessage());
+                        lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.swapclick").toText());
                     } else {
-                        lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.click").getMessage());
+                        lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.click").toText());
                     }
 
-                    lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.torepair").getMessage());
+                    lines.add(UltimateRepairing.getInstance().getLocale().getMessage("general.hologram.torepair").toText());
 
                     if (!HologramManager.isHologramLoaded(hologramId)) {
                         HologramManager.createHologram(hologramId, getLocation().add(0, .1, 0), lines);

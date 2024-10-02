@@ -230,11 +230,11 @@ public class RepairHandler {
 
         if (type == RepairType.ECONOMY) {
             plugin.getLocale().getMessage("event.repair.notenough")
-                    .processPlaceholder("type", plugin.getLocale().getMessage("interface.repair.eco").getMessage())
+                    .processPlaceholder("type", plugin.getLocale().getMessage("interface.repair.eco").toText())
                     .sendPrefixedMessage(player);
         } else if (type == RepairType.EXPERIENCE)
             plugin.getLocale().getMessage("event.repair.notenough")
-                    .processPlaceholder("type", plugin.getLocale().getMessage("interface.repair.xp").getMessage())
+                    .processPlaceholder("type", plugin.getLocale().getMessage("interface.repair.xp").toText())
                     .sendPrefixedMessage(player);
         else
             plugin.getLocale().getMessage("event.repair.notenough")
