@@ -16,6 +16,7 @@ public class PlayerAnvilData {
     private Location locations;
     private boolean inRepair;
     private boolean beingRepaired;
+    private int originalAmount = 1;
 
     public Location getLocation() {
         return location;
@@ -87,5 +88,13 @@ public class PlayerAnvilData {
 
     public void setSlot(int slot) {
         this.slot = slot;
+    }
+
+    public int getOriginalAmount() {
+        return originalAmount;
+    }
+
+    public void setOriginalAmount(int originalAmount) {
+        this.originalAmount = originalAmount;
     }
 }

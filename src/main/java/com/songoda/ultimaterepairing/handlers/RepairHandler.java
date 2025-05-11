@@ -50,8 +50,22 @@ public class RepairHandler {
         // Get from Map, put new instance in Map if it doesn't exist
         PlayerAnvilData playerData = playerAnvilData.computeIfAbsent(player.getUniqueId(), uuid -> new PlayerAnvilData());
 
-        player.getInventory().setItem(playerslot, null);
+        // Store the original slot and stack size before removing the item
+        ItemStack slotContents = player.getInventory().getItem(playerslot);
+        int originalAmount = 1;
+        if (slotContents != null && slotContents.getAmount() > 1) {
+            originalAmount = slotContents.getAmount();
+            // Just reduce the amount by 1 instead of removing the whole stack
+            slotContents.setAmount(originalAmount - 1);
+            player.getInventory().setItem(playerslot, slotContents);
+        } else {
+            // If there's only one item, remove it as before
+            player.getInventory().setItem(playerslot, null);
+        }
+
         playerData.setSlot(playerslot);
+        // Store the original amount to know if we need to add to the stack later
+        playerData.setOriginalAmount(originalAmount);
 
         Item item = player.getWorld().dropItem(anvil.add(0.5, 2, 0.5), itemStack);
 
@@ -245,14 +259,29 @@ public class RepairHandler {
 
     public void removeItem(PlayerAnvilData playerData, Player player) {
         int slot = playerData.getSlot();
-        if (slot < 0)
+
+        if (slot < 0) {
+            // If no valid slot, just give the item
             PlayerUtils.giveItem(player, playerData.getToBeRepaired());
-        else {
-            ItemStack item = playerData.getToBeRepaired();
-            player.getInventory().setItem(slot, item);
+        } else {
+            // Check if the original slot already has items
+            ItemStack currentItem = player.getInventory().getItem(slot);
+
+            if (currentItem != null && currentItem.isSimilar(playerData.getToBeRepaired())) {
+                // There are still items of the same type in that slot, just increase the amount
+                currentItem.setAmount(currentItem.getAmount() + 1);
+            } else if (currentItem == null) {
+                // The slot is empty, put the repaired item there
+                player.getInventory().setItem(slot, playerData.getToBeRepaired());
+            } else {
+                // The slot now has a different item, just give the player the repaired item
+                PlayerUtils.giveItem(player, playerData.getToBeRepaired());
+            }
         }
-        if (playerData.getItem() != null)
+
+        if (playerData.getItem() != null) {
             playerData.getItem().remove();
+        }
 
         this.playerAnvilData.remove(player.getUniqueId());
     }
