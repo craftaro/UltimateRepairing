@@ -16,6 +16,10 @@ public class CommandURAnvil extends AbstractCommand {
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
         Player player = (Player) sender;
+        if (UltimateRepairing.getInstance().getRepairHandler().getDataFor(player).getInRepair()) {
+            UltimateRepairing.getInstance().getLocale().getMessage("event.repair.inprogress").sendPrefixedMessage(player);
+            return ReturnType.FAILURE;
+        }
         UltimateRepairing.getInstance().getRepairHandler().initRepair(player, player.getLocation());
         return ReturnType.SUCCESS;
     }
