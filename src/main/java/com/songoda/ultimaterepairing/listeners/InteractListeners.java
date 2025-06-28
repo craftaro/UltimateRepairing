@@ -65,6 +65,11 @@ public class InteractListeners implements Listener {
         }
 
         if (ourRepair) {
+            if (UltimateRepairing.getInstance().getRepairHandler().getDataFor(player).getInRepair()) {
+                UltimateRepairing.getInstance().getLocale().getMessage("event.repair.inprogress").sendPrefixedMessage(player);
+                event.setCancelled(true);
+                return;
+            }
             RepairGui.newGui(player, anvil1.getLocation());
             event.setCancelled(true);
         }

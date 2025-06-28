@@ -43,3 +43,4 @@ event:
     success: '&aYour item has been successfully repaired!'
     cancelled: '&cCancelled repairing.'
     notfound: '&cThe item you attempted to repair has disappeared.'
+    inprogress: '&cA repair is already in progress! Please wait for it to finish.'
