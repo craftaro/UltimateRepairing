@@ -1,7 +1,7 @@
 name: UltimateRepairing
 description: UltimateRepairing
 main: com.songoda.ultimaterepairing.UltimateRepairing
-softdepend: [ HolographicDisplays, Vault ]
+softdepend: [ DecentHolograms, HolographicDisplays, Vault ]
 version: maven-version-number
 author: Songoda
 api-version: 1.13
