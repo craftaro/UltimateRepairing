@@ -3,7 +3,7 @@
 
     <groupId>com.songoda</groupId>
     <artifactId>UltimateRepairing</artifactId>
-    <version>3.8.0</version>
+    <version>3.9.0</version>
 
     <build>
         <defaultGoal>clean install</defaultGoal>
